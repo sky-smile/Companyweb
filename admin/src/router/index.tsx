@@ -6,6 +6,7 @@ import { AdminUsersPage } from '../pages/AdminUsersPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { LoginPage } from '../pages/LoginPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
+import { RolesPage } from '../pages/RolesPage';
 
 function ProtectedRoute({ children }: { children: React.ReactElement }) {
   const location = useLocation();
@@ -31,6 +32,7 @@ export function AppRouter() {
       >
         <Route index element={<DashboardPage />} />
         <Route path="account/admin-users" element={<AdminUsersPage />} />
+        <Route path="account/roles" element={<RolesPage />} />
         <Route path="content/news" element={<PlaceholderPage title="新闻管理" description="新闻列表、发布和编辑器将在当前后台骨架上继续接入。" />} />
         <Route path="content/announcements" element={<PlaceholderPage title="公告管理" description="公告管理页面将在下一阶段补充完整 CRUD 界面。" />} />
         <Route path="content/products" element={<PlaceholderPage title="产品管理" description="产品列表、分类和详情编辑界面将在下一阶段补充。" />} />

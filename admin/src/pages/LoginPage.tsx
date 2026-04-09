@@ -18,7 +18,7 @@ export function LoginPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
       <Card style={{ width: 420, borderRadius: 24, boxShadow: '0 24px 72px rgba(16, 40, 80, 0.14)' }}>
-        <Space direction="vertical" size={20} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={20} style={{ width: '100%' }}>
           <div>
             <Typography.Title level={2} style={{ marginBottom: 8 }}>
               公司后台管理

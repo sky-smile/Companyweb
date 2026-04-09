@@ -20,7 +20,7 @@ const quickLinks = [
 
 export function DashboardPage() {
   return (
-    <Space direction="vertical" size={24} style={{ display: 'flex' }}>
+    <Space orientation="vertical" size={24} style={{ display: 'flex' }}>
       <div>
         <Typography.Title level={2} style={{ marginBottom: 8 }}>
           控制台
@@ -41,7 +41,7 @@ export function DashboardPage() {
           <Col xs={24} md={12} xl={8} key={item.route}>
             <Link to={item.route} style={{ display: 'block' }}>
               <Card hoverable style={{ height: '100%' }}>
-                <Space direction="vertical" size={8}>
+                <Space orientation="vertical" size={8}>
                   <Typography.Text style={{ fontSize: 20 }}>{item.icon}</Typography.Text>
                   <Typography.Title level={4} style={{ margin: 0 }}>{item.title}</Typography.Title>
                   <Typography.Text type="secondary">{item.description}</Typography.Text>

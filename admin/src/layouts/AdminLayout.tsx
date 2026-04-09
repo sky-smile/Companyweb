@@ -18,6 +18,7 @@ const { Header, Sider, Content } = Layout;
 const menuItems: NonNullable<MenuProps['items']> = [
   { key: '/', icon: <HomeOutlined />, label: '控制台' },
   { key: '/account/admin-users', icon: <TeamOutlined />, label: '账号管理' },
+  { key: '/account/roles', icon: <TeamOutlined />, label: '角色管理' },
   { key: '/content/news', icon: <FileTextOutlined />, label: '新闻管理' },
   { key: '/content/announcements', icon: <NotificationOutlined />, label: '公告管理' },
   { key: '/content/products', icon: <AppstoreOutlined />, label: '产品管理' },
@@ -38,6 +39,7 @@ export function AdminLayout() {
 
     const permissionMap: Record<string, string | undefined> = {
       '/account/admin-users': 'admin-users:view',
+      '/account/roles': 'roles:view',
       '/content/news': 'news:view',
       '/content/announcements': 'announcement:view',
       '/content/products': 'product:view',

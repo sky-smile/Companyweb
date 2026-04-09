@@ -69,7 +69,7 @@ export function AdminUsersPage() {
   }, []);
 
   return (
-    <Space direction="vertical" size={20} style={{ display: 'flex' }}>
+    <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
       <div>
         <Typography.Title level={2} style={{ marginBottom: 8 }}>账号管理</Typography.Title>
         <Typography.Text type="secondary">已经接上管理员列表、创建与启用禁用操作。</Typography.Text>
