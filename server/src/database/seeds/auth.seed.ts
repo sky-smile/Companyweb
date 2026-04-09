@@ -25,6 +25,14 @@ const permissions = [
   ['Create announcements', 'announcement:create', 'announcement', 'create'],
   ['Update announcements', 'announcement:update', 'announcement', 'update'],
   ['Delete announcements', 'announcement:delete', 'announcement', 'delete'],
+  ['View site pages', 'site-page:view', 'site-page', 'view'],
+  ['Update site pages', 'site-page:update', 'site-page', 'update'],
+  ['View site settings', 'site-setting:view', 'site-setting', 'view'],
+  ['Update site settings', 'site-setting:update', 'site-setting', 'update'],
+  ['View banners', 'banner:view', 'banner', 'view'],
+  ['Create banners', 'banner:create', 'banner', 'create'],
+  ['Update banners', 'banner:update', 'banner', 'update'],
+  ['Delete banners', 'banner:delete', 'banner', 'delete'],
 ];
 
 async function seed(): Promise<void> {

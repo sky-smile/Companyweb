@@ -34,6 +34,9 @@ describe('HealthController (e2e)', () => {
     await dataSource.query('DELETE FROM admin_user_roles WHERE admin_user_id <> 1');
     await dataSource.query('DELETE FROM admin_users WHERE username <> ?', ['admin']);
     await dataSource.query('DELETE FROM announcements');
+    await dataSource.query('DELETE FROM banners');
+    await dataSource.query('DELETE FROM site_settings');
+    await dataSource.query('DELETE FROM site_pages');
     await dataSource.query('DELETE FROM news');
     await dataSource.query('DELETE FROM news_categories');
     await dataSource.query('DELETE FROM role_permissions WHERE role_id <> 1');
@@ -45,7 +48,7 @@ describe('HealthController (e2e)', () => {
     );
 
     const permissionRows = await dataSource.query(
-      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         'admin-users:view',
         'admin-users:create',
@@ -69,6 +72,14 @@ describe('HealthController (e2e)', () => {
         'announcement:create',
         'announcement:update',
         'announcement:delete',
+        'site-page:view',
+        'site-page:update',
+        'site-setting:view',
+        'site-setting:update',
+        'banner:view',
+        'banner:create',
+        'banner:update',
+        'banner:delete',
       ],
     );
 
@@ -467,6 +478,95 @@ describe('HealthController (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.code).toBe(0);
+      });
+  });
+
+  it('/api/admin/site-pages/:key (PUT)', async () => {
+    await request(app.getHttpServer())
+      .put('/api/admin/site-pages/home')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: 'Home Page',
+        content: 'Home content block',
+        extraJson: '{"hero":"Company Hero"}',
+        seoTitle: 'Home SEO',
+        seoDescription: 'Home SEO description',
+        status: 1,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.pageKey).toBe('home');
+      });
+  });
+
+  it('/api/admin/site-settings (PUT)', async () => {
+    await request(app.getHttpServer())
+      .put('/api/admin/site-settings')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        items: [
+          {
+            settingKey: 'companyName',
+            settingValue: 'Sky Smile',
+            settingGroup: 'company',
+            description: 'Company display name',
+          },
+        ],
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/admin/banners (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin/banners')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: 'Main Banner',
+        subtitle: 'Primary homepage banner',
+        imageUrl: '/uploads/banner-home.jpg',
+        linkUrl: '/products',
+        sort: 1,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.title).toBe('Main Banner');
+      });
+  });
+
+  it('/api/public/home (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/public/home')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.page.pageKey).toBe('home');
+        expect(body.data.banners.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/public/about (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/public/about')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.pageKey).toBe('about');
+      });
+  });
+
+  it('/api/public/contact (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/public/contact')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.page.pageKey).toBe('contact');
       });
   });
 });

@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { NewsModule } from './modules/news/news.module';
 import { RoleModule } from './modules/role/role.module';
+import { SiteContentModule } from './modules/site-content/site-content.module';
 import { appConfig } from './config/app.config';
 import { envValidationSchema } from './config/env.validation';
 import { getTypeOrmConfig } from './database/typeorm.config';
@@ -28,6 +29,7 @@ import { getTypeOrmConfig } from './database/typeorm.config';
     HealthModule,
     NewsModule,
     RoleModule,
+    SiteContentModule,
   ],
 })
 export class AppModule {}

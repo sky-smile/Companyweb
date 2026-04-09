@@ -4,6 +4,7 @@ import { appConfig } from '@/config/app.config';
 import { typeOrmEntities } from './typeorm.config';
 import { AddAnnouncementsTable1712607200000 } from './migrations/1712607200000-add-announcements-table';
 import { AddNewsTables1712603600000 } from './migrations/1712603600000-add-news-tables';
+import { AddSiteContentTables1712610800000 } from './migrations/1712610800000-add-site-content-tables';
 import { InitAuthRbac1712600000000 } from './migrations/1712600000000-init-auth-rbac';
 
 const config = appConfig();
@@ -20,6 +21,7 @@ export const AppDataSource = new DataSource({
     InitAuthRbac1712600000000,
     AddNewsTables1712603600000,
     AddAnnouncementsTable1712607200000,
+    AddSiteContentTables1712610800000,
   ],
   synchronize: false,
   logging: config.database.logging,
