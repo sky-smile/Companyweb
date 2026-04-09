@@ -6,6 +6,7 @@ import { AdminUsersPage } from '../pages/AdminUsersPage';
 import { AnnouncementsPage } from '../pages/AnnouncementsPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { LoginPage } from '../pages/LoginPage';
+import { MediaCenterPage } from '../pages/MediaCenterPage';
 import { NewsPage } from '../pages/NewsPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { ProductsPage } from '../pages/ProductsPage';
@@ -43,7 +44,7 @@ export function AppRouter() {
         <Route path="site/pages" element={<SiteContentPage />} />
         <Route path="site/banners" element={<SiteContentPage />} />
         <Route path="site/settings" element={<SiteContentPage />} />
-        <Route path="media/upload" element={<PlaceholderPage title="媒体中心" description="图片上传、文件选择和引用回填将在这里接入。" />} />
+        <Route path="media/upload" element={<MediaCenterPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

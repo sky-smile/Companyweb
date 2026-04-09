@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Form, Input, Modal, Space, Table, Tag, Tabs, Typography, message } from 'antd';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { UploadField } from '../components/common/UploadField';
 import { newsService } from '../services/news-service';
 import { CreateNewsCategoryPayload, NewsCategoryItem, NewsItem } from '../types/news';
 
@@ -86,6 +87,9 @@ export function NewsPage() {
           </Space>
         }
       >
+        <Card size="small" style={{ marginBottom: 16 }} title="封面图上传回填">
+          <UploadField folder="news" accept="image/*" buttonText="上传新闻封面" />
+        </Card>
         <Tabs
           items={[
             {

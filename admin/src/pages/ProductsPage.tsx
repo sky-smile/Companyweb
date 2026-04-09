@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Form, Input, Modal, Space, Table, Tag, Tabs, Typography, message } from 'antd';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { UploadField } from '../components/common/UploadField';
 import { productService } from '../services/product-service';
 import { CreateProductCategoryPayload, ProductCategoryItem, ProductItem } from '../types/product';
 
@@ -81,6 +82,9 @@ export function ProductsPage() {
           </Space>
         }
       >
+        <Card size="small" style={{ marginBottom: 16 }} title="产品图片上传回填">
+          <UploadField folder="products" accept="image/*" buttonText="上传产品图片" />
+        </Card>
         <Tabs
           items={[
             {

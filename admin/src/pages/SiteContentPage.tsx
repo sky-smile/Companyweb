@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Form, Input, Modal, Space, Table, Tabs, Tag, Typography, message } from 'antd';
 import { PlusOutlined, ReloadOutlined, SaveOutlined } from '@ant-design/icons';
+import { UploadField } from '../components/common/UploadField';
 import { siteContentService } from '../services/site-content-service';
 import { BannerItem, CreateBannerPayload, SitePageItem, SiteSettingItem, UpdateSiteSettingsPayload } from '../types/site-content';
 
@@ -162,7 +163,9 @@ export function SiteContentPage() {
         <Form layout="vertical" form={bannerForm} onFinish={handleCreateBanner} initialValues={{ sort: 0 }}>
           <Form.Item label="标题" name="title"><Input /></Form.Item>
           <Form.Item label="副标题" name="subtitle"><Input /></Form.Item>
-          <Form.Item label="图片地址" name="imageUrl" rules={[{ required: true, message: '请输入图片地址' }]}><Input /></Form.Item>
+          <Form.Item label="图片地址" name="imageUrl" rules={[{ required: true, message: '请输入图片地址' }]}>
+            <UploadField folder="banners" accept="image/*" buttonText="上传 Banner" />
+          </Form.Item>
           <Form.Item label="跳转链接" name="linkUrl"><Input /></Form.Item>
           <Form.Item label="排序" name="sort"><Input type="number" /></Form.Item>
           <Button type="primary" htmlType="submit" block>保存 Banner</Button>
