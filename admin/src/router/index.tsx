@@ -8,6 +8,7 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { LoginPage } from '../pages/LoginPage';
 import { NewsPage } from '../pages/NewsPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
+import { ProductsPage } from '../pages/ProductsPage';
 import { RolesPage } from '../pages/RolesPage';
 
 function ProtectedRoute({ children }: { children: React.ReactElement }) {
@@ -37,7 +38,7 @@ export function AppRouter() {
         <Route path="account/roles" element={<RolesPage />} />
         <Route path="content/news" element={<NewsPage />} />
         <Route path="content/announcements" element={<AnnouncementsPage />} />
-        <Route path="content/products" element={<PlaceholderPage title="产品管理" description="产品列表、分类和详情编辑界面将在下一阶段补充。" />} />
+        <Route path="content/products" element={<ProductsPage />} />
         <Route path="site/pages" element={<PlaceholderPage title="页面内容" description="关于我们、联系我们与首页静态内容维护将在这里接入。" />} />
         <Route path="site/banners" element={<PlaceholderPage title="Banner 管理" description="Banner 列表与上传选择器将在下一阶段补充。" />} />
         <Route path="site/settings" element={<PlaceholderPage title="站点设置" description="站点基础信息和联系方式配置将在这里维护。" />} />
