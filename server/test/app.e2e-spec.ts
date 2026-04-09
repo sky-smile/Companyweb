@@ -44,7 +44,7 @@ describe('HealthController (e2e)', () => {
     );
 
     const permissionRows = await dataSource.query(
-      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         'admin-users:view',
         'admin-users:create',
@@ -59,8 +59,11 @@ describe('HealthController (e2e)', () => {
         'news:view',
         'news:create',
         'news:update',
+        'news:delete',
         'news-category:view',
         'news-category:create',
+        'news-category:update',
+        'news-category:delete',
       ],
     );
 
@@ -296,6 +299,81 @@ describe('HealthController (e2e)', () => {
       .expect(({ body }) => {
         expect(body.code).toBe(0);
         expect(body.data.list.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/public/news (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/public/news')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.list.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/public/news/:id (GET)', async () => {
+    const newsRows = (await dataSource.query(
+      'SELECT id FROM news WHERE slug = ?',
+      ['new-product-launch'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .get(`/api/public/news/${newsRows[0].id}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('new-product-launch');
+      });
+  });
+
+  it('/api/admin/news-categories/:id (PATCH)', async () => {
+    const categoryRows = (await dataSource.query(
+      'SELECT id FROM news_categories WHERE slug = ?',
+      ['company-news'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .patch(`/api/admin/news-categories/${categoryRows[0].id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        name: 'Corporate News',
+        slug: 'corporate-news',
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('corporate-news');
+      });
+  });
+
+  it('/api/admin/news/:id (DELETE)', async () => {
+    const newsRows = (await dataSource.query(
+      'SELECT id FROM news WHERE slug = ?',
+      ['new-product-launch'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .delete(`/api/admin/news/${newsRows[0].id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+      });
+  });
+
+  it('/api/admin/news-categories/:id (DELETE)', async () => {
+    const categoryRows = (await dataSource.query(
+      'SELECT id FROM news_categories WHERE slug = ?',
+      ['corporate-news'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .delete(`/api/admin/news-categories/${categoryRows[0].id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
       });
   });
 });

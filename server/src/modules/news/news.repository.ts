@@ -9,6 +9,7 @@ import { NewsCategoryEntity } from '@/database/entities/news-category.entity';
 import { NewsEntity } from '@/database/entities/news.entity';
 import { CreateNewsCategoryDto } from './dto/create-news-category.dto';
 import { CreateNewsDto } from './dto/create-news.dto';
+import { UpdateNewsCategoryDto } from './dto/update-news-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { NewsView } from './interfaces/news-view.interface';
 
@@ -63,6 +64,43 @@ export class NewsRepository {
         status: 1,
       }),
     );
+  }
+
+  async updateCategory(id: string, dto: UpdateNewsCategoryDto): Promise<NewsCategoryEntity> {
+    const category = await this.newsCategoryRepository.findOne({ where: { id } });
+
+    if (category === null) {
+      throw new NotFoundException('News category not found');
+    }
+
+    if (dto.slug !== undefined && dto.slug !== category.slug) {
+      const existingCategory = await this.newsCategoryRepository.findOne({ where: { slug: dto.slug } });
+
+      if (existingCategory !== null) {
+        throw new BadRequestException('News category slug already exists');
+      }
+    }
+
+    category.name = dto.name ?? category.name;
+    category.slug = dto.slug ?? category.slug;
+    category.sort = dto.sort ?? category.sort;
+    category.status = dto.status ?? category.status;
+
+    return this.newsCategoryRepository.save(category);
+  }
+
+  async deleteCategory(id: string): Promise<void> {
+    const newsCount = await this.newsRepository.count({ where: { categoryId: id } });
+
+    if (newsCount > 0) {
+      throw new BadRequestException('Cannot delete category with existing news items');
+    }
+
+    const result = await this.newsCategoryRepository.delete({ id });
+
+    if ((result.affected ?? 0) === 0) {
+      throw new NotFoundException('News category not found');
+    }
   }
 
   async listNews(): Promise<NewsView[]> {
@@ -173,6 +211,50 @@ export class NewsRepository {
     await this.newsRepository.save(news);
 
     return this.findNewsById(id);
+  }
+
+  async deleteNews(id: string): Promise<void> {
+    const result = await this.newsRepository.delete({ id });
+
+    if ((result.affected ?? 0) === 0) {
+      throw new NotFoundException('News not found');
+    }
+  }
+
+  async listPublicNews(): Promise<NewsView[]> {
+    const newsList = await this.newsRepository.find({
+      where: {
+        status: 1,
+      },
+      relations: {
+        category: true,
+      },
+      order: {
+        isTop: 'DESC',
+        publishedAt: 'DESC',
+        id: 'DESC',
+      },
+    });
+
+    return newsList.map((item) => this.toView(item));
+  }
+
+  async findPublicNewsById(id: string): Promise<NewsView> {
+    const news = await this.newsRepository.findOne({
+      where: {
+        id,
+        status: 1,
+      },
+      relations: {
+        category: true,
+      },
+    });
+
+    if (news === null) {
+      throw new NotFoundException('News not found');
+    }
+
+    return this.toView(news);
   }
 
   private async ensureCategoryExists(categoryId: string): Promise<void> {

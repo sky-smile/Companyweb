@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -49,5 +50,11 @@ export class NewsController {
     @Req() request: AuthenticatedRequest,
   ) {
     return this.newsService.updateNews(id, dto, request.user);
+  }
+
+  @Delete(':id')
+  @Permissions('news:delete')
+  delete(@Param('id') id: string) {
+    return this.newsService.deleteNews(id);
   }
 }
