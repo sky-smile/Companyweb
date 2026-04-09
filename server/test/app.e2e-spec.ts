@@ -64,4 +64,16 @@ describe('HealthController (e2e)', () => {
         expect(body.data.roles).toContain('super-admin');
       });
   });
+
+  it('/api/admin-users (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/admin-users')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.list).toHaveLength(1);
+        expect(body.data.pagination.total).toBe(1);
+      });
+  });
 });

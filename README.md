@@ -14,7 +14,7 @@ Official company website project with a public site, admin console, and backend 
 .
 |- frontend/   Next.js + Tailwind CSS public site
 |- admin/      React + Ant Design admin console
-|- server/     NestJS + MySQL API service
+|- server/     NestJS + MariaDB API service
 `- docs/       Product, API, database, and deployment documents
 ```
 

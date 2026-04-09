@@ -4,7 +4,7 @@
 
 - Nginx
 - PM2
-- MySQL
+- MariaDB
 - Node.js 20 LTS
 
 ## Deployment Units
@@ -40,7 +40,7 @@
 
 ## Recommended Release Flow
 
-1. Provision MySQL and create application database
+1. Provision MariaDB and create application database
 2. Install Node.js 20 and `pnpm`
 3. Build `server`, `admin`, and `frontend`
 4. Run database migration and seed scripts

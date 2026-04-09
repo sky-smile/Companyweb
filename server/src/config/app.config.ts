@@ -5,11 +5,14 @@ export const appConfig = () => ({
     globalPrefix: process.env.SERVER_GLOBAL_PREFIX ?? 'api',
   },
   database: {
+    type: process.env.DB_TYPE ?? 'mariadb',
     host: process.env.DB_HOST ?? '127.0.0.1',
     port: Number(process.env.DB_PORT ?? 3306),
     name: process.env.DB_NAME ?? 'company_web',
     user: process.env.DB_USER ?? 'root',
     password: process.env.DB_PASSWORD ?? '',
+    synchronize: process.env.DB_SYNCHRONIZE === 'true',
+    logging: process.env.DB_LOGGING === 'true',
   },
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET ?? '',

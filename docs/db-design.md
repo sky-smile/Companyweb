@@ -2,7 +2,7 @@
 
 ## Conventions
 
-- Database: MySQL 8+
+- Database: MariaDB 10.6+ (MySQL protocol compatible)
 - Character set: `utf8mb4`
 - Time fields use `datetime`
 - Primary keys use bigint unsigned or compatible ORM-generated ids

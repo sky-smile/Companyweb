@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityMetadataNotFoundError, Repository } from 'typeorm';
+import { DataSource, EntityMetadataNotFoundError, Repository } from 'typeorm';
 import { AdminUserEntity } from '@/database/entities/admin-user.entity';
 import { hashPassword } from '@/common/utils/password.util';
 import { AuthenticatedAdmin } from './interfaces/authenticated-admin.interface';
@@ -10,6 +10,7 @@ export class AuthRepository {
   constructor(
     @InjectRepository(AdminUserEntity)
     private readonly adminUserRepository: Repository<AdminUserEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findByUsername(username: string): Promise<AuthenticatedAdmin | null> {
@@ -102,7 +103,19 @@ export class AuthRepository {
         return null;
       }
 
+      if (this.isDatabaseUnavailable(error)) {
+        return null;
+      }
+
       throw error;
     }
+  }
+
+  private isDatabaseUnavailable(error: unknown): boolean {
+    if (!(error instanceof Error)) {
+      return false;
+    }
+
+    return !this.dataSource.isInitialized || /ECONNREFUSED|connect ECONN|Unknown database/i.test(error.message);
   }
 }
