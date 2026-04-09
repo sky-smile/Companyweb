@@ -13,6 +13,11 @@ const permissions = [
   ['Create roles', 'roles:create', 'roles', 'create'],
   ['Update roles', 'roles:update', 'roles', 'update'],
   ['Change role status', 'roles:status', 'roles', 'status'],
+  ['View news', 'news:view', 'news', 'view'],
+  ['Create news', 'news:create', 'news', 'create'],
+  ['Update news', 'news:update', 'news', 'update'],
+  ['View news categories', 'news-category:view', 'news-category', 'view'],
+  ['Create news categories', 'news-category:create', 'news-category', 'create'],
 ];
 
 async function seed(): Promise<void> {

@@ -2,6 +2,8 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { appConfig } from '@/config/app.config';
 import { AdminUserRoleEntity } from './entities/admin-user-role.entity';
 import { AdminUserEntity } from './entities/admin-user.entity';
+import { NewsCategoryEntity } from './entities/news-category.entity';
+import { NewsEntity } from './entities/news.entity';
 import { PermissionEntity } from './entities/permission.entity';
 import { RolePermissionEntity } from './entities/role-permission.entity';
 import { RoleEntity } from './entities/role.entity';
@@ -12,6 +14,8 @@ export const typeOrmEntities = [
   PermissionEntity,
   AdminUserRoleEntity,
   RolePermissionEntity,
+  NewsCategoryEntity,
+  NewsEntity,
 ];
 
 export const getTypeOrmConfig = (): TypeOrmModuleOptions => {

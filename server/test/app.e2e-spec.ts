@@ -33,6 +33,8 @@ describe('HealthController (e2e)', () => {
 
     await dataSource.query('DELETE FROM admin_user_roles WHERE admin_user_id <> 1');
     await dataSource.query('DELETE FROM admin_users WHERE username <> ?', ['admin']);
+    await dataSource.query('DELETE FROM news');
+    await dataSource.query('DELETE FROM news_categories');
     await dataSource.query('DELETE FROM role_permissions WHERE role_id <> 1');
     await dataSource.query('DELETE FROM roles WHERE code <> ?', ['super-admin']);
     const adminPasswordHash = await hashPassword('Admin123456');
@@ -42,7 +44,7 @@ describe('HealthController (e2e)', () => {
     );
 
     const permissionRows = await dataSource.query(
-      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         'admin-users:view',
         'admin-users:create',
@@ -54,6 +56,11 @@ describe('HealthController (e2e)', () => {
         'roles:create',
         'roles:update',
         'roles:status',
+        'news:view',
+        'news:create',
+        'news:update',
+        'news-category:view',
+        'news-category:create',
       ],
     );
 
@@ -237,6 +244,58 @@ describe('HealthController (e2e)', () => {
       .expect(({ body }) => {
         expect(body.code).toBe(0);
         expect(body.data.accessToken).toBeDefined();
+      });
+  });
+
+  it('/api/admin/news-categories (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin/news-categories')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        name: 'Company News',
+        slug: 'company-news',
+        sort: 1,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('company-news');
+      });
+  });
+
+  it('/api/admin/news (POST)', async () => {
+    const categoryRows = (await dataSource.query(
+      'SELECT id FROM news_categories WHERE slug = ?',
+      ['company-news'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .post('/api/admin/news')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        categoryId: categoryRows[0].id,
+        title: 'New Product Launch',
+        slug: 'new-product-launch',
+        summary: 'Launch summary',
+        content: 'Detailed launch content',
+        status: 1,
+        isTop: 1,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('new-product-launch');
+      });
+  });
+
+  it('/api/admin/news (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/admin/news')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.list.length).toBeGreaterThanOrEqual(1);
       });
   });
 });
