@@ -31,7 +31,7 @@ export function LoginPage() {
           <Form<LoginPayload>
             layout="vertical"
             onFinish={handleSubmit}
-            initialValues={{ username: 'admin', password: 'Admin123456' }}
+            initialValues={{ username: 'admin', password: 'Admin1234567' }}
           >
             <Form.Item label="用户名" name="username" rules={[{ required: true, message: '请输入用户名' }]}>
               <Input prefix={<UserOutlined />} size="large" placeholder="请输入管理员用户名" />
