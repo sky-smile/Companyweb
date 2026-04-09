@@ -32,3 +32,23 @@ export interface CreateNewsCategoryPayload {
   slug: string;
   sort?: number;
 }
+
+export interface UpdateNewsCategoryPayload {
+  name?: string;
+  slug?: string;
+  sort?: number;
+  status?: number;
+}
+
+export interface CreateNewsPayload {
+  categoryId: string;
+  title: string;
+  slug: string;
+  summary?: string;
+  coverImage?: string;
+  content: string;
+  status?: number;
+  isTop?: number;
+}
+
+export interface UpdateNewsPayload extends CreateNewsPayload {}
