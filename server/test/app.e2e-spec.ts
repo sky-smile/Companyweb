@@ -100,4 +100,43 @@ describe('HealthController (e2e)', () => {
         expect(body.data.username).toBe('editor');
       });
   });
+
+  it('/api/roles (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/roles')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/roles/permissions (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/roles/permissions')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/roles (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/roles')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        name: 'Editor',
+        code: 'editor',
+        description: 'Editor role',
+        permissionIds: [],
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.code).toBe('editor');
+      });
+  });
 });
