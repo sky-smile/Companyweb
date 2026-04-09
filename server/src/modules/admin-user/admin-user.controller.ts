@@ -12,6 +12,7 @@ import {
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { AdminUserService } from './admin-user.service';
+import { ChangeOwnPasswordDto } from './dto/change-own-password.dto';
 import { AdminUserListQueryDto } from './dto/admin-user-list-query.dto';
 import { CreateAdminUserDto } from './dto/create-admin-user.dto';
 import { ResetAdminUserPasswordDto } from './dto/reset-admin-user-password.dto';
@@ -54,5 +55,13 @@ export class AdminUserController {
     @Req() request: AuthenticatedRequest,
   ) {
     return this.adminUserService.resetPassword(id, dto, request.user);
+  }
+
+  @Post('change-password')
+  changeOwnPassword(
+    @Req() request: AuthenticatedRequest,
+    @Body() dto: ChangeOwnPasswordDto,
+  ) {
+    return this.adminUserService.updateOwnPassword(request.user.userId, dto);
   }
 }

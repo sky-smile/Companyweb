@@ -4,6 +4,7 @@ import {
 } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
 import { AdminUserRepository } from './admin-user.repository';
+import { ChangeOwnPasswordDto } from './dto/change-own-password.dto';
 import { AdminUserListQueryDto } from './dto/admin-user-list-query.dto';
 import { CreateAdminUserDto } from './dto/create-admin-user.dto';
 import { ResetAdminUserPasswordDto } from './dto/reset-admin-user-password.dto';
@@ -74,6 +75,19 @@ export class AdminUserService {
       id: updatedUser.id,
       username: updatedUser.username,
       message: 'Password reset successfully',
+    };
+  }
+
+  async updateOwnPassword(userId: string, dto: ChangeOwnPasswordDto) {
+    if (dto.oldPassword === dto.newPassword) {
+      throw new BadRequestException('New password must be different from old password');
+    }
+
+    await this.adminUserRepository.updateOwnPassword(userId, dto.oldPassword, dto.newPassword);
+
+    return {
+      success: true,
+      message: 'Password updated successfully',
     };
   }
 

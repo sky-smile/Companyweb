@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import { DataSource } from 'typeorm';
 import { AppModule } from '../src/app.module';
 import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
+import { hashPassword } from '../src/common/utils/password.util';
 
 process.env.DB_HOST = process.env.DB_HOST ?? '127.0.0.1';
 process.env.DB_PORT = process.env.DB_PORT ?? '3307';
@@ -15,6 +17,7 @@ process.env.DB_TYPE = process.env.DB_TYPE ?? 'mariadb';
 describe('HealthController (e2e)', () => {
   let app: INestApplication;
   let accessToken: string;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,10 +25,21 @@ describe('HealthController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    dataSource = app.get(DataSource);
     app.setGlobalPrefix('api');
     app.useGlobalInterceptors(new ResponseInterceptor());
     app.useGlobalFilters(new AllExceptionsFilter());
     await app.init();
+
+    await dataSource.query('DELETE FROM admin_user_roles WHERE admin_user_id <> 1');
+    await dataSource.query('DELETE FROM admin_users WHERE username <> ?', ['admin']);
+    await dataSource.query('DELETE FROM role_permissions WHERE role_id <> 1');
+    await dataSource.query('DELETE FROM roles WHERE code <> ?', ['super-admin']);
+    const adminPasswordHash = await hashPassword('Admin123456');
+    await dataSource.query(
+      'UPDATE admin_users SET password_hash = ? WHERE username = ?',
+      [adminPasswordHash, 'admin'],
+    );
   });
 
   afterAll(async () => {
@@ -137,6 +151,67 @@ describe('HealthController (e2e)', () => {
       .expect(({ body }) => {
         expect(body.code).toBe(0);
         expect(body.data.code).toBe('editor');
+      });
+  });
+
+  it('/api/admin-users (POST) rejects duplicate username', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin-users')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        username: 'editor',
+        password: 'Editor123456',
+        nickname: 'Duplicate Editor',
+        roleIds: [],
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.message).toContain('Username already exists');
+      });
+  });
+
+  it('/api/admin-users (POST) rejects invalid role ids', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin-users')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        username: 'viewer',
+        password: 'Viewer123456',
+        nickname: 'Viewer User',
+        roleIds: ['999999'],
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.message).toContain('One or more roles do not exist');
+      });
+  });
+
+  it('/api/admin-users/change-password (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin-users/change-password')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        oldPassword: 'Admin123456',
+        newPassword: 'Admin1234567',
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.success).toBe(true);
+      });
+  });
+
+  it('/api/auth/login (POST) accepts updated password', async () => {
+    await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({
+        username: 'admin',
+        password: 'Admin1234567',
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.accessToken).toBeDefined();
       });
   });
 });

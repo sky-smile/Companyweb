@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,7 +9,7 @@ import {
   EntityMetadataNotFoundError,
   Repository,
 } from 'typeorm';
-import { hashPassword } from '@/common/utils/password.util';
+import { hashPassword, verifyPassword } from '@/common/utils/password.util';
 import { AdminUserRoleEntity } from '@/database/entities/admin-user-role.entity';
 import { AdminUserEntity } from '@/database/entities/admin-user.entity';
 import { RoleEntity } from '@/database/entities/role.entity';
@@ -86,6 +87,9 @@ export class AdminUserRepository {
       };
     }
 
+    await this.ensureUsernameAvailable(dto.username);
+    await this.ensureRoleIdsExist(dto.roleIds ?? []);
+
     const passwordHash = await hashPassword(dto.password);
     const adminUser = await this.adminUserRepository.save(
       this.adminUserRepository.create({
@@ -127,6 +131,10 @@ export class AdminUserRepository {
 
     if (adminUser === null) {
       throw new NotFoundException('Admin user not found');
+    }
+
+    if (dto.roleIds !== undefined) {
+      await this.ensureRoleIdsExist(dto.roleIds);
     }
 
     adminUser.nickname = dto.nickname ?? adminUser.nickname;
@@ -189,6 +197,35 @@ export class AdminUserRepository {
     return this.findById(id);
   }
 
+  async updateOwnPassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    if (!this.isDatabaseReady()) {
+      if (id !== '1') {
+        throw new NotFoundException('Admin user not found');
+      }
+
+      return;
+    }
+
+    const adminUser = await this.adminUserRepository.findOne({ where: { id } });
+
+    if (adminUser === null) {
+      throw new NotFoundException('Admin user not found');
+    }
+
+    const passwordMatched = await verifyPassword(oldPassword, adminUser.passwordHash);
+
+    if (!passwordMatched) {
+      throw new BadRequestException('Old password is incorrect');
+    }
+
+    adminUser.passwordHash = await hashPassword(newPassword);
+    await this.adminUserRepository.save(adminUser);
+  }
+
   private async replaceRoles(adminUserId: string, roleIds: string[]): Promise<void> {
     await this.adminUserRoleRepository.delete({ adminUserId });
 
@@ -205,6 +242,26 @@ export class AdminUserRepository {
           roleId: role.id,
         }),
       );
+    }
+  }
+
+  private async ensureUsernameAvailable(username: string): Promise<void> {
+    const existingUser = await this.adminUserRepository.findOne({ where: { username } });
+
+    if (existingUser !== null) {
+      throw new BadRequestException('Username already exists');
+    }
+  }
+
+  private async ensureRoleIdsExist(roleIds: string[]): Promise<void> {
+    if (roleIds.length === 0) {
+      return;
+    }
+
+    const roles = await this.roleRepository.findBy(roleIds.map((id) => ({ id })));
+
+    if (roles.length !== roleIds.length) {
+      throw new BadRequestException('One or more roles do not exist');
     }
   }
 

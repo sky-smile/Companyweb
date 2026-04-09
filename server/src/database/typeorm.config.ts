@@ -28,6 +28,5 @@ export const getTypeOrmConfig = (): TypeOrmModuleOptions => {
     autoLoadEntities: true,
     synchronize: config.database.synchronize,
     logging: config.database.logging || config.server.nodeEnv === 'development',
-    manualInitialization: true,
   };
 };

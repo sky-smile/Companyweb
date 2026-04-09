@@ -11,5 +11,6 @@ import { AdminUserService } from './admin-user.service';
   imports: [TypeOrmModule.forFeature([AdminUserEntity, RoleEntity, AdminUserRoleEntity])],
   controllers: [AdminUserController],
   providers: [AdminUserRepository, AdminUserService],
+  exports: [AdminUserRepository],
 })
 export class AdminUserModule {}

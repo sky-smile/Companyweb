@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { AdminUserRepository } from '@/modules/admin-user/admin-user.repository';
 import { verifyPassword } from '@/common/utils/password.util';
 import { AuthRepository } from './auth.repository';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -17,6 +18,7 @@ import { TokenPair } from './interfaces/token-pair.interface';
 export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
+    private readonly adminUserRepository: AdminUserRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -83,9 +85,11 @@ export class AuthService {
       throw new UnauthorizedException('Old password is incorrect');
     }
 
+    await this.adminUserRepository.updateOwnPassword(userId, dto.oldPassword, dto.newPassword);
+
     return {
       success: true,
-      message: 'Password change persistence will be implemented with admin user module',
+      message: 'Password updated successfully',
     };
   }
 
