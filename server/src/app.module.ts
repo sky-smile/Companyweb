@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminUserModule } from './modules/admin-user/admin-user.module';
+import { AnnouncementModule } from './modules/announcement/announcement.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { NewsModule } from './modules/news/news.module';
@@ -22,6 +23,7 @@ import { getTypeOrmConfig } from './database/typeorm.config';
       useFactory: getTypeOrmConfig,
     }),
     AdminUserModule,
+    AnnouncementModule,
     AuthModule,
     HealthModule,
     NewsModule,

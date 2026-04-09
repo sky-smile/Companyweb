@@ -33,6 +33,7 @@ describe('HealthController (e2e)', () => {
 
     await dataSource.query('DELETE FROM admin_user_roles WHERE admin_user_id <> 1');
     await dataSource.query('DELETE FROM admin_users WHERE username <> ?', ['admin']);
+    await dataSource.query('DELETE FROM announcements');
     await dataSource.query('DELETE FROM news');
     await dataSource.query('DELETE FROM news_categories');
     await dataSource.query('DELETE FROM role_permissions WHERE role_id <> 1');
@@ -44,7 +45,7 @@ describe('HealthController (e2e)', () => {
     );
 
     const permissionRows = await dataSource.query(
-      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         'admin-users:view',
         'admin-users:create',
@@ -64,6 +65,10 @@ describe('HealthController (e2e)', () => {
         'news-category:create',
         'news-category:update',
         'news-category:delete',
+        'announcement:view',
+        'announcement:create',
+        'announcement:update',
+        'announcement:delete',
       ],
     );
 
@@ -370,6 +375,94 @@ describe('HealthController (e2e)', () => {
 
     await request(app.getHttpServer())
       .delete(`/api/admin/news-categories/${categoryRows[0].id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+      });
+  });
+
+  it('/api/admin/announcements (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin/announcements')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: 'Holiday Notice',
+        summary: 'Office holiday summary',
+        content: 'Office holiday detailed notice',
+        status: 1,
+        isTop: 1,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.title).toBe('Holiday Notice');
+      });
+  });
+
+  it('/api/admin/announcements (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/admin/announcements')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.list.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/public/announcements (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/public/announcements')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.list.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/public/announcements/:id (GET)', async () => {
+    const rows = (await dataSource.query(
+      'SELECT id FROM announcements WHERE title = ?',
+      ['Holiday Notice'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .get(`/api/public/announcements/${rows[0].id}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.title).toBe('Holiday Notice');
+      });
+  });
+
+  it('/api/admin/announcements/:id (PATCH)', async () => {
+    const rows = (await dataSource.query(
+      'SELECT id FROM announcements WHERE title = ?',
+      ['Holiday Notice'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .patch(`/api/admin/announcements/${rows[0].id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: 'Updated Holiday Notice',
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.title).toBe('Updated Holiday Notice');
+      });
+  });
+
+  it('/api/admin/announcements/:id (DELETE)', async () => {
+    const rows = (await dataSource.query(
+      'SELECT id FROM announcements WHERE title = ?',
+      ['Updated Holiday Notice'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .delete(`/api/admin/announcements/${rows[0].id}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
       .expect(({ body }) => {

@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { appConfig } from '@/config/app.config';
 import { typeOrmEntities } from './typeorm.config';
+import { AddAnnouncementsTable1712607200000 } from './migrations/1712607200000-add-announcements-table';
 import { AddNewsTables1712603600000 } from './migrations/1712603600000-add-news-tables';
 import { InitAuthRbac1712600000000 } from './migrations/1712600000000-init-auth-rbac';
 
@@ -15,7 +16,11 @@ export const AppDataSource = new DataSource({
   password: config.database.password,
   database: config.database.name,
   entities: typeOrmEntities,
-  migrations: [InitAuthRbac1712600000000, AddNewsTables1712603600000],
+  migrations: [
+    InitAuthRbac1712600000000,
+    AddNewsTables1712603600000,
+    AddAnnouncementsTable1712607200000,
+  ],
   synchronize: false,
   logging: config.database.logging,
 });

@@ -21,6 +21,10 @@ const permissions = [
   ['Create news categories', 'news-category:create', 'news-category', 'create'],
   ['Update news categories', 'news-category:update', 'news-category', 'update'],
   ['Delete news categories', 'news-category:delete', 'news-category', 'delete'],
+  ['View announcements', 'announcement:view', 'announcement', 'view'],
+  ['Create announcements', 'announcement:create', 'announcement', 'create'],
+  ['Update announcements', 'announcement:update', 'announcement', 'update'],
+  ['Delete announcements', 'announcement:delete', 'announcement', 'delete'],
 ];
 
 async function seed(): Promise<void> {
