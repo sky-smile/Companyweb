@@ -33,3 +33,24 @@ export interface CreateProductCategoryPayload {
   slug: string;
   sort?: number;
 }
+
+export interface UpdateProductCategoryPayload {
+  name?: string;
+  slug?: string;
+  sort?: number;
+  status?: number;
+}
+
+export interface CreateProductPayload {
+  categoryId: string;
+  name: string;
+  slug: string;
+  summary?: string;
+  content?: string;
+  imagesJson?: string;
+  parametersJson?: string;
+  status?: number;
+  sort?: number;
+}
+
+export interface UpdateProductPayload extends CreateProductPayload {}
