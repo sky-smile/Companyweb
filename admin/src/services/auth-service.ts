@@ -9,4 +9,8 @@ export const authService = {
   getProfile() {
     return unwrapResponse<AuthProfile>(http.get('/auth/profile'));
   },
+
+  logout() {
+    return Promise.resolve();
+  },
 };

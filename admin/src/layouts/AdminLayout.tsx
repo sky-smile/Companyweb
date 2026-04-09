@@ -15,7 +15,7 @@ import { authStore } from '../stores/auth-store';
 
 const { Header, Sider, Content } = Layout;
 
-const menuItems: MenuProps['items'] = [
+const menuItems: NonNullable<MenuProps['items']> = [
   { key: '/', icon: <HomeOutlined />, label: '控制台' },
   { key: '/account/admin-users', icon: <TeamOutlined />, label: '账号管理' },
   { key: '/content/news', icon: <FileTextOutlined />, label: '新闻管理' },
@@ -31,6 +31,24 @@ export function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const profile = authStore.getProfile();
+  const visibleMenuItems = menuItems.filter((item) => {
+    if (typeof item?.key !== 'string') {
+      return true;
+    }
+
+    const permissionMap: Record<string, string | undefined> = {
+      '/account/admin-users': 'admin-users:view',
+      '/content/news': 'news:view',
+      '/content/announcements': 'announcement:view',
+      '/content/products': 'product:view',
+      '/site/pages': 'site-page:view',
+      '/site/banners': 'banner:view',
+      '/site/settings': 'site-setting:view',
+      '/media/upload': 'upload:image',
+    };
+
+    return authStore.hasPermission(permissionMap[item.key]);
+  });
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -42,7 +60,7 @@ export function AdminLayout() {
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
-          items={menuItems}
+          items={visibleMenuItems}
           onClick={({ key }) => navigate(key)}
           style={{ borderInlineEnd: 'none' }}
         />
@@ -70,6 +88,7 @@ export function AdminLayout() {
               icon={<LogoutOutlined />}
               onClick={() => {
                 authStore.clearSession();
+                void fetch('/').catch(() => undefined);
                 navigate('/login');
               }}
             >

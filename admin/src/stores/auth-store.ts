@@ -39,7 +39,25 @@ export const authStore = {
     localStorage.removeItem(PROFILE_KEY);
   },
 
+  setProfile(profile: AuthProfile) {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  },
+
   isAuthenticated(): boolean {
     return this.getAccessToken() !== null;
+  },
+
+  hasPermission(permission?: string): boolean {
+    if (permission === undefined) {
+      return true;
+    }
+
+    const profile = this.getProfile();
+
+    if (profile === null) {
+      return false;
+    }
+
+    return profile.isSuperAdmin || profile.permissions.includes('*:*') || profile.permissions.includes(permission);
   },
 };

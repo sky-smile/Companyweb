@@ -1,5 +1,6 @@
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider, theme } from 'antd';
+import { AppBootstrap } from './components/common/AppBootstrap';
 import { AppRouter } from './router';
 
 export function App() {
@@ -15,7 +16,9 @@ export function App() {
       }}
     >
       <BrowserRouter>
-        <AppRouter />
+        <AppBootstrap>
+          <AppRouter />
+        </AppBootstrap>
       </BrowserRouter>
     </ConfigProvider>
   );
