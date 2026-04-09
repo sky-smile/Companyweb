@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { authStore } from '../stores/auth-store';
 import { AdminUsersPage } from '../pages/AdminUsersPage';
+import { AnnouncementsPage } from '../pages/AnnouncementsPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { LoginPage } from '../pages/LoginPage';
 import { NewsPage } from '../pages/NewsPage';
@@ -35,7 +36,7 @@ export function AppRouter() {
         <Route path="account/admin-users" element={<AdminUsersPage />} />
         <Route path="account/roles" element={<RolesPage />} />
         <Route path="content/news" element={<NewsPage />} />
-        <Route path="content/announcements" element={<PlaceholderPage title="公告管理" description="公告管理页面将在下一阶段补充完整 CRUD 界面。" />} />
+        <Route path="content/announcements" element={<AnnouncementsPage />} />
         <Route path="content/products" element={<PlaceholderPage title="产品管理" description="产品列表、分类和详情编辑界面将在下一阶段补充。" />} />
         <Route path="site/pages" element={<PlaceholderPage title="页面内容" description="关于我们、联系我们与首页静态内容维护将在这里接入。" />} />
         <Route path="site/banners" element={<PlaceholderPage title="Banner 管理" description="Banner 列表与上传选择器将在下一阶段补充。" />} />
