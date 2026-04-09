@@ -33,6 +33,8 @@ const permissions = [
   ['Create banners', 'banner:create', 'banner', 'create'],
   ['Update banners', 'banner:update', 'banner', 'update'],
   ['Delete banners', 'banner:delete', 'banner', 'delete'],
+  ['Upload images', 'upload:image', 'upload', 'image'],
+  ['Upload files', 'upload:file', 'upload', 'file'],
 ];
 
 async function seed(): Promise<void> {

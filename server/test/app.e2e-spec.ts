@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { DataSource } from 'typeorm';
+import * as fs from 'node:fs';
 import { AppModule } from '../src/app.module';
 import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
@@ -13,6 +14,8 @@ process.env.DB_NAME = process.env.DB_NAME ?? 'company_web';
 process.env.DB_USER = process.env.DB_USER ?? 'root';
 process.env.DB_PASSWORD = process.env.DB_PASSWORD ?? '';
 process.env.DB_TYPE = process.env.DB_TYPE ?? 'mariadb';
+process.env.UPLOAD_DIR = process.env.UPLOAD_DIR ?? 'uploads-test';
+process.env.UPLOAD_BASE_URL = process.env.UPLOAD_BASE_URL ?? 'http://localhost:3000/uploads';
 
 describe('HealthController (e2e)', () => {
   let app: INestApplication;
@@ -39,6 +42,7 @@ describe('HealthController (e2e)', () => {
     await dataSource.query('DELETE FROM site_pages');
     await dataSource.query('DELETE FROM news');
     await dataSource.query('DELETE FROM news_categories');
+    fs.rmSync(process.env.UPLOAD_DIR!, { recursive: true, force: true });
     await dataSource.query('DELETE FROM role_permissions WHERE role_id <> 1');
     await dataSource.query('DELETE FROM roles WHERE code <> ?', ['super-admin']);
     const adminPasswordHash = await hashPassword('Admin123456');
@@ -48,7 +52,7 @@ describe('HealthController (e2e)', () => {
     );
 
     const permissionRows = await dataSource.query(
-      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         'admin-users:view',
         'admin-users:create',
@@ -80,6 +84,8 @@ describe('HealthController (e2e)', () => {
         'banner:create',
         'banner:update',
         'banner:delete',
+        'upload:image',
+        'upload:file',
       ],
     );
 
@@ -567,6 +573,36 @@ describe('HealthController (e2e)', () => {
       .expect(({ body }) => {
         expect(body.code).toBe(0);
         expect(body.data.page.pageKey).toBe('contact');
+      });
+  });
+
+  it('/api/admin/upload/image (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin/upload/image?folder=banners')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('file', Buffer.from('fake-image-content'), {
+        filename: 'banner.png',
+        contentType: 'image/png',
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.publicUrl).toContain('/uploads/banners/');
+      });
+  });
+
+  it('/api/admin/upload/file (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin/upload/file?folder=docs')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('file', Buffer.from('plain-text-file'), {
+        filename: 'manual.txt',
+        contentType: 'text/plain',
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.publicUrl).toContain('/uploads/docs/');
       });
   });
 });
