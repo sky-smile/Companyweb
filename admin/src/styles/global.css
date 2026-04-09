@@ -1,0 +1,18 @@
+:root {
+  color: #182230;
+  background: #f3f6fb;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(31, 94, 255, 0.1), transparent 32%),
+    linear-gradient(180deg, #f9fbff 0%, #eef3fb 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
