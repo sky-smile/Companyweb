@@ -40,6 +40,31 @@ describe('HealthController (e2e)', () => {
       'UPDATE admin_users SET password_hash = ? WHERE username = ?',
       [adminPasswordHash, 'admin'],
     );
+
+    const permissionRows = await dataSource.query(
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        'admin-users:view',
+        'admin-users:create',
+        'admin-users:update',
+        'admin-users:status',
+        'admin-users:reset-password',
+        'admin-users:change-password',
+        'roles:view',
+        'roles:create',
+        'roles:update',
+        'roles:status',
+      ],
+    );
+
+    await dataSource.query('DELETE FROM role_permissions WHERE role_id = 1');
+
+    for (const permissionRow of permissionRows as Array<{ id: string }>) {
+      await dataSource.query(
+        'INSERT IGNORE INTO role_permissions (role_id, permission_id) VALUES (?, ?)',
+        ['1', permissionRow.id],
+      );
+    }
   });
 
   afterAll(async () => {

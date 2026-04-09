@@ -8,6 +8,11 @@ const permissions = [
   ['Update admin users', 'admin-users:update', 'admin-users', 'update'],
   ['Change admin status', 'admin-users:status', 'admin-users', 'status'],
   ['Reset admin password', 'admin-users:reset-password', 'admin-users', 'reset-password'],
+  ['Change own password', 'admin-users:change-password', 'admin-users', 'change-password'],
+  ['View roles', 'roles:view', 'roles', 'view'],
+  ['Create roles', 'roles:create', 'roles', 'create'],
+  ['Update roles', 'roles:update', 'roles', 'update'],
+  ['Change role status', 'roles:status', 'roles', 'status'],
 ];
 
 async function seed(): Promise<void> {
