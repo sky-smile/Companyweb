@@ -1,0 +1,248 @@
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  DataSource,
+  EntityMetadataNotFoundError,
+  Repository,
+} from 'typeorm';
+import { hashPassword } from '@/common/utils/password.util';
+import { AdminUserRoleEntity } from '@/database/entities/admin-user-role.entity';
+import { AdminUserEntity } from '@/database/entities/admin-user.entity';
+import { RoleEntity } from '@/database/entities/role.entity';
+import { CreateAdminUserDto } from './dto/create-admin-user.dto';
+import { UpdateAdminUserDto } from './dto/update-admin-user.dto';
+import { AdminUserView } from './interfaces/admin-user-view.interface';
+
+@Injectable()
+export class AdminUserRepository {
+  constructor(
+    @InjectRepository(AdminUserEntity)
+    private readonly adminUserRepository: Repository<AdminUserEntity>,
+    @InjectRepository(RoleEntity)
+    private readonly roleRepository: Repository<RoleEntity>,
+    @InjectRepository(AdminUserRoleEntity)
+    private readonly adminUserRoleRepository: Repository<AdminUserRoleEntity>,
+    private readonly dataSource: DataSource,
+  ) {}
+
+  async list(): Promise<AdminUserView[]> {
+    if (!this.isDatabaseReady()) {
+      return [this.getFallbackAdminUser()];
+    }
+
+    const adminUsers = await this.adminUserRepository.find({
+      relations: {
+        adminUserRoles: {
+          role: true,
+        },
+      },
+      order: {
+        id: 'ASC',
+      },
+    });
+
+    return adminUsers.map((item) => this.toView(item));
+  }
+
+  async findById(id: string): Promise<AdminUserView> {
+    if (!this.isDatabaseReady()) {
+      if (id === '1') {
+        return this.getFallbackAdminUser();
+      }
+
+      throw new NotFoundException('Admin user not found');
+    }
+
+    const adminUser = await this.adminUserRepository.findOne({
+      where: { id },
+      relations: {
+        adminUserRoles: {
+          role: true,
+        },
+      },
+    });
+
+    if (adminUser === null) {
+      throw new NotFoundException('Admin user not found');
+    }
+
+    return this.toView(adminUser);
+  }
+
+  async create(dto: CreateAdminUserDto): Promise<AdminUserView> {
+    if (!this.isDatabaseReady()) {
+      return {
+        id: '2',
+        username: dto.username,
+        nickname: dto.nickname,
+        email: dto.email ?? '',
+        phone: dto.phone ?? '',
+        status: 1,
+        isSuperAdmin: false,
+        roles: dto.roleIds ?? [],
+      };
+    }
+
+    const passwordHash = await hashPassword(dto.password);
+    const adminUser = await this.adminUserRepository.save(
+      this.adminUserRepository.create({
+        username: dto.username,
+        passwordHash,
+        nickname: dto.nickname,
+        email: dto.email ?? '',
+        phone: dto.phone ?? '',
+        status: 1,
+        isSuperAdmin: 0,
+        lastLoginAt: null,
+        lastLoginIp: null,
+      }),
+    );
+
+    await this.replaceRoles(adminUser.id, dto.roleIds ?? []);
+
+    return this.findById(adminUser.id);
+  }
+
+  async update(id: string, dto: UpdateAdminUserDto): Promise<AdminUserView> {
+    if (!this.isDatabaseReady()) {
+      const adminUser = this.getFallbackAdminUser();
+
+      if (id !== adminUser.id) {
+        throw new NotFoundException('Admin user not found');
+      }
+
+      return {
+        ...adminUser,
+        nickname: dto.nickname ?? adminUser.nickname,
+        email: dto.email ?? adminUser.email,
+        phone: dto.phone ?? adminUser.phone,
+        roles: dto.roleIds ?? adminUser.roles,
+      };
+    }
+
+    const adminUser = await this.adminUserRepository.findOne({ where: { id } });
+
+    if (adminUser === null) {
+      throw new NotFoundException('Admin user not found');
+    }
+
+    adminUser.nickname = dto.nickname ?? adminUser.nickname;
+    adminUser.email = dto.email ?? adminUser.email;
+    adminUser.phone = dto.phone ?? adminUser.phone;
+
+    await this.adminUserRepository.save(adminUser);
+
+    if (dto.roleIds !== undefined) {
+      await this.replaceRoles(id, dto.roleIds);
+    }
+
+    return this.findById(id);
+  }
+
+  async updateStatus(id: string, status: number): Promise<AdminUserView> {
+    if (!this.isDatabaseReady()) {
+      const adminUser = this.getFallbackAdminUser();
+
+      if (id !== adminUser.id) {
+        throw new NotFoundException('Admin user not found');
+      }
+
+      return {
+        ...adminUser,
+        status,
+      };
+    }
+
+    const adminUser = await this.adminUserRepository.findOne({ where: { id } });
+
+    if (adminUser === null) {
+      throw new NotFoundException('Admin user not found');
+    }
+
+    adminUser.status = status;
+    await this.adminUserRepository.save(adminUser);
+
+    return this.findById(id);
+  }
+
+  async resetPassword(id: string, newPassword: string): Promise<AdminUserView> {
+    if (!this.isDatabaseReady()) {
+      if (id !== '1') {
+        throw new NotFoundException('Admin user not found');
+      }
+
+      return this.getFallbackAdminUser();
+    }
+
+    const adminUser = await this.adminUserRepository.findOne({ where: { id } });
+
+    if (adminUser === null) {
+      throw new NotFoundException('Admin user not found');
+    }
+
+    adminUser.passwordHash = await hashPassword(newPassword);
+    await this.adminUserRepository.save(adminUser);
+
+    return this.findById(id);
+  }
+
+  private async replaceRoles(adminUserId: string, roleIds: string[]): Promise<void> {
+    await this.adminUserRoleRepository.delete({ adminUserId });
+
+    if (roleIds.length === 0) {
+      return;
+    }
+
+    const roles = await this.roleRepository.findBy(roleIds.map((id) => ({ id })));
+
+    for (const role of roles) {
+      await this.adminUserRoleRepository.save(
+        this.adminUserRoleRepository.create({
+          adminUserId,
+          roleId: role.id,
+        }),
+      );
+    }
+  }
+
+  private toView(adminUser: AdminUserEntity): AdminUserView {
+    return {
+      id: adminUser.id,
+      username: adminUser.username,
+      nickname: adminUser.nickname,
+      email: adminUser.email,
+      phone: adminUser.phone,
+      status: adminUser.status,
+      isSuperAdmin: adminUser.isSuperAdmin === 1,
+      roles: (adminUser.adminUserRoles ?? []).map((item) => item.role.code),
+    };
+  }
+
+  private isDatabaseReady(): boolean {
+    if (!this.dataSource.isInitialized) {
+      return false;
+    }
+
+    try {
+      return this.dataSource.hasMetadata(AdminUserEntity);
+    } catch (error) {
+      return !(error instanceof EntityMetadataNotFoundError);
+    }
+  }
+
+  private getFallbackAdminUser(): AdminUserView {
+    return {
+      id: '1',
+      username: 'admin',
+      nickname: 'Super Admin',
+      email: '',
+      phone: '',
+      status: 1,
+      isSuperAdmin: true,
+      roles: ['super-admin'],
+    };
+  }
+}

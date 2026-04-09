@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { appConfig } from '@/config/app.config';
 import { typeOrmEntities } from './typeorm.config';
+import { InitAuthRbac1712600000000 } from './migrations/1712600000000-init-auth-rbac';
 
 const config = appConfig();
 
@@ -13,7 +14,7 @@ export const AppDataSource = new DataSource({
   password: config.database.password,
   database: config.database.name,
   entities: typeOrmEntities,
-  migrations: ['src/database/migrations/*.ts'],
+  migrations: [InitAuthRbac1712600000000],
   synchronize: false,
   logging: config.database.logging,
 });

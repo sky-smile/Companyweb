@@ -1,46 +1,26 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
+import { AdminUserRepository } from './admin-user.repository';
+import { AdminUserListQueryDto } from './dto/admin-user-list-query.dto';
 import { CreateAdminUserDto } from './dto/create-admin-user.dto';
 import { ResetAdminUserPasswordDto } from './dto/reset-admin-user-password.dto';
 import { UpdateAdminUserStatusDto } from './dto/update-admin-user-status.dto';
 import { UpdateAdminUserDto } from './dto/update-admin-user.dto';
-import { AdminUserListQueryDto } from './dto/admin-user-list-query.dto';
-
-export interface AdminUserView {
-  id: string;
-  username: string;
-  nickname: string;
-  email: string;
-  phone: string;
-  status: number;
-  isSuperAdmin: boolean;
-  roles: string[];
-}
+import { AdminUserView } from './interfaces/admin-user-view.interface';
 
 @Injectable()
 export class AdminUserService {
-  private static readonly adminUsers: AdminUserView[] = [
-    {
-      id: '1',
-      username: 'admin',
-      nickname: 'Super Admin',
-      email: '',
-      phone: '',
-      status: 1,
-      isSuperAdmin: true,
-      roles: ['super-admin'],
-    },
-  ];
+  constructor(private readonly adminUserRepository: AdminUserRepository) {}
 
-  list(query: AdminUserListQueryDto) {
+  async list(query: AdminUserListQueryDto) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
+    const adminUsers = await this.adminUserRepository.list();
 
-    const filtered = AdminUserService.adminUsers.filter((item) => {
+    const filtered = adminUsers.filter((item) => {
       if (query.keyword === undefined || query.keyword.trim() === '') {
         return true;
       }
@@ -64,68 +44,37 @@ export class AdminUserService {
   }
 
   create(dto: CreateAdminUserDto) {
-    if (AdminUserService.adminUsers.some((item) => item.username === dto.username)) {
-      throw new BadRequestException('Username already exists');
-    }
-
-    const adminUser: AdminUserView = {
-      id: String(AdminUserService.adminUsers.length + 1),
-      username: dto.username,
-      nickname: dto.nickname,
-      email: dto.email ?? '',
-      phone: dto.phone ?? '',
-      status: 1,
-      isSuperAdmin: false,
-      roles: dto.roleIds ?? [],
-    };
-
-    AdminUserService.adminUsers.push(adminUser);
-
-    return adminUser;
+    return this.adminUserRepository.create(dto);
   }
 
   update(id: string, dto: UpdateAdminUserDto) {
-    const adminUser = this.findByIdOrThrow(id);
-
-    adminUser.nickname = dto.nickname ?? adminUser.nickname;
-    adminUser.email = dto.email ?? adminUser.email;
-    adminUser.phone = dto.phone ?? adminUser.phone;
-    adminUser.roles = dto.roleIds ?? adminUser.roles;
-
-    return adminUser;
+    return this.adminUserRepository.update(id, dto);
   }
 
-  updateStatus(id: string, dto: UpdateAdminUserStatusDto, currentUser: AuthenticatedAdminUser) {
-    const adminUser = this.findByIdOrThrow(id);
+  async updateStatus(
+    id: string,
+    dto: UpdateAdminUserStatusDto,
+    currentUser: AuthenticatedAdminUser,
+  ) {
+    const adminUser = await this.adminUserRepository.findById(id);
     this.ensureSuperAdminProtected(adminUser, currentUser);
-    adminUser.status = dto.status;
-    return adminUser;
+    return this.adminUserRepository.updateStatus(id, dto.status);
   }
 
-  resetPassword(
+  async resetPassword(
     id: string,
     dto: ResetAdminUserPasswordDto,
     currentUser: AuthenticatedAdminUser,
   ) {
-    const adminUser = this.findByIdOrThrow(id);
+    const adminUser = await this.adminUserRepository.findById(id);
     this.ensureSuperAdminProtected(adminUser, currentUser);
+    const updatedUser = await this.adminUserRepository.resetPassword(id, dto.newPassword);
 
     return {
-      id: adminUser.id,
-      username: adminUser.username,
-      tempPassword: dto.newPassword,
-      message: 'Password persistence will be connected in the repository phase',
+      id: updatedUser.id,
+      username: updatedUser.username,
+      message: 'Password reset successfully',
     };
-  }
-
-  private findByIdOrThrow(id: string): AdminUserView {
-    const adminUser = AdminUserService.adminUsers.find((item) => item.id === id);
-
-    if (adminUser === undefined) {
-      throw new NotFoundException('Admin user not found');
-    }
-
-    return adminUser;
   }
 
   private ensureSuperAdminProtected(

@@ -5,6 +5,13 @@ import { AppModule } from '../src/app.module';
 import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
 
+process.env.DB_HOST = process.env.DB_HOST ?? '127.0.0.1';
+process.env.DB_PORT = process.env.DB_PORT ?? '3307';
+process.env.DB_NAME = process.env.DB_NAME ?? 'company_web';
+process.env.DB_USER = process.env.DB_USER ?? 'root';
+process.env.DB_PASSWORD = process.env.DB_PASSWORD ?? '';
+process.env.DB_TYPE = process.env.DB_TYPE ?? 'mariadb';
+
 describe('HealthController (e2e)', () => {
   let app: INestApplication;
   let accessToken: string;
@@ -74,6 +81,23 @@ describe('HealthController (e2e)', () => {
         expect(body.code).toBe(0);
         expect(body.data.list).toHaveLength(1);
         expect(body.data.pagination.total).toBe(1);
+      });
+  });
+
+  it('/api/admin-users (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin-users')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        username: 'editor',
+        password: 'Editor123456',
+        nickname: 'Editor User',
+        roleIds: [],
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.username).toBe('editor');
       });
   });
 });
