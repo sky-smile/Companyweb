@@ -22,3 +22,5 @@ export interface CreateAnnouncementPayload {
   status?: number;
   isTop?: number;
 }
+
+export interface UpdateAnnouncementPayload extends CreateAnnouncementPayload {}
