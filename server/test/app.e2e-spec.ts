@@ -42,6 +42,8 @@ describe('HealthController (e2e)', () => {
     await dataSource.query('DELETE FROM site_pages');
     await dataSource.query('DELETE FROM news');
     await dataSource.query('DELETE FROM news_categories');
+    await dataSource.query('DELETE FROM products');
+    await dataSource.query('DELETE FROM product_categories');
     fs.rmSync(process.env.UPLOAD_DIR!, { recursive: true, force: true });
     await dataSource.query('DELETE FROM role_permissions WHERE role_id <> 1');
     await dataSource.query('DELETE FROM roles WHERE code <> ?', ['super-admin']);
@@ -52,7 +54,7 @@ describe('HealthController (e2e)', () => {
     );
 
     const permissionRows = await dataSource.query(
-      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'SELECT id FROM permissions WHERE code IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         'admin-users:view',
         'admin-users:create',
@@ -86,6 +88,14 @@ describe('HealthController (e2e)', () => {
         'banner:delete',
         'upload:image',
         'upload:file',
+        'product-category:view',
+        'product-category:create',
+        'product-category:update',
+        'product-category:delete',
+        'product:view',
+        'product:create',
+        'product:update',
+        'product:delete',
       ],
     );
 
@@ -603,6 +613,74 @@ describe('HealthController (e2e)', () => {
       .expect(({ body }) => {
         expect(body.code).toBe(0);
         expect(body.data.publicUrl).toContain('/uploads/docs/');
+      });
+  });
+
+  it('/api/admin/product-categories (POST)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/admin/product-categories')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        name: 'Industrial Equipment',
+        slug: 'industrial-equipment',
+        sort: 1,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('industrial-equipment');
+      });
+  });
+
+  it('/api/admin/products (POST)', async () => {
+    const categoryRows = (await dataSource.query(
+      'SELECT id FROM product_categories WHERE slug = ?',
+      ['industrial-equipment'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .post('/api/admin/products')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        categoryId: categoryRows[0].id,
+        name: 'Hydraulic Press',
+        slug: 'hydraulic-press',
+        summary: 'Industrial hydraulic press',
+        content: 'Detailed product description',
+        imagesJson: '["/uploads/products/press-1.jpg"]',
+        parametersJson: '{"power":"20T"}',
+        status: 1,
+        sort: 1,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('hydraulic-press');
+      });
+  });
+
+  it('/api/public/products (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/api/public/products')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.list.length).toBeGreaterThanOrEqual(1);
+      });
+  });
+
+  it('/api/public/products/:id (GET)', async () => {
+    const rows = (await dataSource.query(
+      'SELECT id FROM products WHERE slug = ?',
+      ['hydraulic-press'],
+    )) as Array<{ id: string }>;
+
+    await request(app.getHttpServer())
+      .get(`/api/public/products/${rows[0].id}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.code).toBe(0);
+        expect(body.data.slug).toBe('hydraulic-press');
       });
   });
 });

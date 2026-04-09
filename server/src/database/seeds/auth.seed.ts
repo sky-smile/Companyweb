@@ -35,6 +35,14 @@ const permissions = [
   ['Delete banners', 'banner:delete', 'banner', 'delete'],
   ['Upload images', 'upload:image', 'upload', 'image'],
   ['Upload files', 'upload:file', 'upload', 'file'],
+  ['View product categories', 'product-category:view', 'product-category', 'view'],
+  ['Create product categories', 'product-category:create', 'product-category', 'create'],
+  ['Update product categories', 'product-category:update', 'product-category', 'update'],
+  ['Delete product categories', 'product-category:delete', 'product-category', 'delete'],
+  ['View products', 'product:view', 'product', 'view'],
+  ['Create products', 'product:create', 'product', 'create'],
+  ['Update products', 'product:update', 'product', 'update'],
+  ['Delete products', 'product:delete', 'product', 'delete'],
 ];
 
 async function seed(): Promise<void> {

@@ -7,6 +7,8 @@ import { BannerEntity } from './entities/banner.entity';
 import { NewsCategoryEntity } from './entities/news-category.entity';
 import { NewsEntity } from './entities/news.entity';
 import { PermissionEntity } from './entities/permission.entity';
+import { ProductCategoryEntity } from './entities/product-category.entity';
+import { ProductEntity } from './entities/product.entity';
 import { RolePermissionEntity } from './entities/role-permission.entity';
 import { RoleEntity } from './entities/role.entity';
 import { SitePageEntity } from './entities/site-page.entity';
@@ -18,6 +20,8 @@ export const typeOrmEntities = [
   BannerEntity,
   RoleEntity,
   PermissionEntity,
+  ProductCategoryEntity,
+  ProductEntity,
   AdminUserRoleEntity,
   RolePermissionEntity,
   NewsCategoryEntity,

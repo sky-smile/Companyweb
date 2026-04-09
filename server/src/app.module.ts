@@ -6,6 +6,7 @@ import { AnnouncementModule } from './modules/announcement/announcement.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { NewsModule } from './modules/news/news.module';
+import { ProductModule } from './modules/product/product.module';
 import { RoleModule } from './modules/role/role.module';
 import { SiteContentModule } from './modules/site-content/site-content.module';
 import { UploadModule } from './modules/upload/upload.module';
@@ -29,6 +30,7 @@ import { getTypeOrmConfig } from './database/typeorm.config';
     AuthModule,
     HealthModule,
     NewsModule,
+    ProductModule,
     RoleModule,
     SiteContentModule,
     UploadModule,
