@@ -143,21 +143,37 @@ export function AdminUsersPage() {
     }
   }
 
-  async function handleCreate(values: CreateAdminUserPayload) {
-    await adminUserService.create(values);
-    message.success('管理员已创建');
-    setCreateModalOpen(false);
-    createForm.resetFields();
-    void loadData();
-  }
-
   async function handleEdit(values: UpdateAdminUserPayload) {
     if (!editingUser) return;
-    await adminUserService.update(editingUser.id, values);
+    // 过滤空值，避免触发后端 @IsEmail 验证
+    const payload: UpdateAdminUserPayload = {
+      nickname: values.nickname,
+      email: values.email || undefined,
+      phone: values.phone || undefined,
+      roleIds: values.roleIds,
+    };
+    await adminUserService.update(editingUser.id, payload);
     message.success('管理员信息已更新');
     setEditModalOpen(false);
     setEditingUser(null);
     editForm.resetFields();
+    void loadData();
+  }
+
+  async function handleCreate(values: CreateAdminUserPayload) {
+    // 过滤空值
+    const payload: CreateAdminUserPayload = {
+      username: values.username,
+      password: values.password,
+      nickname: values.nickname,
+      email: values.email || undefined,
+      phone: values.phone || undefined,
+      roleIds: values.roleIds,
+    };
+    await adminUserService.create(payload);
+    message.success('管理员已创建');
+    setCreateModalOpen(false);
+    createForm.resetFields();
     void loadData();
   }
 
