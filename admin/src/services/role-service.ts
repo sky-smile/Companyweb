@@ -1,5 +1,5 @@
 import { http, unwrapResponse } from './http';
-import { CreateRolePayload, PermissionItem, RoleItem } from '../types/role';
+import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
 
 export const roleService = {
   list() {
@@ -12,5 +12,13 @@ export const roleService = {
 
   create(payload: CreateRolePayload) {
     return unwrapResponse<RoleItem>(http.post('/roles', payload));
+  },
+
+  update(id: string, payload: UpdateRolePayload) {
+    return unwrapResponse<RoleItem>(http.patch(`/roles/${id}`, payload));
+  },
+
+  updateStatus(id: string, status: number) {
+    return unwrapResponse<RoleItem>(http.patch(`/roles/${id}/status`, { status }));
   },
 };

@@ -1,40 +1,156 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Checkbox, Form, Input, Modal, Space, Table, Tag, Typography, message } from 'antd';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button, Card, Checkbox, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography, message } from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, TeamOutlined } from '@ant-design/icons';
+import { StatusSwitch } from '../components/common';
 import { roleService } from '../services/role-service';
-import { CreateRolePayload, PermissionItem, RoleItem } from '../types/role';
+import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
+
+// 权限分组配置
+const PERMISSION_GROUPS: { key: string; title: string; prefix: string }[] = [
+  { key: 'admin-users', title: '管理员管理', prefix: 'admin-users' },
+  { key: 'roles', title: '角色管理', prefix: 'roles' },
+  { key: 'news', title: '新闻管理', prefix: 'news' },
+  { key: 'announcement', title: '公告管理', prefix: 'announcement' },
+  { key: 'product', title: '产品管理', prefix: 'product' },
+  { key: 'site-page', title: '页面内容', prefix: 'site-page' },
+  { key: 'banner', title: 'Banner 管理', prefix: 'banner' },
+  { key: 'site-setting', title: '站点设置', prefix: 'site-setting' },
+  { key: 'upload', title: '上传管理', prefix: 'upload' },
+];
+
+function getPermissionGroup(permission: PermissionItem) {
+  return PERMISSION_GROUPS.find((group) => permission.code.startsWith(group.prefix)) || { key: 'other', title: '其他权限', prefix: '' };
+}
+
+function groupPermissions(permissions: PermissionItem[]) {
+  const groups: Record<string, PermissionItem[]> = {};
+  permissions.forEach((p) => {
+    const group = getPermissionGroup(p);
+    if (!groups[group.key]) {
+      groups[group.key] = [];
+    }
+    groups[group.key].push(p);
+  });
+  return groups;
+}
 
 export function RolesPage() {
-  const [form] = Form.useForm<CreateRolePayload>();
+  const [form] = Form.useForm<CreateRolePayload & UpdateRolePayload>();
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingRole, setEditingRole] = useState<RoleItem | null>(null);
   const [roles, setRoles] = useState<RoleItem[]>([]);
   const [permissions, setPermissions] = useState<PermissionItem[]>([]);
+  const [searchText, setSearchText] = useState('');
+  const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
 
   const columns = useMemo(
     () => [
-      { title: '角色名称', dataIndex: 'name', key: 'name' },
-      { title: '角色编码', dataIndex: 'code', key: 'code' },
-      { title: '描述', dataIndex: 'description', key: 'description', render: (value: string) => value || '-' },
       {
-        title: '权限',
-        dataIndex: 'permissions',
-        key: 'permissions',
-        render: (items: string[]) => (
-          <Space wrap>
-            {items.length === 0 ? <Tag>无权限</Tag> : items.map((item) => <Tag key={item}>{item}</Tag>)}
+        title: '角色名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        render: (value: string, record: RoleItem) => (
+          <Space>
+            <TeamOutlined style={{ color: '#722ed1' }} />
+            <strong>{value}</strong>
+            {record.code === 'super-admin' && <Tag color="purple">超级管理员</Tag>}
           </Space>
         ),
+      },
+      {
+        title: '角色编码',
+        dataIndex: 'code',
+        key: 'code',
+        width: 150,
+        render: (value: string) => <Tag color="blue">{value}</Tag>,
+      },
+      {
+        title: '描述',
+        dataIndex: 'description',
+        key: 'description',
+        ellipsis: true,
+        render: (value: string) => value || '-',
+      },
+      {
+        title: '权限数量',
+        dataIndex: 'permissions',
+        key: 'permissions',
+        width: 100,
+        render: (items: string[]) => <Tag color="green">{items.length} 个</Tag>,
       },
       {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
-        render: (value: number) => (value === 1 ? <Tag color="green">启用</Tag> : <Tag>禁用</Tag>),
+        width: 100,
+        render: (value: number, record: RoleItem) => (
+          <StatusSwitch
+            value={value}
+            disabled={record.code === 'super-admin'}
+            onChange={async (newValue) => {
+              await roleService.updateStatus(record.id, newValue);
+              message.success(newValue === 1 ? '角色已启用' : '角色已禁用');
+              void loadData();
+            }}
+          />
+        ),
+      },
+      {
+        title: '操作',
+        key: 'actions',
+        width: 160,
+        render: (_: unknown, record: RoleItem) => (
+          <Space>
+            <Button
+              icon={<EditOutlined />}
+              size="small"
+              disabled={record.code === 'super-admin'}
+              onClick={() => {
+                setEditingRole(record);
+                form.setFieldsValue({
+                  name: record.name,
+                  code: record.code,
+                  description: record.description,
+                  permissionIds: record.permissions,
+                  status: record.status,
+                });
+                setModalOpen(true);
+              }}
+            >
+              编辑
+            </Button>
+            <Popconfirm
+              title="确认删除这个角色吗？"
+              description="删除后无法恢复"
+              onConfirm={async () => {
+                message.info('删除功能待后端支持');
+                void loadData();
+              }}
+            >
+              <Button danger icon={<DeleteOutlined />} size="small" disabled={record.code === 'super-admin'}>
+                删除
+              </Button>
+            </Popconfirm>
+          </Space>
+        ),
       },
     ],
-    [],
+    [form],
   );
+
+  const filteredRoles = useMemo(() => {
+    return roles.filter((role) => {
+      const matchSearch = searchText
+        ? role.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          role.code.toLowerCase().includes(searchText.toLowerCase()) ||
+          (role.description && role.description.toLowerCase().includes(searchText.toLowerCase()))
+        : true;
+      const matchStatus = filterStatus !== undefined ? role.status === filterStatus : true;
+      return matchSearch && matchStatus;
+    });
+  }, [roles, searchText, filterStatus]);
 
   async function loadData() {
     setLoading(true);
@@ -47,10 +163,38 @@ export function RolesPage() {
     }
   }
 
-  async function handleCreate(values: CreateRolePayload) {
-    await roleService.create(values);
-    message.success('角色已创建');
+  function handleOpenCreate() {
+    setEditingRole(null);
+    form.resetFields();
+    form.setFieldsValue({ status: 1, permissionIds: [] });
+    setModalOpen(true);
+  }
+
+  async function handleSave(values: CreateRolePayload & UpdateRolePayload) {
+    if (editingRole) {
+      const payload: UpdateRolePayload = {
+        name: values.name,
+        code: values.code,
+        description: values.description,
+        permissionIds: values.permissionIds,
+        status: values.status,
+      };
+      await roleService.update(editingRole.id, payload);
+      message.success('角色已更新');
+    } else {
+      const payload: CreateRolePayload = {
+        name: values.name,
+        code: values.code,
+        description: values.description,
+        permissionIds: values.permissionIds,
+        status: values.status,
+      };
+      await roleService.create(payload);
+      message.success('角色已创建');
+    }
+
     setModalOpen(false);
+    setEditingRole(null);
     form.resetFields();
     void loadData();
   }
@@ -59,41 +203,114 @@ export function RolesPage() {
     void loadData();
   }, []);
 
+  const groupedPermissions = groupPermissions(permissions);
+
   return (
     <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
       <div>
         <Typography.Title level={2} style={{ marginBottom: 8 }}>角色管理</Typography.Title>
-        <Typography.Text type="secondary">已经接上角色列表、权限列表和新增角色操作。</Typography.Text>
+        <Typography.Text type="secondary">管理角色和权限分配，支持按组选择权限。</Typography.Text>
       </div>
 
-      <Card
-        extra={
-          <Space>
-            <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>新增角色</Button>
+      <Card>
+        <Space orientation="vertical" size={16} style={{ display: 'flex' }}>
+          <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+            <Space>
+              <Input
+                placeholder="搜索角色名称、编码或描述"
+                prefix={<SearchOutlined />}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: 280 }}
+                allowClear
+              />
+              <Select
+                placeholder="筛选状态"
+                value={filterStatus}
+                onChange={(val) => setFilterStatus(val)}
+                style={{ width: 140 }}
+                allowClear
+                options={[
+                  { label: '已启用', value: 1 },
+                  { label: '已禁用', value: 0 },
+                ]}
+              />
+            </Space>
+            <Space>
+              <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleOpenCreate}>
+                新增角色
+              </Button>
+            </Space>
           </Space>
-        }
-      >
-        <Table rowKey="id" loading={loading} columns={columns} dataSource={roles} pagination={false} />
+
+          <Table
+            rowKey="id"
+            loading={loading}
+            columns={columns}
+            dataSource={filteredRoles}
+            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 个角色` }}
+          />
+        </Space>
       </Card>
 
-      <Modal title="新增角色" open={modalOpen} onCancel={() => setModalOpen(false)} footer={null} destroyOnHidden>
-        <Form layout="vertical" form={form} onFinish={handleCreate}>
+      <Modal
+        title={editingRole ? '编辑角色' : '新增角色'}
+        open={modalOpen}
+        onCancel={() => {
+          setModalOpen(false);
+          setEditingRole(null);
+        }}
+        footer={null}
+        destroyOnHidden
+        width={800}
+      >
+        <Form layout="vertical" form={form} onFinish={handleSave} initialValues={{ status: 1, permissionIds: [] }}>
           <Form.Item label="角色名称" name="name" rules={[{ required: true, message: '请输入角色名称' }]}>
-            <Input />
+            <Input placeholder="如：内容编辑员" disabled={editingRole?.code === 'super-admin'} />
           </Form.Item>
           <Form.Item label="角色编码" name="code" rules={[{ required: true, message: '请输入角色编码' }]}>
-            <Input />
+            <Input placeholder="如：content-editor" disabled={!!editingRole} />
           </Form.Item>
           <Form.Item label="描述" name="description">
-            <Input.TextArea rows={3} />
+            <Input.TextArea rows={2} placeholder="角色职责描述" />
           </Form.Item>
-          <Form.Item label="权限" name="permissionIds">
-            <Checkbox.Group
-              options={permissions.map((item) => ({ label: `${item.name} (${item.code})`, value: item.id }))}
-            />
+          <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
+            <StatusSwitch checkedLabel="启用" uncheckedLabel="禁用" />
           </Form.Item>
-          <Button type="primary" htmlType="submit" block>保存角色</Button>
+
+          <Form.Item label="权限分配" name="permissionIds" tooltip="按功能模块选择权限">
+            <div style={{ maxHeight: 350, overflowY: 'auto', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16, background: '#fafafa' }}>
+              {PERMISSION_GROUPS.map((group) => {
+                const groupPerms = groupedPermissions[group.key] || [];
+                if (groupPerms.length === 0) return null;
+
+                return (
+                  <div key={group.key} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #f0f0f0' }}>
+                    <Typography.Text strong style={{ display: 'block', marginBottom: 8, color: 'var(--color-text-secondary)' }}>
+                      {group.title}
+                    </Typography.Text>
+                    <Checkbox.Group style={{ width: '100%' }}>
+                      <Space direction="vertical" size={8} style={{ width: '100%' }}>
+                        {groupPerms.map((perm) => (
+                          <Checkbox key={perm.id} value={perm.id}>
+                            <Space>
+                              <Typography.Text>{perm.name}</Typography.Text>
+                              <Typography.Text type="secondary" style={{ fontSize: 12 }}>({perm.code})</Typography.Text>
+                            </Space>
+                          </Checkbox>
+                        ))}
+                      </Space>
+                    </Checkbox.Group>
+                  </div>
+                );
+              })}
+            </div>
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit" block>
+            {editingRole ? '更新角色' : '创建角色'}
+          </Button>
         </Form>
       </Modal>
     </Space>
