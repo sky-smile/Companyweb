@@ -1,6 +1,14 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { formatPublicDate } from '@/lib/public-content';
+import { buildMetadata } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
+
+export const metadata: Metadata = buildMetadata({
+  title: '新闻中心',
+  description: '查看企业最新新闻、动态更新与业务资讯。',
+  path: '/news',
+});
 
 export default async function NewsListPage() {
   const news = await publicService.getNewsList();

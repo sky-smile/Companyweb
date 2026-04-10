@@ -1,6 +1,14 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { formatPublicDate } from '@/lib/public-content';
+import { buildMetadata } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
+
+export const metadata: Metadata = buildMetadata({
+  title: '公告中心',
+  description: '查看企业公告、官方通知与置顶信息。',
+  path: '/announcements',
+});
 
 export default async function AnnouncementListPage() {
   const items = await publicService.getAnnouncements();

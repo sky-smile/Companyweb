@@ -1,7 +1,19 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { HeroBanner } from '@/components/HeroBanner';
 import { SectionHeading } from '@/components/SectionHeading';
+import { buildMetadata, pickDescription } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const home = await publicService.getHome();
+
+  return buildMetadata({
+    title: home.page.seoTitle || home.page.title || '首页',
+    description: pickDescription(home.page.seoDescription, home.page.content),
+    path: '/',
+  });
+}
 
 export default async function HomePage() {
   const [home, news, announcements, products] = await Promise.all([
@@ -39,10 +51,10 @@ export default async function HomePage() {
             <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
             <div style={{ display: 'grid', gap: 14 }}>
               {news.list.slice(0, 3).map((item) => (
-              <Link key={item.id} href={`/news/${item.id}`} style={{ paddingBottom: 14, borderBottom: '1px solid var(--line)' }}>
-                <div style={{ fontSize: 20, marginBottom: 8 }}>{item.title}</div>
-                <div className="section-copy">{item.summary || '新闻摘要待补充。'}</div>
-              </Link>
+                <Link key={item.id} href={`/news/${item.id}`} style={{ paddingBottom: 14, borderBottom: '1px solid var(--line)' }}>
+                  <div style={{ fontSize: 20, marginBottom: 8 }}>{item.title}</div>
+                  <div className="section-copy">{item.summary || '新闻摘要待补充。'}</div>
+                </Link>
               ))}
             </div>
           </div>
@@ -50,10 +62,10 @@ export default async function HomePage() {
             <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
             <div style={{ display: 'grid', gap: 14 }}>
               {announcements.list.slice(0, 3).map((item) => (
-              <Link key={item.id} href={`/announcements/${item.id}`} style={{ paddingBottom: 14, borderBottom: '1px solid var(--line)' }}>
-                <div style={{ fontSize: 20, marginBottom: 8 }}>{item.title}</div>
-                <div className="section-copy">{item.summary || '公告摘要待补充。'}</div>
-              </Link>
+                <Link key={item.id} href={`/announcements/${item.id}`} style={{ paddingBottom: 14, borderBottom: '1px solid var(--line)' }}>
+                  <div style={{ fontSize: 20, marginBottom: 8 }}>{item.title}</div>
+                  <div className="section-copy">{item.summary || '公告摘要待补充。'}</div>
+                </Link>
               ))}
             </div>
           </div>

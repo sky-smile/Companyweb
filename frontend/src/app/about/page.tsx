@@ -1,4 +1,16 @@
+import type { Metadata } from 'next';
+import { buildMetadata, pickDescription } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const about = await publicService.getAbout();
+
+  return buildMetadata({
+    title: about.seoTitle || about.title || '关于我们',
+    description: pickDescription(about.seoDescription, about.content),
+    path: '/about',
+  });
+}
 
 export default async function AboutPage() {
   const about = await publicService.getAbout();

@@ -63,3 +63,48 @@ img {
   color: rgba(29, 20, 15, 0.72);
   line-height: 1.75;
 }
+
+.status-card {
+  padding: 48px 36px;
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.status-kicker {
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+}
+
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.status-button {
+  border-radius: 999px;
+  padding: 14px 22px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  background: transparent;
+  font: inherit;
+}
+
+.status-button-primary {
+  background: var(--brand);
+  color: #fff7f0;
+  border-color: var(--brand);
+}
+
+.status-button-secondary {
+  background: rgba(255, 248, 241, 0.8);
+}
+
+@media (max-width: 640px) {
+  .status-card {
+    padding: 36px 24px;
+  }
+}

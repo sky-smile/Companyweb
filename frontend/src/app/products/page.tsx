@@ -1,5 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { buildMetadata } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
+
+export const metadata: Metadata = buildMetadata({
+  title: '产品中心',
+  description: '查看企业产品目录、分类信息与详细参数说明。',
+  path: '/products',
+});
 
 export default async function ProductListPage() {
   const products = await publicService.getProducts();
