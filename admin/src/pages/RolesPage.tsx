@@ -142,24 +142,27 @@ export function RolesPage() {
     setModalOpen(true);
   }
 
-  async function handleSave(values: CreateRolePayload & UpdateRolePayload) {
+  async function handleSave() {
+    // 只提取后端 DTO 接受的字段
+    const rawValues = form.getFieldsValue();
+    const permissionIds: string[] = Array.isArray(rawValues.permissionIds) ? rawValues.permissionIds : [];
+
     if (editingRole) {
+      // UpdateRoleDto 只接受: name, description, permissionIds
       const payload: UpdateRolePayload = {
-        name: values.name,
-        code: values.code,
-        description: values.description,
-        permissionIds: values.permissionIds,
-        status: values.status,
+        name: rawValues.name,
+        description: rawValues.description,
+        permissionIds,
       };
       await roleService.update(editingRole.id, payload);
       message.success('角色已更新');
     } else {
+      // CreateRoleDto 需要: name, code, 可选: description, permissionIds
       const payload: CreateRolePayload = {
-        name: values.name,
-        code: values.code,
-        description: values.description,
-        permissionIds: values.permissionIds,
-        status: values.status,
+        name: rawValues.name,
+        code: rawValues.code,
+        description: rawValues.description,
+        permissionIds,
       };
       await roleService.create(payload);
       message.success('角色已创建');
