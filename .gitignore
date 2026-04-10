@@ -11,6 +11,7 @@ coverage/
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+next-env.d.ts
 
 # logs
 *.log
