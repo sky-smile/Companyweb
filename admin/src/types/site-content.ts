@@ -45,3 +45,12 @@ export interface CreateBannerPayload {
   linkUrl?: string;
   sort?: number;
 }
+
+export interface UpdateBannerPayload {
+  title?: string;
+  subtitle?: string;
+  imageUrl?: string;
+  linkUrl?: string;
+  sort?: number;
+  status?: number;
+}

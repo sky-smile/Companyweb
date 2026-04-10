@@ -4,6 +4,7 @@ import {
   CreateBannerPayload,
   SitePageItem,
   SiteSettingItem,
+  UpdateBannerPayload,
   UpdateSitePagePayload,
   UpdateSiteSettingsPayload,
 } from '../types/site-content';
@@ -31,5 +32,17 @@ export const siteContentService = {
 
   createBanner(payload: CreateBannerPayload) {
     return unwrapResponse<BannerItem>(http.post('/admin/banners', payload));
+  },
+
+  updateBanner(id: string, payload: UpdateBannerPayload) {
+    return unwrapResponse<BannerItem>(http.patch(`/admin/banners/${id}`, payload));
+  },
+
+  deleteBanner(id: string) {
+    return unwrapResponse(http.delete(`/admin/banners/${id}`));
+  },
+
+  updateBannerStatus(id: string, status: number) {
+    return unwrapResponse<BannerItem>(http.patch(`/admin/banners/${id}`, { status }));
   },
 };
