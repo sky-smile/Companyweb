@@ -44,8 +44,19 @@ export function NewsPage() {
         title: '置顶',
         dataIndex: 'isTop',
         key: 'isTop',
-        width: 80,
-        render: (value: number) => (value === 1 ? <Tag color="blue">置顶</Tag> : '-'),
+        width: 100,
+        render: (value: number, record: NewsItem) => (
+          <StatusSwitch
+            checkedLabel="置顶"
+            uncheckedLabel="普通"
+            value={value}
+            onChange={async (newValue) => {
+              await newsService.update(record.id, { ...record, isTop: newValue });
+              message.success(newValue === 1 ? '已设为置顶' : '已取消置顶');
+              void loadData();
+            }}
+          />
+        ),
       },
       {
         title: '操作',
