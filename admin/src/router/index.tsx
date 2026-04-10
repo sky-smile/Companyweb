@@ -11,7 +11,9 @@ import { MediaCenterPage } from '../pages/MediaCenterPage';
 import { NewsPage } from '../pages/NewsPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { ProductsPage } from '../pages/ProductsPage';
+import { ProfilePage } from '../pages/ProfilePage';
 import { RolesPage } from '../pages/RolesPage';
+import { SettingsPage } from '../pages/SettingsPage';
 import { SiteContentPage } from '../pages/SiteContentPage';
 import { SiteSettingsPage } from '../pages/SiteSettingsPage';
 
@@ -40,6 +42,8 @@ export function AppRouter() {
         <Route index element={<DashboardPage />} />
         <Route path="account/admin-users" element={<AdminUsersPage />} />
         <Route path="account/roles" element={<RolesPage />} />
+        <Route path="account/profile" element={<ProfilePage />} />
+        <Route path="account/settings" element={<SettingsPage />} />
         <Route path="content/news" element={<NewsPage />} />
         <Route path="content/announcements" element={<AnnouncementsPage />} />
         <Route path="content/products" element={<ProductsPage />} />

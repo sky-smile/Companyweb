@@ -70,6 +70,8 @@ const routeTitles: Record<string, string> = {
   '/': '控制台',
   '/account/admin-users': '账号管理',
   '/account/roles': '角色管理',
+  '/account/profile': '个人资料',
+  '/account/settings': '账号设置',
   '/content/news': '新闻管理',
   '/content/announcements': '公告管理',
   '/content/products': '产品管理',
@@ -159,11 +161,13 @@ export function AdminLayout() {
       key: 'profile',
       icon: <UserOutlined />,
       label: '个人资料',
+      onClick: () => navigate('/account/profile'),
     },
     {
       key: 'settings',
       icon: <SettingOutlined />,
       label: '账号设置',
+      onClick: () => navigate('/account/settings'),
     },
     { type: 'divider' },
     {
@@ -180,6 +184,19 @@ export function AdminLayout() {
   ];
 
   const currentPageTitle = routeTitles[location.pathname] || '未知页面';
+
+  // 获取用户显示名称
+  const getDisplayName = (): string => {
+    if (!profile) return '用户';
+    return profile.nickname || profile.username || '用户';
+  };
+
+  // 获取用户头像字母
+  const getAvatarLetter = (): string => {
+    if (!profile) return 'U';
+    const name = profile.nickname || profile.username || 'U';
+    return name.slice(0, 1).toUpperCase();
+  };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -285,11 +302,11 @@ export function AdminLayout() {
                   style={{ backgroundColor: '#1890ff' }}
                   icon={<UserOutlined />}
                 >
-                  {(profile?.nickname || profile?.username || 'A').slice(0, 1).toUpperCase()}
+                  {getAvatarLetter()}
                 </Avatar>
                 <div style={{ textAlign: 'left' }}>
                   <Typography.Text style={{ fontSize: 14, fontWeight: 500 }}>
-                    {profile?.nickname || profile?.username}
+                    {getDisplayName()}
                   </Typography.Text>
                   {profile?.isSuperAdmin && (
                     <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block' }}>
