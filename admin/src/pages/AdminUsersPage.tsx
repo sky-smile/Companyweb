@@ -1,15 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, Modal, Select, Space, Switch, Table, Tag, Typography, message } from 'antd';
-import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Switch, Table, Tag, Typography, message } from 'antd';
+import { KeyOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { adminUserService } from '../services/admin-user-service';
 import { roleService } from '../services/role-service';
-import { AdminUserItem, CreateAdminUserPayload } from '../types/admin-user';
+import { AdminUserItem, CreateAdminUserPayload, UpdateAdminUserPayload } from '../types/admin-user';
 import { RoleItem } from '../types/role';
 
 export function AdminUsersPage() {
-  const [form] = Form.useForm<CreateAdminUserPayload>();
+  const [createForm] = Form.useForm<CreateAdminUserPayload>();
+  const [editForm] = Form.useForm<UpdateAdminUserPayload>();
+  const [passwordForm] = Form.useForm<{ newPassword: string; confirmPassword: string }>();
   const [loading, setLoading] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUserItem | null>(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState<AdminUserItem | null>(null);
   const [data, setData] = useState<AdminUserItem[]>([]);
   const [roles, setRoles] = useState<RoleItem[]>([]);
   const [searchText, setSearchText] = useState('');
@@ -22,6 +28,13 @@ export function AdminUsersPage() {
         dataIndex: 'username',
         key: 'username',
         ellipsis: true,
+        render: (value: string, record: AdminUserItem) => (
+          <Space>
+            <UserOutlined style={{ color: '#1890ff' }} />
+            <strong>{value}</strong>
+            {record.isSuperAdmin && <Tag color="purple">超级管理员</Tag>}
+          </Space>
+        ),
       },
       { title: '昵称', dataIndex: 'nickname', key: 'nickname', width: 120 },
       { title: '邮箱', dataIndex: 'email', key: 'email', width: 180, render: (value: string) => value || '-' },
@@ -30,9 +43,12 @@ export function AdminUsersPage() {
         dataIndex: 'roles',
         key: 'roles',
         width: 200,
-        render: (roles: string[]) => (
+        render: (roleCodes: string[]) => (
           <Space wrap>
-            {roles.length === 0 ? <Tag>未分配</Tag> : roles.map((role) => <Tag key={role} color="blue">{role}</Tag>)}
+            {roleCodes.length === 0 ? <Tag>未分配</Tag> : roleCodes.map((code) => {
+              const role = roles.find(r => r.code === code);
+              return <Tag key={code} color="blue">{role?.name || code}</Tag>;
+            })}
           </Space>
         ),
       },
@@ -55,8 +71,48 @@ export function AdminUsersPage() {
           />
         ),
       },
+      {
+        title: '操作',
+        key: 'actions',
+        width: 200,
+        render: (_: unknown, record: AdminUserItem) => (
+          <Space>
+            <Button
+              icon={<UserOutlined />}
+              size="small"
+              disabled={record.isSuperAdmin}
+              onClick={() => {
+                setEditingUser(record);
+                editForm.setFieldsValue({
+                  nickname: record.nickname,
+                  email: record.email,
+                  phone: record.phone,
+                  roleIds: record.roles.map(code => {
+                    const role = roles.find(r => r.code === code);
+                    return role?.id;
+                  }).filter(Boolean),
+                });
+                setEditModalOpen(true);
+              }}
+            >
+              编辑
+            </Button>
+            <Button
+              icon={<KeyOutlined />}
+              size="small"
+              onClick={() => {
+                setResetPasswordUser(record);
+                passwordForm.resetFields();
+                setPasswordModalOpen(true);
+              }}
+            >
+              重置密码
+            </Button>
+          </Space>
+        ),
+      },
     ],
-    [],
+    [roles, editForm, passwordForm],
   );
 
   const filteredData = useMemo(() => {
@@ -90,9 +146,28 @@ export function AdminUsersPage() {
   async function handleCreate(values: CreateAdminUserPayload) {
     await adminUserService.create(values);
     message.success('管理员已创建');
-    setModalOpen(false);
-    form.resetFields();
+    setCreateModalOpen(false);
+    createForm.resetFields();
     void loadData();
+  }
+
+  async function handleEdit(values: UpdateAdminUserPayload) {
+    if (!editingUser) return;
+    await adminUserService.update(editingUser.id, values);
+    message.success('管理员信息已更新');
+    setEditModalOpen(false);
+    setEditingUser(null);
+    editForm.resetFields();
+    void loadData();
+  }
+
+  async function handleResetPassword(values: { newPassword: string }) {
+    if (!resetPasswordUser) return;
+    await adminUserService.resetPassword(resetPasswordUser.id, values.newPassword);
+    message.success('密码已重置');
+    setPasswordModalOpen(false);
+    setResetPasswordUser(null);
+    passwordForm.resetFields();
   }
 
   useEffect(() => {
@@ -129,7 +204,7 @@ export function AdminUsersPage() {
             </Space>
             <Space>
               <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
-              <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
+              <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalOpen(true)}>
                 新增管理员
               </Button>
             </Space>
@@ -145,14 +220,15 @@ export function AdminUsersPage() {
         </Space>
       </Card>
 
+      {/* 新增管理员弹窗 */}
       <Modal
         title="新增管理员"
-        open={modalOpen}
-        onCancel={() => setModalOpen(false)}
+        open={createModalOpen}
+        onCancel={() => setCreateModalOpen(false)}
         footer={null}
         destroyOnHidden
       >
-        <Form layout="vertical" form={form} onFinish={handleCreate}>
+        <Form layout="vertical" form={createForm} onFinish={handleCreate}>
           <Form.Item label="用户名" name="username" rules={[{ required: true, message: '请输入用户名' }]}>
             <Input placeholder="登录用的用户名" />
           </Form.Item>
@@ -183,6 +259,84 @@ export function AdminUsersPage() {
             />
           </Form.Item>
           <Button type="primary" htmlType="submit" block>保存管理员</Button>
+        </Form>
+      </Modal>
+
+      {/* 编辑管理员弹窗 */}
+      <Modal
+        title="编辑管理员"
+        open={editModalOpen}
+        onCancel={() => { setEditModalOpen(false); setEditingUser(null); }}
+        footer={null}
+        destroyOnHidden
+      >
+        <Form layout="vertical" form={editForm} onFinish={handleEdit}>
+          <Form.Item label="用户名">
+            <Input value={editingUser?.username} disabled />
+          </Form.Item>
+          <Form.Item label="昵称" name="nickname" rules={[{ required: true, message: '请输入昵称' }]}>
+            <Input placeholder="显示名称" />
+          </Form.Item>
+          <Form.Item label="邮箱" name="email" rules={[{ type: 'email', message: '请输入有效的邮箱地址' }]}>
+            <Input placeholder="example@email.com" />
+          </Form.Item>
+          <Form.Item label="手机" name="phone">
+            <Input placeholder="可选，手机号码" />
+          </Form.Item>
+          <Form.Item label="角色" name="roleIds">
+            <Select
+              mode="multiple"
+              placeholder="选择角色（可多选）"
+              options={roles.map((role) => ({ label: role.name, value: role.id }))}
+            />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" block>更新管理员</Button>
+        </Form>
+      </Modal>
+
+      {/* 重置密码弹窗 */}
+      <Modal
+        title="重置密码"
+        open={passwordModalOpen}
+        onCancel={() => { setPasswordModalOpen(false); setResetPasswordUser(null); }}
+        footer={null}
+        destroyOnHidden
+      >
+        <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
+          正在为 <strong>{resetPasswordUser?.username}</strong> 重置密码
+        </Typography.Paragraph>
+        <Form layout="vertical" form={passwordForm} onFinish={handleResetPassword}>
+          <Form.Item
+            label="新密码"
+            name="newPassword"
+            rules={[
+              { required: true, message: '请输入新密码' },
+              { min: 8, message: '密码至少 8 个字符' },
+            ]}
+          >
+            <Input.Password prefix={<KeyOutlined />} placeholder="请输入新密码（至少 8 个字符）" />
+          </Form.Item>
+          <Form.Item
+            label="确认新密码"
+            name="confirmPassword"
+            dependencies={['newPassword']}
+            rules={[
+              { required: true, message: '请再次输入新密码' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('newPassword') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('两次输入的密码不一致'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password prefix={<KeyOutlined />} placeholder="请再次输入新密码" />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" block icon={<KeyOutlined />}>
+            重置密码
+          </Button>
         </Form>
       </Modal>
     </Space>

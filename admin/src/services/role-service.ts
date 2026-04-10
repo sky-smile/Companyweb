@@ -1,13 +1,37 @@
 import { http, unwrapResponse } from './http';
 import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
+import { PERMISSION_GROUPS } from '../config/permissions';
+
+// 从配置中获取权限列表（如果后端没有返回 name 字段）
+function enrichPermissions(permissions: PermissionItem[]): PermissionItem[] {
+  const permMap = new Map<string, string>();
+  PERMISSION_GROUPS.forEach((group) => {
+    group.permissions.forEach((p) => {
+      permMap.set(p.code, p.name);
+    });
+  });
+
+  return permissions.map((p) => ({
+    ...p,
+    name: p.name || permMap.get(p.code) || p.code,
+    group: p.group || getGroupKeyFromCode(p.code),
+  }));
+}
+
+function getGroupKeyFromCode(code: string): string {
+  const group = PERMISSION_GROUPS.find((g) => code.startsWith(g.key));
+  return group?.key || 'other';
+}
 
 export const roleService = {
-  list() {
-    return unwrapResponse<RoleItem[]>(http.get('/roles'));
+  async list() {
+    const result = await unwrapResponse<RoleItem[]>(http.get('/roles'));
+    return result;
   },
 
-  listPermissions() {
-    return unwrapResponse<PermissionItem[]>(http.get('/roles/permissions'));
+  async listPermissions() {
+    const result = await unwrapResponse<PermissionItem[]>(http.get('/roles/permissions'));
+    return enrichPermissions(result);
   },
 
   create(payload: CreateRolePayload) {

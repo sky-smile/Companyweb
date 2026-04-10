@@ -26,3 +26,10 @@ export interface CreateAdminUserPayload {
   phone?: string;
   roleIds?: string[];
 }
+
+export interface UpdateAdminUserPayload {
+  nickname?: string;
+  email?: string;
+  phone?: string;
+  roleIds?: string[];
+}

@@ -4,35 +4,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutli
 import { StatusSwitch } from '../components/common';
 import { roleService } from '../services/role-service';
 import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
-
-// 权限分组配置
-const PERMISSION_GROUPS: { key: string; title: string; prefix: string }[] = [
-  { key: 'admin-users', title: '管理员管理', prefix: 'admin-users' },
-  { key: 'roles', title: '角色管理', prefix: 'roles' },
-  { key: 'news', title: '新闻管理', prefix: 'news' },
-  { key: 'announcement', title: '公告管理', prefix: 'announcement' },
-  { key: 'product', title: '产品管理', prefix: 'product' },
-  { key: 'site-page', title: '页面内容', prefix: 'site-page' },
-  { key: 'banner', title: 'Banner 管理', prefix: 'banner' },
-  { key: 'site-setting', title: '站点设置', prefix: 'site-setting' },
-  { key: 'upload', title: '上传管理', prefix: 'upload' },
-];
-
-function getPermissionGroup(permission: PermissionItem) {
-  return PERMISSION_GROUPS.find((group) => permission.code.startsWith(group.prefix)) || { key: 'other', title: '其他权限', prefix: '' };
-}
-
-function groupPermissions(permissions: PermissionItem[]) {
-  const groups: Record<string, PermissionItem[]> = {};
-  permissions.forEach((p) => {
-    const group = getPermissionGroup(p);
-    if (!groups[group.key]) {
-      groups[group.key] = [];
-    }
-    groups[group.key].push(p);
-  });
-  return groups;
-}
+import { PERMISSION_GROUPS, getPermissionName } from '../config/permissions';
 
 export function RolesPage() {
   const [form] = Form.useForm<CreateRolePayload & UpdateRolePayload>();
@@ -280,22 +252,39 @@ export function RolesPage() {
           </Form.Item>
 
           <Form.Item label="权限分配" name="permissionIds" tooltip="按功能模块选择权限">
-            <div style={{ maxHeight: 350, overflowY: 'auto', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16, background: '#fafafa' }}>
+            <div style={{ maxHeight: 400, overflowY: 'auto', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16, background: '#fafafa' }}>
               {PERMISSION_GROUPS.map((group) => {
-                const groupPerms = groupedPermissions[group.key] || [];
+                const groupPerms = permissions.filter((p) => p.code.startsWith(group.key));
                 if (groupPerms.length === 0) return null;
 
                 return (
                   <div key={group.key} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #f0f0f0' }}>
-                    <Typography.Text strong style={{ display: 'block', marginBottom: 8, color: 'var(--color-text-secondary)' }}>
-                      {group.title}
-                    </Typography.Text>
+                    <Space style={{ marginBottom: 8 }}>
+                      <Typography.Text strong style={{ color: 'var(--color-text-secondary)' }}>
+                        {group.title}
+                      </Typography.Text>
+                      <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                          const currentIds = form.getFieldValue('permissionIds') || [];
+                          const allGroupIds = groupPerms.map((p) => p.id);
+                          const allSelected = allGroupIds.every((id) => currentIds.includes(id));
+                          const newIds = allSelected
+                            ? currentIds.filter((id: string) => !allGroupIds.includes(id))
+                            : [...new Set([...currentIds, ...allGroupIds])];
+                          form.setFieldValue('permissionIds', newIds);
+                        }}
+                      >
+                        全选/取消
+                      </Button>
+                    </Space>
                     <Checkbox.Group style={{ width: '100%' }}>
                       <Space direction="vertical" size={8} style={{ width: '100%' }}>
                         {groupPerms.map((perm) => (
                           <Checkbox key={perm.id} value={perm.id}>
                             <Space>
-                              <Typography.Text>{perm.name}</Typography.Text>
+                              <Typography.Text>{getPermissionName(perm.code)}</Typography.Text>
                               <Typography.Text type="secondary" style={{ fontSize: 12 }}>({perm.code})</Typography.Text>
                             </Space>
                           </Checkbox>

@@ -2,7 +2,7 @@ import { Form, Input, Button, Card, Space, Typography, message } from 'antd';
 import { LockOutlined, SaveOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { authStore } from '../stores/auth-store';
-import { http } from '../services/http';
+import { adminUserService } from '../services/admin-user-service';
 
 interface ChangePasswordPayload {
   oldPassword: string;
@@ -22,10 +22,7 @@ export function SettingsPage() {
 
     setLoading(true);
     try {
-      await http.post('/auth/change-password', {
-        oldPassword: values.oldPassword,
-        newPassword: values.newPassword,
-      });
+      await adminUserService.changePassword(values.oldPassword, values.newPassword);
       message.success('密码已修改，请重新登录');
       authStore.clearSession();
       setTimeout(() => {
