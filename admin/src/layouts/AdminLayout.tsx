@@ -297,24 +297,27 @@ export function AdminLayout() {
             </Tooltip>
 
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-              <Space style={{ cursor: 'pointer' }}>
+              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: '4px 8px', borderRadius: 8 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#f5f5f5'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+              >
                 <Avatar
                   style={{ backgroundColor: '#1890ff' }}
                   icon={<UserOutlined />}
                 >
                   {getAvatarLetter()}
                 </Avatar>
-                <div style={{ textAlign: 'left' }}>
-                  <Typography.Text style={{ fontSize: 14, fontWeight: 500 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.4 }}>
+                  <Typography.Text style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>
                     {getDisplayName()}
                   </Typography.Text>
                   {profile?.isSuperAdmin && (
-                    <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block' }}>
+                    <Typography.Text type="secondary" style={{ fontSize: 12, margin: 0 }}>
                       超级管理员
                     </Typography.Text>
                   )}
                 </div>
-              </Space>
+              </div>
             </Dropdown>
           </Space>
         </Header>
