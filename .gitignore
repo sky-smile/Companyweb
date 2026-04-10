@@ -1,7 +1,7 @@
 # dependencies
 node_modules/
 .pnpm-store/
-
+.qwen
 # build outputs
 .next/
 dist/
