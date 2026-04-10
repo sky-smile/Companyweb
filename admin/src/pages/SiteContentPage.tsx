@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Form, Input, Space, Tabs, Typography, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { EnhancedUploadField, RichTextEditor, StatusSwitch } from '../components/common';
+import { RichTextEditor, StatusSwitch } from '../components/common';
 import { siteContentService } from '../services/site-content-service';
-import { SitePageItem, SiteSettingItem, UpdateSiteSettingsPayload } from '../types/site-content';
+import { SitePageItem, UpdateSiteSettingsPayload } from '../types/site-content';
 
 export function SiteContentPage() {
   const [pageForm] = Form.useForm<SitePageItem>();
-  const [settingsForm] = Form.useForm<UpdateSiteSettingsPayload>();
   const [loading, setLoading] = useState(false);
   const [currentPageKey, setCurrentPageKey] = useState('home');
 
@@ -16,15 +15,10 @@ export function SiteContentPage() {
     pageForm.setFieldsValue(page);
   }
 
-  async function loadSettings() {
-    const settings = await siteContentService.listSiteSettings();
-    settingsForm.setFieldsValue({ items: settings.length > 0 ? settings : [{ settingKey: 'companyName', settingValue: '', settingGroup: 'company', description: '公司名称' }] });
-  }
-
   async function loadData(pageKey = currentPageKey) {
     setLoading(true);
     try {
-      await Promise.all([loadPage(pageKey), loadSettings()]);
+      await loadPage(pageKey);
     } finally {
       setLoading(false);
     }
@@ -36,12 +30,6 @@ export function SiteContentPage() {
     void loadPage(currentPageKey);
   }
 
-  async function handleSaveSettings(values: UpdateSiteSettingsPayload) {
-    await siteContentService.updateSiteSettings(values);
-    message.success('站点设置已保存');
-    void loadSettings();
-  }
-
   useEffect(() => {
     void loadData('home');
   }, []);
@@ -49,8 +37,10 @@ export function SiteContentPage() {
   return (
     <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
       <div>
-        <Typography.Title level={2} style={{ marginBottom: 8 }}>站点内容</Typography.Title>
-        <Typography.Text type="secondary">管理首页、关于我们、联系我们等页面内容和站点设置。Banner 管理请在左侧菜单中操作。</Typography.Text>
+        <Typography.Title level={2} style={{ marginBottom: 8 }}>页面内容</Typography.Title>
+        <Typography.Text type="secondary">
+          管理首页、关于我们、联系我们等页面内容。Banner 管理和站点设置请在左侧菜单中操作。
+        </Typography.Text>
       </div>
 
       <Tabs
@@ -135,30 +125,6 @@ export function SiteContentPage() {
                   <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => checked ? 1 : 0}>
                     <StatusSwitch checkedLabel="发布" uncheckedLabel="草稿" />
                   </Form.Item>
-                </Form>
-              </Card>
-            ),
-          },
-          {
-            key: 'settings',
-            label: '站点设置',
-            children: (
-              <Card extra={<Button icon={<SaveOutlined />} type="primary" onClick={() => void settingsForm.submit()}>保存设置</Button>}>
-                <Form layout="vertical" form={settingsForm} onFinish={handleSaveSettings}>
-                  <Form.List name="items">
-                    {(fields) => (
-                      <Space orientation="vertical" size={16} style={{ display: 'flex' }}>
-                        {fields.map((field) => (
-                          <Card key={field.key} size="small">
-                            <Form.Item label="键名" name={[field.name, 'settingKey']}><Input /></Form.Item>
-                            <Form.Item label="值" name={[field.name, 'settingValue']}><Input.TextArea rows={2} /></Form.Item>
-                            <Form.Item label="分组" name={[field.name, 'settingGroup']}><Input /></Form.Item>
-                            <Form.Item label="说明" name={[field.name, 'description']}><Input /></Form.Item>
-                          </Card>
-                        ))}
-                      </Space>
-                    )}
-                  </Form.List>
                 </Form>
               </Card>
             ),
