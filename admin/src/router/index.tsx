@@ -13,6 +13,7 @@ import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { RolesPage } from '../pages/RolesPage';
 import { SiteContentPage } from '../pages/SiteContentPage';
+import { SiteSettingsPage } from '../pages/SiteSettingsPage';
 
 function ProtectedRoute({ children }: { children: React.ReactElement }) {
   const location = useLocation();
@@ -44,6 +45,7 @@ export function AppRouter() {
         <Route path="content/products" element={<ProductsPage />} />
         <Route path="site/pages" element={<SiteContentPage />} />
         <Route path="site/banners" element={<BannersPage />} />
+        <Route path="site/settings" element={<SiteSettingsPage />} />
         <Route path="media/upload" element={<MediaCenterPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
