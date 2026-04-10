@@ -175,8 +175,6 @@ export function RolesPage() {
     void loadData();
   }, []);
 
-  const groupedPermissions = groupPermissions(permissions);
-
   return (
     <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
       <div>
