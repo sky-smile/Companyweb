@@ -223,18 +223,47 @@ export function AdminLayout() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: collapsed ? 'center' : 'flex-start',
-            padding: collapsed ? 0 : '0 24px',
-            borderBottom: '1px solid #f0f0f0',
+            padding: collapsed ? 0 : '0 20px',
+            borderBottom: '1px solid var(--color-border)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          {/* 背景装饰 */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-20px',
+              right: '-20px',
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-30px',
+              left: '20px',
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.05)',
+            }}
+          />
+          
           {collapsed ? (
-            <DashboardOutlined style={{ fontSize: 24, color: '#1890ff' }} />
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <DashboardOutlined style={{ fontSize: 24, color: '#fff' }} />
+            </div>
           ) : (
-            <div>
-              <Typography.Title level={4} style={{ margin: 0, fontSize: 18 }}>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <Typography.Title level={4} style={{ margin: 0, fontSize: 18, color: '#fff', fontWeight: 700 }}>
                 Company Admin
               </Typography.Title>
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              <Typography.Text style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.8)' }}>
                 内容管理控制台
               </Typography.Text>
             </div>
@@ -247,7 +276,12 @@ export function AdminLayout() {
           selectedKeys={[location.pathname]}
           items={buildMenuItems()}
           onClick={({ key }) => navigate(key)}
-          style={{ borderInlineEnd: 'none', marginTop: 8 }}
+          style={{
+            borderInlineEnd: 'none',
+            marginTop: 8,
+            background: 'transparent',
+            padding: '8px 0',
+          }}
         />
       </Sider>
 
@@ -256,16 +290,17 @@ export function AdminLayout() {
         {/* 顶栏 */}
         <Header
           style={{
-            background: '#fff',
+            background: 'var(--color-bg-container)',
             padding: '0 24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid #f0f0f0',
-            boxShadow: '0 1px 4px rgba(0,21,41,0.04)',
+            borderBottom: '1px solid var(--color-border)',
+            boxShadow: 'var(--shadow-sm)',
             position: 'sticky',
             top: 0,
             zIndex: 99,
+            backdropFilter: 'blur(8px)',
           }}
         >
           {/* 左侧：折叠按钮 + 面包屑 + 页面标题 */}
@@ -275,45 +310,97 @@ export function AdminLayout() {
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={() => setCollapsed(!collapsed)}
-                style={{ fontSize: 16 }}
+                style={{
+                  fontSize: 16,
+                  borderRadius: 'var(--radius-md)',
+                  width: 36,
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               />
             </Tooltip>
 
-            <Breadcrumb items={generateBreadcrumbs()} />
+            <Breadcrumb
+              items={generateBreadcrumbs()}
+              separator=">"
+              style={{ fontSize: 14 }}
+            />
 
-            <Typography.Title level={4} style={{ margin: 0, fontSize: 16, color: '#262626' }}>
+            <Typography.Title
+              level={4}
+              style={{
+                margin: 0,
+                fontSize: 18,
+                color: 'var(--color-text-primary)',
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               {currentPageTitle}
             </Typography.Title>
           </Space>
 
           {/* 右侧：全屏切换 + 用户信息 */}
-          <Space size={16}>
+          <Space size={12}>
             <Tooltip title={isFullscreen ? '退出全屏' : '全屏模式'}>
               <Button
                 type="text"
                 icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
                 onClick={toggleFullscreen}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 'var(--radius-md)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               />
             </Tooltip>
 
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: '4px 8px', borderRadius: 8 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#f5f5f5'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+              <div
+                style={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '6px 12px',
+                  borderRadius: 'var(--radius-lg)',
+                  background: 'var(--color-bg-layout)',
+                  transition: 'all var(--transition-fast)',
+                  border: '1px solid var(--color-border)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#fff';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--color-bg-layout)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <Avatar
-                  style={{ backgroundColor: '#1890ff' }}
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)',
+                  }}
                   icon={<UserOutlined />}
                 >
                   {getAvatarLetter()}
                 </Avatar>
                 <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.4 }}>
-                  <Typography.Text style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>
+                  <Typography.Text style={{ fontSize: 14, fontWeight: 600, margin: 0, color: 'var(--color-text-primary)' }}>
                     {getDisplayName()}
                   </Typography.Text>
                   {profile?.isSuperAdmin && (
-                    <Typography.Text type="secondary" style={{ fontSize: 12, margin: 0 }}>
-                      超级管理员
+                    <Typography.Text style={{ fontSize: 11, margin: 0, color: '#722ed1' }}>
+                      👑 超级管理员
                     </Typography.Text>
                   )}
                 </div>

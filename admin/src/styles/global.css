@@ -1,18 +1,568 @@
+/* ====================================
+   CompanyWeb Admin - Enhanced UI
+   ==================================== */
+
+/* CSS Variables - Design Tokens */
 :root {
-  color: #182230;
-  background: #f3f6fb;
-  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  /* Primary Colors */
+  --color-primary: #1890ff;
+  --color-primary-light: #40a9ff;
+  --color-primary-dark: #096dd9;
+  --color-primary-bg: #e6f7ff;
+  
+  /* Success Colors */
+  --color-success: #52c41a;
+  --color-success-bg: #f6ffed;
+  
+  /* Warning Colors */
+  --color-warning: #faad14;
+  --color-warning-bg: #fffbe6;
+  
+  /* Error Colors */
+  --color-error: #ff4d4f;
+  --color-error-bg: #fff2f0;
+  
+  /* Neutral Colors */
+  --color-text-primary: #262626;
+  --color-text-secondary: #595959;
+  --color-text-tertiary: #8c8c8c;
+  --color-text-quaternary: #bfbfbf;
+  
+  --color-bg-container: #ffffff;
+  --color-bg-layout: #f5f7fa;
+  --color-bg-elevated: #ffffff;
+  
+  --color-border: #f0f0f0;
+  --color-border-secondary: #e8e8e8;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 10px 0 rgba(0, 0, 0, 0.06), 0 2px 6px 0 rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 26px 0 rgba(0, 0, 0, 0.08), 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 40px 0 rgba(0, 0, 0, 0.1), 0 8px 16px 0 rgba(0, 0, 0, 0.06);
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Base Styles */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(31, 94, 255, 0.1), transparent 32%),
-    linear-gradient(180deg, #f9fbff 0%, #eef3fb 100%);
+  background: var(--color-bg-layout);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-quaternary);
+  border-radius: 4px;
+  transition: background var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* ====================================
+   Layout Enhancements
+   ==================================== */
+
+/* Sider Styling */
+.ant-layout-sider {
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ant-layout-sider-children {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Menu Styling */
+.ant-menu-inline {
+  border-inline-end: none !important;
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-item {
+  margin: 4px 8px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-item:hover {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-item-selected {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-item-selected::after {
+  display: none;
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-submenu-title {
+  margin: 4px 8px;
+  border-radius: var(--radius-md);
+}
+
+.ant-menu-item-group-title {
+  padding: 12px 16px 8px;
+  color: var(--color-text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ====================================
+   Header Styling
+   ==================================== */
+
+.ant-layout-header {
+  height: 64px;
+  padding: 0 24px;
+  background: var(--color-bg-container) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Breadcrumb Styling */
+.ant-breadcrumb {
+  font-size: 14px;
+}
+
+.ant-breadcrumb a {
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.ant-breadcrumb a:hover {
+  color: var(--color-primary);
+}
+
+.ant-breadcrumb-separator {
+  color: var(--color-text-quaternary);
+}
+
+/* ====================================
+   Content Styling
+   ==================================== */
+
+.ant-layout-content {
+  padding: 24px;
+  margin: 0;
+  min-height: 280px;
+  background: var(--color-bg-layout);
+}
+
+/* ====================================
+   Card Styling
+   ==================================== */
+
+.ant-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.ant-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.ant-card-head {
+  padding: 0 24px;
+  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(to bottom, #fafafa, #fff);
+}
+
+.ant-card-head-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ant-card-body {
+  padding: 24px;
+}
+
+.ant-card-hoverable:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+/* ====================================
+   Form Styling
+   ==================================== */
+
+.ant-form-item-label > label {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.ant-input,
+.ant-input-password,
+.ant-input-textarea textarea,
+.ant-select-selector,
+.ant-picker {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--color-border-secondary);
+  transition: all var(--transition-fast) !important;
+}
+
+.ant-input:hover,
+.ant-input-password:hover,
+.ant-input-textarea textarea:hover,
+.ant-select-selector:hover,
+.ant-picker:hover {
+  border-color: var(--color-primary-light);
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-password:focus,
+.ant-input-password-focused,
+.ant-input-textarea textarea:focus,
+.ant-input-textarea textarea-focused,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-bg) !important;
+}
+
+/* ====================================
+   Table Styling
+   ==================================== */
+
+.ant-table-wrapper {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.ant-table {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+  background: linear-gradient(to bottom, #fafafa, #f5f5f5);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  padding: 14px 16px;
+}
+
+.ant-table-tbody > tr {
+  transition: background var(--transition-fast);
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: var(--color-primary-bg) !important;
+}
+
+.ant-table-tbody > tr > td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ant-table-tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+.ant-table-pagination.ant-pagination {
+  margin: 16px 0;
+  padding: 0 16px 16px;
+}
+
+/* ====================================
+   Button Styling
+   ==================================== */
+
+.ant-btn {
+  border-radius: var(--radius-md) !important;
+  font-weight: 500;
+  transition: all var(--transition-fast) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.ant-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.ant-btn:active {
+  transform: translateY(0);
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+}
+
+.ant-btn-default {
+  border: 1px solid var(--color-border-secondary);
+  box-shadow: none;
+}
+
+.ant-btn-default:hover {
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* ====================================
+   Tag Styling
+   ==================================== */
+
+.ant-tag {
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  padding: 2px 12px;
+  border: none;
+}
+
+.ant-tag-green {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.ant-tag-blue {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.ant-tag-orange {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.ant-tag-red {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+/* ====================================
+   Modal Styling
+   ==================================== */
+
+.ant-modal {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.ant-modal-content {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--color-border);
+}
+
+.ant-modal-header {
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: linear-gradient(to bottom, #fafafa, #fff);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ant-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ant-modal-body {
+  padding: 24px;
+}
+
+.ant-modal-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 16px 24px;
+}
+
+/* ====================================
+   Dropdown Styling
+   ==================================== */
+
+.ant-dropdown-menu {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  padding: 8px;
+}
+
+.ant-dropdown-menu-item {
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  transition: all var(--transition-fast);
+}
+
+.ant-dropdown-menu-item:hover {
+  background: var(--color-primary-bg);
+}
+
+/* ====================================
+   Avatar Styling
+   ==================================== */
+
+.ant-avatar {
+  box-shadow: var(--shadow-sm);
+  border: 2px solid #fff;
+}
+
+/* ====================================
+   Statistic Styling
+   ==================================== */
+
+.ant-statistic-title {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ant-statistic-content {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+/* ====================================
+   Typography
+   ==================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* ====================================
+   Tabs Styling
+   ==================================== */
+
+.ant-tabs-tab {
+  padding: 12px 16px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.ant-tabs-tab:hover {
+  color: var(--color-primary);
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.ant-tabs-ink-bar {
+  background: var(--color-primary);
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+
+/* ====================================
+   Empty State
+   ==================================== */
+
+.ant-empty-description {
+  color: var(--color-text-tertiary);
+}
+
+/* ====================================
+   Loading/Spin
+   ==================================== */
+
+.ant-spin-container {
+  transition: opacity var(--transition-fast);
+}
+
+/* ====================================
+   Responsive Utilities
+   ==================================== */
+
+@media (max-width: 768px) {
+  .ant-layout-content {
+    padding: 16px;
+  }
+  
+  .ant-card-body {
+    padding: 16px;
+  }
+  
+  .ant-table-tbody > tr > td,
+  .ant-table-thead > tr > th {
+    padding: 12px 8px;
+  }
+}
+
+/* ====================================
+   Animation Utilities
+   ==================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.4s ease-out;
 }
