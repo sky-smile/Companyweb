@@ -59,7 +59,6 @@ const menuGroups: { title: string; items: MenuItem[] }[] = [
     items: [
       { key: '/site/pages', icon: <SettingOutlined />, label: '页面内容', permission: 'site-page:view' },
       { key: '/site/banners', icon: <PictureOutlined />, label: 'Banner 管理', permission: 'banner:view' },
-      { key: '/site/settings', icon: <SettingOutlined />, label: '站点设置', permission: 'site-setting:view' },
       { key: '/media/upload', icon: <NotificationOutlined />, label: '媒体中心', permission: 'upload:image' },
     ],
   },
@@ -75,7 +74,6 @@ const routeTitles: Record<string, string> = {
   '/content/products': '产品管理',
   '/site/pages': '页面内容',
   '/site/banners': 'Banner 管理',
-  '/site/settings': '站点设置',
   '/media/upload': '媒体中心',
 };
 

@@ -44,7 +44,6 @@ export function AppRouter() {
         <Route path="content/products" element={<ProductsPage />} />
         <Route path="site/pages" element={<SiteContentPage />} />
         <Route path="site/banners" element={<BannersPage />} />
-        <Route path="site/settings" element={<SiteContentPage />} />
         <Route path="media/upload" element={<MediaCenterPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
