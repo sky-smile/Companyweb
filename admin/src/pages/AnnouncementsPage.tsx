@@ -40,7 +40,7 @@ export function AnnouncementsPage() {
             uncheckedLabel="普通"
             value={value}
             onChange={async (newValue) => {
-              await announcementService.update(record.id, { ...record, isTop: newValue });
+              await announcementService.update(record.id, { isTop: newValue });
               message.success(newValue === 1 ? '已设为置顶' : '已取消置顶');
               void loadData();
             }}
