@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { BannerItem } from '@/types/public';
 
 interface HeroBannerProps {
@@ -18,8 +19,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           {banner?.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
         </p>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          <a href="/products" style={{ padding: '14px 22px', borderRadius: 999, background: 'var(--brand)', color: '#fff7f0' }}>查看产品</a>
-          <a href="/contact" style={{ padding: '14px 22px', borderRadius: 999, border: '1px solid var(--line)' }}>联系我们</a>
+          <Link href="/products" style={{ padding: '14px 22px', borderRadius: 999, background: 'var(--brand)', color: '#fff7f0' }}>查看产品</Link>
+          <Link href="/contact" style={{ padding: '14px 22px', borderRadius: 999, border: '1px solid var(--line)' }}>联系我们</Link>
         </div>
       </div>
     </section>

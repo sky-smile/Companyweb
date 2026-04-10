@@ -146,9 +146,11 @@ export class NewsRepository {
         title: dto.title,
         slug: dto.slug,
         summary: dto.summary ?? '',
+        content: dto.content,
         coverImage: dto.coverImage ?? '',
         status: dto.status,
         isTop: dto.isTop,
+        publishedAt: dto.status === 1 ? new Date() : null,
         categoryId: dto.categoryId,
         categoryName: 'Fallback Category',
       };
@@ -279,9 +281,11 @@ export class NewsRepository {
       title: news.title,
       slug: news.slug,
       summary: news.summary,
+      content: news.content,
       coverImage: news.coverImage,
       status: news.status,
       isTop: news.isTop,
+      publishedAt: news.publishedAt,
       categoryId: news.categoryId,
       categoryName: news.category?.name ?? '',
     };

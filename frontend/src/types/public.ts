@@ -39,9 +39,11 @@ export interface NewsItem {
   title: string;
   slug: string;
   summary: string;
+  content: string;
   coverImage: string;
   status: number;
   isTop: number;
+  publishedAt: string | null;
   categoryId: string;
   categoryName: string;
 }
@@ -50,8 +52,10 @@ export interface AnnouncementItem {
   id: string;
   title: string;
   summary: string;
+  content: string;
   status: number;
   isTop: number;
+  publishedAt: string | null;
 }
 
 export interface ProductItem {
@@ -59,10 +63,12 @@ export interface ProductItem {
   name: string;
   slug: string;
   summary: string;
+  content: string;
   imagesJson: string;
   parametersJson: string;
   status: number;
   sort: number;
+  publishedAt: string | null;
   categoryId: string;
   categoryName: string;
 }

@@ -197,10 +197,12 @@ export class ProductRepository {
       name: item.name,
       slug: item.slug,
       summary: item.summary,
+      content: item.content,
       imagesJson: item.imagesJson,
       parametersJson: item.parametersJson,
       status: item.status,
       sort: item.sort,
+      publishedAt: item.publishedAt,
       categoryId: item.categoryId,
       categoryName: item.category?.name ?? '',
     };

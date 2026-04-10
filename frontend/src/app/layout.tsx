@@ -3,6 +3,8 @@ import './globals.css';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Company Web',
   description: 'Official company website for products, news, announcements, and contact information.',

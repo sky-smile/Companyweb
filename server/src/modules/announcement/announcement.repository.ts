@@ -117,8 +117,10 @@ export class AnnouncementRepository {
       id: item.id,
       title: item.title,
       summary: item.summary,
+      content: item.content,
       status: item.status,
       isTop: item.isTop,
+      publishedAt: item.publishedAt,
     };
   }
 }
