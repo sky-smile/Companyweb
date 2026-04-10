@@ -81,11 +81,18 @@ export function RolesPage() {
               disabled={record.code === 'super-admin'}
               onClick={() => {
                 setEditingRole(record);
+                // 将权限代码转换为权限 ID
+                const permissionIds = record.permissions
+                  .map((code: string) => {
+                    const perm = permissions.find((p) => p.code === code);
+                    return perm?.id;
+                  })
+                  .filter(Boolean);
                 form.setFieldsValue({
                   name: record.name,
                   code: record.code,
                   description: record.description,
-                  permissionIds: record.permissions,
+                  permissionIds,
                   status: record.status,
                 });
                 setModalOpen(true);
@@ -254,62 +261,72 @@ export function RolesPage() {
 
           <Form.Item label="权限分配" name="permissionIds" tooltip="按功能模块选择权限" initialValue={[]}>
             <div style={{ maxHeight: 400, overflowY: 'auto', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16, background: '#fafafa' }}>
-              {PERMISSION_GROUPS.map((group) => {
-                const groupPerms = permissions.filter((p) => p.code.startsWith(group.key));
-                if (groupPerms.length === 0) return null;
+              <Form.Item noStyle shouldUpdate>
+                {() => {
+                  const currentIds: string[] = form.getFieldValue('permissionIds') || [];
+                  return (
+                    <>
+                      {PERMISSION_GROUPS.map((group) => {
+                        const groupPerms = permissions.filter((p) => p.code.startsWith(group.key));
+                        if (groupPerms.length === 0) return null;
+                        const allGroupIds = groupPerms.map((p) => p.id);
+                        const allSelected = allGroupIds.length > 0 && allGroupIds.every((id) => currentIds.includes(id));
 
-                return (
-                  <div key={group.key} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #f0f0f0' }}>
-                    <Space style={{ marginBottom: 8 }}>
-                      <Typography.Text strong style={{ color: 'var(--color-text-secondary)' }}>
-                        {group.title}
-                      </Typography.Text>
-                      <Form.Item noStyle shouldUpdate={(prev, curr) => prev.permissionIds !== curr.permissionIds}>
-                        {() => {
-                          const currentIds: string[] = form.getFieldValue('permissionIds') || [];
-                          const allGroupIds = groupPerms.map((p) => p.id);
-                          const allSelected = allGroupIds.length > 0 && allGroupIds.every((id) => currentIds.includes(id));
-                          return (
-                            <Button
-                              type="link"
-                              size="small"
-                              onClick={() => {
-                                if (allSelected) {
-                                  form.setFieldValue('permissionIds', currentIds.filter((id: string) => !allGroupIds.includes(id)));
-                                } else {
-                                  form.setFieldValue('permissionIds', [...new Set([...currentIds, ...allGroupIds])]);
-                                }
-                              }}
-                            >
-                              {allSelected ? '取消全选' : '全选'}
-                            </Button>
-                          );
-                        }}
-                      </Form.Item>
-                    </Space>
-                    <Checkbox.Group>
-                      <Space direction="vertical" size={8} style={{ width: '100%' }}>
-                        {groupPerms.map((perm) => (
-                          <Checkbox key={perm.id} value={perm.id}>
-                            <Space>
-                              <Typography.Text>{getPermissionName(perm.code)}</Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: 12 }}>({perm.code})</Typography.Text>
+                        return (
+                          <div key={group.key} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #f0f0f0' }}>
+                            <Space style={{ marginBottom: 8 }}>
+                              <Typography.Text strong style={{ color: 'var(--color-text-secondary)' }}>
+                                {group.title}
+                              </Typography.Text>
+                              <Button
+                                type="link"
+                                size="small"
+                                onClick={() => {
+                                  if (allSelected) {
+                                    form.setFieldValue('permissionIds', currentIds.filter((id: string) => !allGroupIds.includes(id)));
+                                  } else {
+                                    form.setFieldValue('permissionIds', [...new Set([...currentIds, ...allGroupIds])]);
+                                  }
+                                }}
+                              >
+                                {allSelected ? '取消全选' : '全选'}
+                              </Button>
                             </Space>
-                          </Checkbox>
-                        ))}
-                      </Space>
-                    </Checkbox.Group>
-                  </div>
-                );
-              })}
-              {permissions.length === 0 && (
-                <Typography.Text type="secondary">加载中...</Typography.Text>
-              )}
-              {permissions.length > 0 && PERMISSION_GROUPS.every((group) => {
-                return permissions.filter((p) => p.code.startsWith(group.key)).length === 0;
-              }) && (
-                <Typography.Text type="secondary">暂无权限数据</Typography.Text>
-              )}
+                            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+                              {groupPerms.map((perm) => (
+                                <Checkbox
+                                  key={perm.id}
+                                  checked={currentIds.includes(perm.id)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      form.setFieldValue('permissionIds', [...new Set([...currentIds, perm.id])]);
+                                    } else {
+                                      form.setFieldValue('permissionIds', currentIds.filter((id: string) => id !== perm.id));
+                                    }
+                                  }}
+                                >
+                                  <Space>
+                                    <Typography.Text>{getPermissionName(perm.code)}</Typography.Text>
+                                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>({perm.code})</Typography.Text>
+                                  </Space>
+                                </Checkbox>
+                              ))}
+                            </Space>
+                          </div>
+                        );
+                      })}
+                      {permissions.length === 0 && (
+                        <Typography.Text type="secondary">加载中...</Typography.Text>
+                      )}
+                      {permissions.length > 0 && PERMISSION_GROUPS.every((group) => {
+                        return permissions.filter((p) => p.code.startsWith(group.key)).length === 0;
+                      }) && (
+                        <Typography.Text type="secondary">暂无权限数据</Typography.Text>
+                      )}
+                    </>
+                  );
+                }}
+              </Form.Item>
             </div>
           </Form.Item>
 
