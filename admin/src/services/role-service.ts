@@ -2,7 +2,7 @@ import { http, unwrapResponse } from './http';
 import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
 import { PERMISSION_GROUPS } from '../config/permissions';
 
-// 从配置中获取权限列表（如果后端没有返回 name 字段）
+// 从配置中获取权限列表（强制使用中文名称覆盖后端返回的值）
 function enrichPermissions(permissions: PermissionItem[]): PermissionItem[] {
   const permMap = new Map<string, string>();
   PERMISSION_GROUPS.forEach((group) => {
@@ -13,7 +13,8 @@ function enrichPermissions(permissions: PermissionItem[]): PermissionItem[] {
 
   return permissions.map((p) => ({
     ...p,
-    name: p.name || permMap.get(p.code) || p.code,
+    // 始终优先使用配置中的中文名称
+    name: permMap.get(p.code) || p.name || p.code,
     group: p.group || getGroupKeyFromCode(p.code),
   }));
 }

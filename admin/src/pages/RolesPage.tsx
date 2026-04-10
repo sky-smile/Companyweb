@@ -249,7 +249,7 @@ export function RolesPage() {
             <StatusSwitch checkedLabel="启用" uncheckedLabel="禁用" />
           </Form.Item>
 
-          <Form.Item label="权限分配" name="permissionIds" tooltip="按功能模块选择权限">
+          <Form.Item label="权限分配" name="permissionIds" tooltip="按功能模块选择权限" initialValue={[]}>
             <div style={{ maxHeight: 400, overflowY: 'auto', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16, background: '#fafafa' }}>
               {PERMISSION_GROUPS.map((group) => {
                 const groupPerms = permissions.filter((p) => p.code.startsWith(group.key));
@@ -261,23 +261,30 @@ export function RolesPage() {
                       <Typography.Text strong style={{ color: 'var(--color-text-secondary)' }}>
                         {group.title}
                       </Typography.Text>
-                      <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                          const currentIds = form.getFieldValue('permissionIds') || [];
+                      <Form.Item noStyle shouldUpdate={(prev, curr) => prev.permissionIds !== curr.permissionIds}>
+                        {() => {
+                          const currentIds: string[] = form.getFieldValue('permissionIds') || [];
                           const allGroupIds = groupPerms.map((p) => p.id);
-                          const allSelected = allGroupIds.every((id) => currentIds.includes(id));
-                          const newIds = allSelected
-                            ? currentIds.filter((id: string) => !allGroupIds.includes(id))
-                            : [...new Set([...currentIds, ...allGroupIds])];
-                          form.setFieldValue('permissionIds', newIds);
+                          const allSelected = allGroupIds.length > 0 && allGroupIds.every((id) => currentIds.includes(id));
+                          return (
+                            <Button
+                              type="link"
+                              size="small"
+                              onClick={() => {
+                                if (allSelected) {
+                                  form.setFieldValue('permissionIds', currentIds.filter((id: string) => !allGroupIds.includes(id)));
+                                } else {
+                                  form.setFieldValue('permissionIds', [...new Set([...currentIds, ...allGroupIds])]);
+                                }
+                              }}
+                            >
+                              {allSelected ? '取消全选' : '全选'}
+                            </Button>
+                          );
                         }}
-                      >
-                        全选/取消
-                      </Button>
+                      </Form.Item>
                     </Space>
-                    <Checkbox.Group style={{ width: '100%' }}>
+                    <Checkbox.Group>
                       <Space direction="vertical" size={8} style={{ width: '100%' }}>
                         {groupPerms.map((perm) => (
                           <Checkbox key={perm.id} value={perm.id}>
@@ -292,6 +299,14 @@ export function RolesPage() {
                   </div>
                 );
               })}
+              {permissions.length === 0 && (
+                <Typography.Text type="secondary">加载中...</Typography.Text>
+              )}
+              {permissions.length > 0 && PERMISSION_GROUPS.every((group) => {
+                return permissions.filter((p) => p.code.startsWith(group.key)).length === 0;
+              }) && (
+                <Typography.Text type="secondary">暂无权限数据</Typography.Text>
+              )}
             </div>
           </Form.Item>
 
