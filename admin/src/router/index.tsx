@@ -4,6 +4,7 @@ import { AdminLayout } from '../layouts/AdminLayout';
 import { authStore } from '../stores/auth-store';
 import { AdminUsersPage } from '../pages/AdminUsersPage';
 import { AnnouncementsPage } from '../pages/AnnouncementsPage';
+import { BannersPage } from '../pages/BannersPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { LoginPage } from '../pages/LoginPage';
 import { MediaCenterPage } from '../pages/MediaCenterPage';
@@ -42,7 +43,7 @@ export function AppRouter() {
         <Route path="content/announcements" element={<AnnouncementsPage />} />
         <Route path="content/products" element={<ProductsPage />} />
         <Route path="site/pages" element={<SiteContentPage />} />
-        <Route path="site/banners" element={<SiteContentPage />} />
+        <Route path="site/banners" element={<BannersPage />} />
         <Route path="site/settings" element={<SiteContentPage />} />
         <Route path="media/upload" element={<MediaCenterPage />} />
       </Route>
