@@ -23,6 +23,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       { code: 'admin-users:update', name: '编辑管理员', description: '编辑管理员信息' },
       { code: 'admin-users:status', name: '切换管理员状态', description: '启用/禁用管理员账号' },
       { code: 'admin-users:reset-password', name: '重置密码', description: '重置其他管理员密码' },
+      { code: 'admin-users:change-password', name: '修改自己的密码', description: '修改当前登录账号的密码' },
     ],
   },
   {
@@ -46,6 +47,16 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
     ],
   },
   {
+    key: 'news-category',
+    title: '新闻分类',
+    permissions: [
+      { code: 'news-category:view', name: '查看新闻分类', description: '查看新闻分类列表' },
+      { code: 'news-category:create', name: '创建新闻分类', description: '添加新闻分类' },
+      { code: 'news-category:update', name: '编辑新闻分类', description: '编辑新闻分类' },
+      { code: 'news-category:delete', name: '删除新闻分类', description: '删除新闻分类' },
+    ],
+  },
+  {
     key: 'announcement',
     title: '公告管理',
     permissions: [
@@ -63,6 +74,16 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       { code: 'product:create', name: '创建产品', description: '添加新产品' },
       { code: 'product:update', name: '编辑产品', description: '编辑产品信息' },
       { code: 'product:delete', name: '删除产品', description: '删除产品' },
+    ],
+  },
+  {
+    key: 'product-category',
+    title: '产品分类',
+    permissions: [
+      { code: 'product-category:view', name: '查看产品分类', description: '查看产品分类列表' },
+      { code: 'product-category:create', name: '创建产品分类', description: '添加产品分类' },
+      { code: 'product-category:update', name: '编辑产品分类', description: '编辑产品分类' },
+      { code: 'product-category:delete', name: '删除产品分类', description: '删除产品分类' },
     ],
   },
   {
