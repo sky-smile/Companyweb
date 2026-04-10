@@ -205,7 +205,7 @@ export function AnnouncementsPage() {
             <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
               <PublishStatus />
             </Form.Item>
-            <Form.Item label="置顶" name="isTop" valuePropName="checked" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
+            <Form.Item label="置顶" name="isTop" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
               <StatusSwitch checkedLabel="置顶" uncheckedLabel="普通" />
             </Form.Item>
           </Space>
