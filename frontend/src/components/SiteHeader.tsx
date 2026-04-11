@@ -1,4 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
+import { publicService } from '@/services/public-service';
 import { MobileMenu } from './MobileMenu';
 
 const navItems = [
@@ -10,7 +12,20 @@ const navItems = [
   { href: '/contact', label: '联系我们' },
 ];
 
-export function SiteHeader() {
+async function getSiteSettings() {
+  try {
+    const home = await publicService.getHome();
+    const logo = home.settings.find((s) => s.settingKey === 'siteLogo')?.settingValue || '';
+    const name = home.settings.find((s) => s.settingKey === 'siteName')?.settingValue || '';
+    return { logo, name };
+  } catch {
+    return { logo: '', name: '' };
+  }
+}
+
+export async function SiteHeader() {
+  const { logo, name } = await getSiteSettings();
+
   return (
     <header
       className="site-header"
@@ -24,11 +39,23 @@ export function SiteHeader() {
       }}
     >
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 76 }}>
-        <Link
-          href="/"
-          className="header-logo"
-        >
-          Sky Smile
+        <Link href="/" className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {logo ? (
+            <Image
+              src={logo}
+              alt={name || 'Logo'}
+              width={160}
+              height={40}
+              style={{ objectFit: 'contain', maxHeight: 40, width: 'auto' }}
+              priority
+            />
+          ) : null}
+          {name && (
+            <span className="header-site-name">{name}</span>
+          )}
+          {!logo && !name && (
+            <span className="header-default-name">Sky Smile</span>
+          )}
         </Link>
 
         {/* 桌面端导航 */}
@@ -53,7 +80,7 @@ export function SiteHeader() {
         .site-header {
           position: relative;
         }
-        
+
         .site-header::after {
           content: '';
           position: absolute;
@@ -61,15 +88,35 @@ export function SiteHeader() {
           left: 0;
           right: 0;
           height: 1px;
-          background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(37, 99, 235, 0.2) 20%, 
-            rgba(37, 99, 235, 0.3) 50%, 
-            rgba(37, 99, 235, 0.2) 80%, 
+          background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(37, 99, 235, 0.2) 20%,
+            rgba(37, 99, 235, 0.3) 50%,
+            rgba(37, 99, 235, 0.2) 80%,
             transparent 100%);
         }
-        
+
         .header-logo {
+          transition: all 0.3s ease;
+          text-decoration: none;
+        }
+
+        .header-logo:hover {
+          opacity: 0.85;
+          transform: scale(1.02);
+        }
+
+        .header-site-name {
+          font-size: 20px;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .header-default-name {
           font-size: 24px;
           font-weight: 800;
           letter-spacing: -0.02em;
@@ -80,11 +127,6 @@ export function SiteHeader() {
           transition: all 0.3s ease;
         }
 
-        .header-logo:hover {
-          opacity: 0.85;
-          transform: scale(1.02);
-        }
-
         .nav-link {
           color: rgba(26, 32, 44, 0.72);
           font-weight: 500;
@@ -93,7 +135,7 @@ export function SiteHeader() {
           position: relative;
           padding: 4px 0;
         }
-        
+
         .nav-link::after {
           content: '';
           position: absolute;
@@ -109,7 +151,7 @@ export function SiteHeader() {
         .nav-link:hover {
           color: var(--brand);
         }
-        
+
         .nav-link:hover::after {
           width: 100%;
         }
@@ -118,9 +160,14 @@ export function SiteHeader() {
           .desktop-nav {
             display: none !important;
           }
-          
+
           .site-header::after {
             background: var(--line);
+          }
+
+          .header-site-name,
+          .header-default-name {
+            font-size: 18px;
           }
         }
       `}} />

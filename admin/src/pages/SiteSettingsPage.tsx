@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Input, Space, Table, Typography, message } from 'antd';
-import { ReloadOutlined, SaveOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Image, Input, Space, Table, Typography, message } from 'antd';
+import { PictureOutlined, ReloadOutlined, SaveOutlined } from '@ant-design/icons';
+import { MediaPicker } from '../components/common';
 import { siteContentService } from '../services/site-content-service';
 import { SiteSettingItem, UpdateSiteSettingsPayload } from '../types/site-content';
 
@@ -47,6 +48,28 @@ export function SiteSettingsPage() {
     setEditingData(prev => {
       const newData = [...prev];
       newData[index] = { ...newData[index], settingValue: value };
+      return newData;
+    });
+  }
+
+  function getSettingValue(key: string): string {
+    return editingData.find(s => s.settingKey === key)?.settingValue || '';
+  }
+
+  function setSettingValue(key: string, value: string) {
+    setEditingData(prev => {
+      const newData = [...prev];
+      const index = newData.findIndex(s => s.settingKey === key);
+      if (index >= 0) {
+        newData[index] = { ...newData[index], settingValue: value };
+      } else {
+        newData.push({
+          settingKey: key,
+          settingValue: value,
+          settingGroup: 'company',
+          description: key === 'siteLogo' ? '网站 Logo 图片' : '网站名称',
+        });
+      }
       return newData;
     });
   }
@@ -102,7 +125,48 @@ export function SiteSettingsPage() {
         </Typography.Text>
       </div>
 
+      {/* 站点基本信息卡片 */}
+      <Card title="站点基本信息">
+        <Space direction="vertical" size={20} style={{ width: '100%' }}>
+          {/* Logo 设置 */}
+          <Space direction="vertical" size={8} style={{ width: '100%' }}>
+            <Typography.Text strong>网站 Logo</Typography.Text>
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              显示在首页顶栏左侧，建议使用 SVG 或 PNG 格式，尺寸约 180x40px
+            </Typography.Text>
+            {getSettingValue('siteLogo') && (
+              <Image
+                src={getSettingValue('siteLogo')}
+                alt="当前 Logo"
+                style={{ maxWidth: 200, maxHeight: 60, objectFit: 'contain', border: '1px solid #f0f0f0', borderRadius: 8, padding: 8, background: '#fafafa' }}
+              />
+            )}
+            <MediaPicker
+              value={getSettingValue('siteLogo')}
+              onChange={(url) => setSettingValue('siteLogo', url)}
+              folder="logos"
+            />
+          </Space>
+
+          {/* 公司名称 */}
+          <Space direction="vertical" size={8} style={{ width: '100%' }}>
+            <Typography.Text strong>网站名称</Typography.Text>
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              显示在 Logo 右侧，如不设置则仅显示 Logo
+            </Typography.Text>
+            <Input
+              value={getSettingValue('siteName')}
+              onChange={(e) => setSettingValue('siteName', e.target.value)}
+              placeholder="如：伊博化工"
+              style={{ maxWidth: 400 }}
+            />
+          </Space>
+        </Space>
+      </Card>
+
+      {/* 详细设置表格 */}
       <Card
+        title="详细设置"
         extra={
           <Space>
             <Button icon={<ReloadOutlined />} onClick={() => void loadSettings()} loading={loading}>
