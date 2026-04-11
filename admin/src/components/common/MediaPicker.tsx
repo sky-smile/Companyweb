@@ -101,8 +101,8 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
       <Button
         icon={<PictureOutlined />}
         onClick={() => {
+          console.log('[MediaPicker] Button clicked, opening modal...');
           setOpen(true);
-          void loadFiles();
         }}
       >
         从媒体中心选择
@@ -115,6 +115,12 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
         footer={null}
         width={900}
         destroyOnHidden
+        afterOpenChange={(open) => {
+          console.log('[MediaPicker] Modal open changed:', open);
+          if (open) {
+            void loadFiles();
+          }
+        }}
       >
         <Space style={{ marginBottom: 16, width: '100%' }}>
           <Input.Search
