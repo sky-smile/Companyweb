@@ -111,7 +111,6 @@ img {
   box-shadow: var(--shadow-sm);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
 }
 
 .site-card::before {
@@ -124,12 +123,12 @@ img {
   background: var(--gradient-primary);
   opacity: 0;
   transition: opacity 0.35s ease;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .site-card:hover {
-  border-color: transparent;
-  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(37, 99, 235, 0.1);
-  transform: translateY(-4px);
+  border-color: rgba(37, 99, 235, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .site-card:hover::before {
@@ -341,8 +340,9 @@ img {
   word-break: break-word;
 }
 
-/* 覆盖编辑器输出的行内样式，确保格式统一 */
-.rich-content [style] {
+/* 覆盖编辑器输出的行内样式，确保格式统一（保留链接和强调的视觉区分） */
+.rich-content span[style],
+.rich-content div[style] {
   color: inherit !important;
   background-color: transparent !important;
   font-size: inherit !important;

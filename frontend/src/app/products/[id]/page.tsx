@@ -156,21 +156,20 @@ export default function ProductDetailPage() {
       {/* 相关产品推荐 */}
       {relatedProducts.length > 0 && (
         <section style={{ marginTop: 40 }}>
-          <h2 style={{ margin: '0 0 20px', fontSize: 26, fontWeight: 600 }}>相关产品</h2>
+          <h2 style={{ margin: '0 0 20px', fontSize: 24, fontWeight: 700, letterSpacing: '-0.01em' }}>相关产品</h2>
           <div style={{ display: 'grid', gap: 18, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
             {relatedProducts.map((product) => (
               <Link
                 key={product.id}
                 href={`/products/${product.id}`}
-                className="site-card"
-                style={{ padding: 24, display: 'block', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 24px 64px rgba(46, 28, 17, 0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '';
+                style={{
+                  padding: 24,
+                  display: 'block',
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1px solid var(--line)',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'all 0.3s ease',
                 }}
               >
                 <div style={{ color: 'var(--accent)', marginBottom: 10, fontSize: 13, fontWeight: 500 }}>
@@ -189,7 +188,7 @@ export default function ProductDetailPage() {
       {/* JSON-LD 结构化数据 */}
       <ProductJsonLd
         name={item.name}
-        description={item.summary || item.content}
+        description={item.summary || item.content?.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200)}
         image={images[0] || undefined}
       />
     </section>

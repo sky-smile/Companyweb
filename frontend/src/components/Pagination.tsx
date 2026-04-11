@@ -188,7 +188,7 @@ export function Pagination({
       </button>
 
       {/* 总页数信息 */}
-      <span style={{ marginLeft: 20, fontSize: 14, color: 'rgba(232, 234, 240, 0.5)', fontWeight: 500 }}>
+      <span style={{ marginLeft: 20, fontSize: 14, color: 'rgba(26, 32, 44, 0.45)', fontWeight: 500 }}>
         共 {total} 条，第 {currentPage}/{totalPages} 页
       </span>
     </div>

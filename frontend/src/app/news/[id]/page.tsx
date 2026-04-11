@@ -107,7 +107,7 @@ export default function NewsDetailPage() {
       {/* JSON-LD 结构化数据 */}
       <NewsArticleJsonLd
         headline={item.title}
-        description={item.summary || item.content}
+        description={item.summary || item.content?.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200)}
         datePublished={item.publishedAt || new Date().toISOString()}
         image={item.coverImage || undefined}
       />

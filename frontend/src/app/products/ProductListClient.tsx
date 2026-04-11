@@ -43,14 +43,67 @@ export function ProductListClient() {
   );
 
   return (
-    <section className="site-shell" style={{ padding: '42px 0' }}>
-      <div className="site-card" style={{ padding: 36 }}>
-        <h1 className="section-title">产品中心</h1>
-        
-        {loading ? (
-          <div style={{ marginTop: 24 }}>
-            <GridSkeleton count={6} />
+    <>
+      {/* 页面头部 Hero */}
+      <section style={{
+        position: 'relative',
+        padding: '80px 0 48px',
+        overflow: 'hidden',
+        background: 'linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%)',
+        borderBottom: '1px solid var(--line)',
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '-15%',
+          right: '-8%',
+          width: 400,
+          height: 400,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, transparent 70%)',
+          filter: 'blur(50px)',
+          pointerEvents: 'none',
+        }} />
+
+        <div className="site-shell" style={{ position: 'relative', zIndex: 1 }}>
+          {/* 面包屑 */}
+          <nav style={{ fontSize: 14, color: 'rgba(15, 23, 42, 0.5)', marginBottom: 28 }}>
+            <Link href="/" style={{ color: 'rgba(15, 23, 42, 0.5)', textDecoration: 'none', transition: 'color 0.2s' }}>首页</Link>
+            <span style={{ margin: '0 10px' }}>/</span>
+            <span style={{ color: 'var(--brand)', fontWeight: 500 }}>产品中心</span>
+          </nav>
+
+          <div style={{ maxWidth: 700 }}>
+            <div style={{
+              color: 'var(--brand)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.15em',
+              fontSize: 12,
+              fontWeight: 600,
+              marginBottom: 14,
+            }}>
+              Products
+            </div>
+            <h1 style={{
+              margin: 0,
+              fontSize: 'clamp(2rem, 4.5vw, 3rem)',
+              fontWeight: 800,
+              lineHeight: 1.15,
+              letterSpacing: '-0.02em',
+              color: 'var(--foreground)',
+            }}>
+              产品中心
+            </h1>
+            <p className="section-copy" style={{ marginTop: 16, maxWidth: 560 }}>
+              涵盖核心产品线与专业解决方案，满足多样化工业需求，持续提升产品稳定性与交付效率。
+            </p>
           </div>
+        </div>
+      </section>
+
+      {/* 产品列表 */}
+      <section className="site-shell" style={{ padding: '48px 0' }}>
+        {loading ? (
+          <GridSkeleton count={6} />
         ) : products.length === 0 ? (
           <EmptyState
             title="暂无产品"
@@ -60,25 +113,25 @@ export function ProductListClient() {
           />
         ) : (
           <>
-            <div style={{ display: 'grid', gap: 18, marginTop: 24, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+            <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
               {paginatedProducts.map((item) => (
-                <Link key={item.id} href={`/products/${item.id}`} className="site-card" style={{ padding: 24, display: 'block', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 24px 64px rgba(46, 28, 17, 0.12)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '';
-                  }}
-                >
-                  <div style={{ color: 'var(--accent)', marginBottom: 10, fontSize: 13, fontWeight: 500 }}>{item.categoryName || '产品'}</div>
-                  <h2 style={{ margin: '0 0 10px', fontSize: 22, fontWeight: 600 }}>{item.name}</h2>
+                <Link key={item.id} href={`/products/${item.id}`} style={{
+                  display: 'block',
+                  padding: 28,
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1px solid var(--line)',
+                  background: '#ffffff',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'all 0.3s ease',
+                }}>
+                  <div style={{ color: 'var(--accent)', marginBottom: 12, fontSize: 13, fontWeight: 600, letterSpacing: '0.04em' }}>{item.categoryName || '产品'}</div>
+                  <h2 style={{ margin: '0 0 12px', fontSize: 22, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-0.01em' }}>{item.name}</h2>
                   <p className="section-copy" style={{ margin: 0, fontSize: 15 }}>{item.summary || '产品摘要待补充。'}</p>
                 </Link>
               ))}
             </div>
-            
+
             <Pagination
               currentPage={currentPage}
               pageSize={PAGE_SIZE}
@@ -87,7 +140,15 @@ export function ProductListClient() {
             />
           </>
         )}
-      </div>
-    </section>
+      </section>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .site-shell a[href^="/products/"]:hover {
+          border-color: var(--brand) !important;
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-md);
+        }
+      `}} />
+    </>
   );
 }
