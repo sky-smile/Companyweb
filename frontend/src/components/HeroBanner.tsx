@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { BannerItem } from '@/types/public';
+import { ScrollIndicator } from './ScrollIndicator';
 
 interface HeroBannerProps {
   banners: BannerItem[];
@@ -66,44 +67,45 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }}
       />
 
-      {/* 渐变遮罩 - 降低透明度使背景图片可见 */}
+      {/* 渐变遮罩 - 透明通透效果 */}
       <div
         className="hero-overlay"
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.70) 50%, rgba(255, 255, 255, 0.60) 100%)',
-          backdropFilter: 'blur(2px)',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.30) 50%, rgba(255, 255, 255, 0.20) 100%)',
+          backdropFilter: 'blur(1px)',
         }}
       />
 
       {/* 内容 - 居中 */}
-      <div className="site-shell" style={{ position: 'relative', zIndex: 1, padding: '0' }}>
+      <div className="hero-content site-shell" style={{ position: 'relative', zIndex: 1, padding: '0' }}>
         <div style={{ maxWidth: 800 }}>
           <h1
-            className="animate-fade-in-up delay-100"
+            className="hero-title animate-fade-in-up delay-100"
             style={{
               margin: 0,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
-              lineHeight: 1.05,
+              fontSize: 'clamp(2.25rem, 5vw, 4.5rem)',
+              lineHeight: 1.15,
               fontWeight: 800,
-              letterSpacing: '-0.03em',
-              color: 'var(--foreground)',
-              textShadow: '0 2px 4px rgba(0, 0, 0, 0.08)',
+              letterSpacing: '-0.02em',
+              color: '#0f172a',
+              textShadow: '0 2px 8px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.1)',
             }}
           >
             {banner?.title || 'Reliable manufacturing, presented with clarity.'}
           </h1>
 
           <p
-            className="animate-fade-in-up delay-200"
+            className="hero-subtitle animate-fade-in-up delay-200"
             style={{
-              margin: '24px 0 0',
-              maxWidth: 640,
-              fontSize: 19,
-              color: 'rgba(26, 32, 44, 0.78)',
-              lineHeight: 1.75,
-              textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)',
+              margin: '28px 0 0',
+              maxWidth: 600,
+              fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
+              color: 'rgba(15, 23, 42, 0.82)',
+              lineHeight: 1.8,
+              letterSpacing: '0.01em',
+              textShadow: '0 1px 4px rgba(255, 255, 255, 0.7)',
             }}
           >
             {banner?.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
@@ -111,7 +113,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
 
           <div
             className="animate-fade-in-up delay-300"
-            style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 48 }}
+            style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 44 }}
           >
             <Link href="/products" className="hero-btn-primary">
               查看产品
@@ -125,30 +127,28 @@ export function HeroBanner({ banners }: HeroBannerProps) {
       </div>
 
       {/* 下滑指示器 */}
-      <div className="scroll-indicator" style={{
-        position: 'absolute',
-        bottom: 40,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 8,
-        animation: 'bounce 2s infinite',
-        cursor: 'pointer',
-      }}>
-        <span style={{ fontSize: 12, color: 'var(--text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          下滑探索更多
-        </span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--brand)' }}>
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </div>
+      <ScrollIndicator />
 
       <style dangerouslySetInnerHTML={{ __html: `
         .hero-banner {
           position: relative;
+        }
+
+        .hero-content {
+          display: flex;
+          align-items: center;
+          min-height: 100%;
+        }
+
+        .hero-title {
+          text-rendering: optimizeLegibility;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        .hero-subtitle {
+          text-rendering: optimizeLegibility;
+          -webkit-font-smoothing: antialiased;
         }
 
         .hero-bg {
@@ -163,8 +163,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }
 
         .hero-overlay {
-          backdrop-filter: blur(2px);
-          -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(1px);
+          -webkit-backdrop-filter: blur(1px);
           transition: background 0.3s ease;
         }
 
@@ -180,9 +180,25 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           }
         }
 
+        .scroll-indicator {
+          animation: bounce 2s infinite;
+          -webkit-user-select: none;
+          user-select: none;
+        }
+
         .scroll-indicator:hover svg {
           transform: translateY(4px);
-          transition: transform 0.3s ease;
+          transition: transform 0.2s ease;
+        }
+
+        .scroll-indicator:active svg {
+          transform: translateY(8px);
+          transition: transform 0.1s ease;
+        }
+
+        .scroll-indicator:active {
+          animation: none;
+          transform: translateX(-50%) translateY(4px);
         }
         
         .hero-btn-primary {
@@ -259,6 +275,21 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             background-position: center center !important;
           }
 
+          .hero-content {
+            align-items: flex-end;
+            padding-bottom: 80px;
+          }
+
+          .hero-title {
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+          }
+
+          .hero-subtitle {
+            line-height: 1.7;
+            margin-top: 20px;
+          }
+
           .hero-decoration-1,
           .hero-decoration-2 {
             display: none;
@@ -266,6 +297,21 @@ export function HeroBanner({ banners }: HeroBannerProps) {
 
           .scroll-indicator {
             bottom: 24px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-content {
+            padding-bottom: 96px;
+          }
+
+          .hero-title {
+            line-height: 1.25;
+          }
+
+          .hero-subtitle {
+            margin-top: 16px;
+            line-height: 1.65;
           }
         }
       `}} />

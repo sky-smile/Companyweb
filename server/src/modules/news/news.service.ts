@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
+import { sanitizeHtmlContent } from '@/common/utils/html-sanitizer';
 import { CreateNewsCategoryDto } from './dto/create-news-category.dto';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { NewsListQueryDto } from './dto/news-list-query.dto';
@@ -59,11 +60,13 @@ export class NewsService {
   }
 
   createNews(dto: CreateNewsDto, currentUser: AuthenticatedAdminUser) {
-    return this.newsRepository.createNews(dto, currentUser.userId);
+    const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
+    return this.newsRepository.createNews(sanitizedDto, currentUser.userId);
   }
 
   updateNews(id: string, dto: UpdateNewsDto, currentUser: AuthenticatedAdminUser) {
-    return this.newsRepository.updateNews(id, dto, currentUser.userId);
+    const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
+    return this.newsRepository.updateNews(id, sanitizedDto, currentUser.userId);
   }
 
   deleteNews(id: string) {

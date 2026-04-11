@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
+import { sanitizeHtmlContent } from '@/common/utils/html-sanitizer';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { UpdateSitePageDto } from './dto/update-site-page.dto';
@@ -15,7 +16,12 @@ export class SiteContentService {
   }
 
   updateSitePage(pageKey: string, dto: UpdateSitePageDto, currentUser: AuthenticatedAdminUser) {
-    return this.siteContentRepository.updateSitePage(pageKey, dto, currentUser.userId);
+    // 清理 HTML 内容，去除危险标签和不必要的行内样式
+    const sanitizedDto = {
+      ...dto,
+      content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content,
+    };
+    return this.siteContentRepository.updateSitePage(pageKey, sanitizedDto, currentUser.userId);
   }
 
   listSiteSettings() {

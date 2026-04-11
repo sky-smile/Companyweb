@@ -1,5 +1,7 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { publicService } from '@/services/public-service';
 import { MobileMenu } from './MobileMenu';
 
 const navItems = [
@@ -11,30 +13,49 @@ const navItems = [
   { href: '/contact', label: '联系我们' },
 ];
 
-async function getSiteSettings() {
-  try {
-    const home = await publicService.getHome();
-    const logo = home.settings.find((s) => s.settingKey === 'siteLogo')?.settingValue || '';
-    const name = home.settings.find((s) => s.settingKey === 'siteName')?.settingValue || '';
-    return { logo, name };
-  } catch {
-    return { logo: '', name: '' };
-  }
-}
+export function SiteHeader() {
+  const [scrolled, setScrolled] = useState(false);
+  const [logo, setLogo] = useState('');
+  const [name, setName] = useState('');
 
-export async function SiteHeader() {
-  const { logo, name } = await getSiteSettings();
+  // 获取站点设置（首次加载）
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const { publicService } = await import('@/services/public-service');
+        const home = await publicService.getHome();
+        setLogo(home.settings.find((s) => s.settingKey === 'siteLogo')?.settingValue || '');
+        setName(home.settings.find((s) => s.settingKey === 'siteName')?.settingValue || '');
+      } catch {
+        // 忽略错误，使用默认值
+      }
+    }
+    void loadSettings();
+  }, []);
+
+  // 监听滚动位置
+  useEffect(() => {
+    function handleScroll() {
+      setScrolled(window.scrollY > 60);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <header
       className="site-header"
       style={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 20,
-        backdropFilter: 'blur(20px)',
-        background: 'rgba(255, 255, 255, 0.98)',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        background: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
+        boxShadow: scrolled ? '0 1px 3px rgba(0, 0, 0, 0.08)' : 'none',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent',
       }}
     >
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 76 }}>

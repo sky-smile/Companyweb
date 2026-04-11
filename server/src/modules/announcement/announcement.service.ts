@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
+import { sanitizeHtmlContent } from '@/common/utils/html-sanitizer';
 import { AnnouncementListQueryDto } from './dto/announcement-list-query.dto';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
@@ -40,11 +41,13 @@ export class AnnouncementService {
   }
 
   create(dto: CreateAnnouncementDto, currentUser: AuthenticatedAdminUser) {
-    return this.announcementRepository.create(dto, currentUser.userId);
+    const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
+    return this.announcementRepository.create(sanitizedDto, currentUser.userId);
   }
 
   update(id: string, dto: UpdateAnnouncementDto, currentUser: AuthenticatedAdminUser) {
-    return this.announcementRepository.update(id, dto, currentUser.userId);
+    const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
+    return this.announcementRepository.update(id, sanitizedDto, currentUser.userId);
   }
 
   delete(id: string) {

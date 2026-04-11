@@ -1,3 +1,5 @@
+import { RichContent } from './RichContent';
+
 interface SectionHeadingProps {
   eyebrow: string;
   title: string;
@@ -17,7 +19,11 @@ export function SectionHeading({ eyebrow, title, description }: SectionHeadingPr
         {eyebrow}
       </div>
       <h2 className="section-title">{title}</h2>
-      <p className="section-copy" style={{ margin: 0, maxWidth: 700 }}>{description}</p>
+      <RichContent
+        content={description}
+        className="section-copy"
+        style={{ margin: 0, maxWidth: 700 }}
+      />
     </div>
   );
 }

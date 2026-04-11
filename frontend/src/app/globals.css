@@ -338,6 +338,17 @@ img {
 .rich-content {
   line-height: 1.9;
   color: rgba(26, 32, 44, 0.75);
+  word-break: break-word;
+}
+
+/* 覆盖编辑器输出的行内样式，确保格式统一 */
+.rich-content [style] {
+  color: inherit !important;
+  background-color: transparent !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
 }
 
 .rich-content img {
@@ -412,6 +423,11 @@ img {
   overflow-x: auto;
   margin-bottom: 16px;
   border: 1px solid var(--line);
+}
+
+/* 链接在富文本中保留颜色覆盖 */
+.rich-content a[style] {
+  color: var(--brand) !important;
 }
 
 /* ====================================

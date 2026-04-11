@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
+import { sanitizeHtmlContent } from '@/common/utils/html-sanitizer';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductListQueryDto } from './dto/product-list-query.dto';
@@ -58,11 +59,13 @@ export class ProductService {
   }
 
   create(dto: CreateProductDto, currentUser: AuthenticatedAdminUser) {
-    return this.productRepository.create(dto, currentUser.userId);
+    const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
+    return this.productRepository.create(sanitizedDto, currentUser.userId);
   }
 
   update(id: string, dto: UpdateProductDto, currentUser: AuthenticatedAdminUser) {
-    return this.productRepository.update(id, dto, currentUser.userId);
+    const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
+    return this.productRepository.update(id, sanitizedDto, currentUser.userId);
   }
 
   delete(id: string) {

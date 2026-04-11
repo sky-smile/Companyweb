@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { buildMetadata, pickDescription } from '@/lib/seo';
+import { RichContent } from '@/components/RichContent';
 import { publicService } from '@/services/public-service';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,7 +20,11 @@ export default async function ContactPage() {
     <section className="site-shell animate-fade-in-up" style={{ padding: '56px 0' }}>
       <div className="site-card" style={{ padding: 56, display: 'grid', gap: 28 }}>
         <h1 className="section-title">{contact.page.title || '联系我们'}</h1>
-        <p className="section-copy" style={{ margin: 0, fontSize: 17 }}>{contact.page.content || '请在后台维护公司地址、邮箱、电话与地图嵌入说明。'}</p>
+        <RichContent
+          content={contact.page.content}
+          fallback="请在后台维护公司地址、邮箱、电话与地图嵌入说明。"
+          style={{ margin: 0, fontSize: 17 }}
+        />
         <div style={{ display: 'grid', gap: 18 }}>
           {contact.settings.map((item) => (
             <div key={item.settingKey} className="contact-item">

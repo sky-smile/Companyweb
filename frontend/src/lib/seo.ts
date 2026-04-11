@@ -38,5 +38,10 @@ export function buildMetadata({ title, description, path = '/' }: MetadataInput)
 
 export function pickDescription(...values: Array<string | null | undefined>): string {
   const firstValid = values.find((value) => typeof value === 'string' && value.trim().length > 0);
-  return firstValid?.trim() || defaultDescription;
+  if (!firstValid) return defaultDescription;
+
+  // 如果内容是 HTML，去除标签提取纯文本
+  const stripped = firstValid.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  // 截取前 160 字符作为 description
+  return stripped.length > 160 ? stripped.slice(0, 157) + '...' : stripped || defaultDescription;
 }
