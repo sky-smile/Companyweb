@@ -78,25 +78,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
       {/* 内容 */}
       <div className="site-shell" style={{ position: 'relative', zIndex: 1, padding: '80px 0' }}>
         <div style={{ maxWidth: 800 }}>
-          <div 
-            className="animate-fade-in-up delay-100"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              color: 'var(--brand)',
-              letterSpacing: '0.22em',
-              fontSize: 13,
-              fontWeight: 700,
-              marginBottom: 20,
-            }}
-          >
-            <span style={{ fontSize: 18 }}>🚀</span>
-            INDUSTRIAL BRAND STORY
-          </div>
-
           <h1
-            className="animate-fade-in-up delay-200"
+            className="animate-fade-in-up delay-100"
             style={{
               margin: 0,
               fontSize: 'clamp(3rem, 6vw, 6rem)',
@@ -111,7 +94,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           </h1>
 
           <p
-            className="animate-fade-in-up delay-300"
+            className="animate-fade-in-up delay-200"
             style={{
               margin: '24px 0 0',
               maxWidth: 640,
@@ -124,8 +107,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             {banner?.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
           </p>
 
-          <div 
-            className="animate-fade-in-up delay-400"
+          <div
+            className="animate-fade-in-up delay-300"
             style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 40 }}
           >
             <Link
