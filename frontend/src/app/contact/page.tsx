@@ -16,15 +16,19 @@ export default async function ContactPage() {
   const contact = await publicService.getContact();
 
   return (
-    <section className="site-shell" style={{ padding: '42px 0' }}>
-      <div className="site-card" style={{ padding: 36, display: 'grid', gap: 18 }}>
+    <section className="site-shell" style={{ padding: '48px 0' }}>
+      <div className="site-card" style={{ padding: 48, display: 'grid', gap: 24 }}>
         <h1 className="section-title">{contact.page.title || '联系我们'}</h1>
-        <p className="section-copy" style={{ margin: 0 }}>{contact.page.content || '请在后台维护公司地址、邮箱、电话与地图嵌入说明。'}</p>
-        <div style={{ display: 'grid', gap: 12 }}>
+        <p className="section-copy" style={{ margin: 0, fontSize: 16 }}>{contact.page.content || '请在后台维护公司地址、邮箱、电话与地图嵌入说明。'}</p>
+        <div style={{ display: 'grid', gap: 16 }}>
           {contact.settings.map((item) => (
-            <div key={item.settingKey} style={{ paddingBottom: 12, borderBottom: '1px solid var(--line)' }}>
-              <strong>{item.description || item.settingKey}</strong>
-              <div className="section-copy">{item.settingValue}</div>
+            <div key={item.settingKey} style={{ 
+              paddingBottom: 16, 
+              borderBottom: '1px solid var(--line)',
+              transition: 'border-color 0.2s ease',
+            }}>
+              <strong style={{ fontSize: 15, fontWeight: 600, color: 'var(--brand-light)' }}>{item.description || item.settingKey}</strong>
+              <div className="section-copy" style={{ marginTop: 6, fontSize: 15 }}>{item.settingValue}</div>
             </div>
           ))}
         </div>

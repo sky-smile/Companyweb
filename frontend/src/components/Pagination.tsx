@@ -67,8 +67,8 @@ export function Pagination({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 8,
-        marginTop: 32,
+        gap: 10,
+        marginTop: 40,
         flexWrap: 'wrap',
       }}
     >
@@ -77,24 +77,42 @@ export function Pagination({
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
         style={{
-          padding: '8px 16px',
-          borderRadius: 8,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '10px 18px',
+          borderRadius: 10,
           border: '1px solid var(--line)',
           background: 'var(--surface)',
-          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-          opacity: currentPage === 1 ? 0.5 : 1,
-          fontSize: 14,
           color: 'var(--foreground)',
+          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+          opacity: currentPage === 1 ? 0.4 : 1,
+          fontSize: 14,
+          fontWeight: 500,
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={(e) => {
+          if (currentPage !== 1) {
+            e.currentTarget.style.borderColor = 'var(--brand-light)';
+            e.currentTarget.style.background = 'var(--brand-soft)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (currentPage !== 1) {
+            e.currentTarget.style.borderColor = 'var(--line)';
+            e.currentTarget.style.background = 'var(--surface)';
+          }
         }}
       >
+        <span style={{ fontSize: 16 }}>‹</span>
         上一页
       </button>
 
       {/* 页码 */}
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         {getPageNumbers().map((page, index) =>
           typeof page === 'string' ? (
-            <span key={`ellipsis-${index}`} style={{ padding: '0 4px', color: 'var(--foreground)', opacity: 0.5 }}>
+            <span key={`ellipsis-${index}`} style={{ padding: '0 6px', color: 'var(--foreground)', opacity: 0.4, fontWeight: 600 }}>
               {page}
             </span>
           ) : (
@@ -102,15 +120,29 @@ export function Pagination({
               key={page}
               onClick={() => handlePageChange(page)}
               style={{
-                minWidth: 36,
-                height: 36,
-                borderRadius: 8,
-                border: '1px solid var(--line)',
-                background: page === currentPage ? 'var(--brand)' : 'var(--surface)',
+                minWidth: 40,
+                height: 40,
+                borderRadius: 10,
+                border: page === currentPage ? 'none' : '1px solid var(--line)',
+                background: page === currentPage ? 'var(--gradient-primary)' : 'var(--surface)',
                 color: page === currentPage ? '#fff' : 'var(--foreground)',
                 cursor: 'pointer',
                 fontSize: 14,
-                fontWeight: page === currentPage ? 600 : 400,
+                fontWeight: page === currentPage ? 700 : 500,
+                boxShadow: page === currentPage ? '0 4px 16px var(--brand-glow)' : 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                if (page !== currentPage) {
+                  e.currentTarget.style.borderColor = 'var(--brand-light)';
+                  e.currentTarget.style.background = 'var(--brand-soft)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (page !== currentPage) {
+                  e.currentTarget.style.borderColor = 'var(--line)';
+                  e.currentTarget.style.background = 'var(--surface)';
+                }
               }}
             >
               {page}
@@ -124,21 +156,39 @@ export function Pagination({
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         style={{
-          padding: '8px 16px',
-          borderRadius: 8,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '10px 18px',
+          borderRadius: 10,
           border: '1px solid var(--line)',
           background: 'var(--surface)',
-          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          fontSize: 14,
           color: 'var(--foreground)',
+          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+          opacity: currentPage === totalPages ? 0.4 : 1,
+          fontSize: 14,
+          fontWeight: 500,
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={(e) => {
+          if (currentPage !== totalPages) {
+            e.currentTarget.style.borderColor = 'var(--brand-light)';
+            e.currentTarget.style.background = 'var(--brand-soft)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (currentPage !== totalPages) {
+            e.currentTarget.style.borderColor = 'var(--line)';
+            e.currentTarget.style.background = 'var(--surface)';
+          }
         }}
       >
         下一页
+        <span style={{ fontSize: 16 }}>›</span>
       </button>
 
       {/* 总页数信息 */}
-      <span style={{ marginLeft: 16, fontSize: 14, color: 'rgba(29, 20, 15, 0.6)' }}>
+      <span style={{ marginLeft: 20, fontSize: 14, color: 'rgba(232, 234, 240, 0.5)', fontWeight: 500 }}>
         共 {total} 条，第 {currentPage}/{totalPages} 页
       </span>
     </div>

@@ -6,8 +6,16 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ eyebrow, title, description }: SectionHeadingProps) {
   return (
-    <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
-      <div style={{ color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.18em', fontSize: 12 }}>{eyebrow}</div>
+    <div style={{ display: 'grid', gap: 12, marginBottom: 28 }}>
+      <div style={{ 
+        color: 'var(--brand-light)', 
+        textTransform: 'uppercase', 
+        letterSpacing: '0.2em', 
+        fontSize: 12,
+        fontWeight: 600,
+      }}>
+        {eyebrow}
+      </div>
       <h2 className="section-title">{title}</h2>
       <p className="section-copy" style={{ margin: 0, maxWidth: 700 }}>{description}</p>
     </div>

@@ -82,14 +82,14 @@ export function MobileMenu() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(255, 248, 241, 0.98)',
-            backdropFilter: 'blur(14px)',
+            background: 'rgba(10, 14, 26, 0.98)',
+            backdropFilter: 'blur(20px)',
             zIndex: 25,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: 32,
+            gap: 36,
             padding: 80,
           }}
         >
@@ -99,11 +99,15 @@ export function MobileMenu() {
               href={item.href}
               onClick={closeMenu}
               style={{
-                fontSize: 24,
-                fontWeight: 600,
+                fontSize: 26,
+                fontWeight: 700,
                 color: 'var(--foreground)',
                 textDecoration: 'none',
+                letterSpacing: '-0.01em',
+                transition: 'color 0.2s ease',
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--brand-light)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
             >
               {item.label}
             </Link>

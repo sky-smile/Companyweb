@@ -28,43 +28,71 @@ export default async function HomePage() {
       <HeroBanner banners={home.banners} />
 
       <section className="site-shell" style={{ padding: '16px 0 24px' }}>
-        <div className="site-card" style={{ padding: 32 }}>
+        <div className="site-card" style={{ padding: 40 }}>
           <SectionHeading eyebrow="About" title={home.page.title || 'A focused company presence built for clarity.'} description={home.page.content || 'Use the admin site content module to enrich the homepage introduction, advantages, and structured content.'} />
         </div>
       </section>
 
       <section className="site-shell" style={{ padding: '8px 0 24px' }}>
-        <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+        <div style={{ display: 'grid', gap: 24, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
           {products.list.slice(0, 3).map((item) => (
-            <article key={item.id} className="site-card" style={{ padding: 24 }}>
-              <div style={{ color: 'var(--accent)', marginBottom: 10 }}>{item.categoryName || '产品'}</div>
-              <h3 style={{ margin: '0 0 10px', fontSize: 24 }}>{item.name}</h3>
-              <p className="section-copy" style={{ margin: 0 }}>{item.summary || '产品摘要可在后台继续补充。'}</p>
+            <article key={item.id} className="site-card" style={{ padding: 28 }}>
+              <div style={{ color: 'var(--accent)', marginBottom: 12, fontSize: 13, fontWeight: 600, letterSpacing: '0.05em' }}>{item.categoryName || '产品'}</div>
+              <h3 style={{ margin: '0 0 12px', fontSize: 22, fontWeight: 700, letterSpacing: '-0.01em' }}>{item.name}</h3>
+              <p className="section-copy" style={{ margin: 0, fontSize: 15 }}>{item.summary || '产品摘要可在后台继续补充。'}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="site-shell" style={{ padding: '8px 0 24px' }}>
-        <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
-          <div className="site-card" style={{ padding: 28 }}>
+        <div style={{ display: 'grid', gap: 24, gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))' }}>
+          <div className="site-card" style={{ padding: 32 }}>
             <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
-            <div style={{ display: 'grid', gap: 14 }}>
+            <div style={{ display: 'grid', gap: 16 }}>
               {news.list.slice(0, 3).map((item) => (
-                <Link key={item.id} href={`/news/${item.id}`} style={{ paddingBottom: 14, borderBottom: '1px solid var(--line)' }}>
-                  <div style={{ fontSize: 20, marginBottom: 8 }}>{item.title}</div>
-                  <div className="section-copy">{item.summary || '新闻摘要待补充。'}</div>
+                <Link 
+                  key={item.id} 
+                  href={`/news/${item.id}`} 
+                  style={{ 
+                    paddingBottom: 16, 
+                    borderBottom: '1px solid var(--line)',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderBottomColor = 'var(--brand-light)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderBottomColor = 'var(--line)';
+                  }}
+                >
+                  <div style={{ fontSize: 18, marginBottom: 8, fontWeight: 600 }}>{item.title}</div>
+                  <div className="section-copy" style={{ fontSize: 15 }}>{item.summary || '新闻摘要待补充。'}</div>
                 </Link>
               ))}
             </div>
           </div>
-          <div className="site-card" style={{ padding: 28 }}>
+          <div className="site-card" style={{ padding: 32 }}>
             <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
-            <div style={{ display: 'grid', gap: 14 }}>
+            <div style={{ display: 'grid', gap: 16 }}>
               {announcements.list.slice(0, 3).map((item) => (
-                <Link key={item.id} href={`/announcements/${item.id}`} style={{ paddingBottom: 14, borderBottom: '1px solid var(--line)' }}>
-                  <div style={{ fontSize: 20, marginBottom: 8 }}>{item.title}</div>
-                  <div className="section-copy">{item.summary || '公告摘要待补充。'}</div>
+                <Link 
+                  key={item.id} 
+                  href={`/announcements/${item.id}`} 
+                  style={{ 
+                    paddingBottom: 16, 
+                    borderBottom: '1px solid var(--line)',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderBottomColor = 'var(--brand-light)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderBottomColor = 'var(--line)';
+                  }}
+                >
+                  <div style={{ fontSize: 18, marginBottom: 8, fontWeight: 600 }}>{item.title}</div>
+                  <div className="section-copy" style={{ fontSize: 15 }}>{item.summary || '公告摘要待补充。'}</div>
                 </Link>
               ))}
             </div>
