@@ -52,55 +52,58 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="animate-fade-in-up delay-200" style={{ 
+      <section className="animate-fade-in-up delay-300" style={{
         padding: '48px 0',
         background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+        borderTop: '1px solid var(--line)',
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
-          <div className="site-card" style={{ padding: 40, marginBottom: 32 }}>
+          {/* 新闻区域 */}
+          <div style={{ marginBottom: 56 }}>
             <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
             <div className="news-list" style={{ display: 'grid', gap: 0 }}>
               {news.list.slice(0, 4).map((item, index) => (
-                <Link 
-                  key={item.id} 
-                  href={`/news/${item.id}`} 
+                <Link
+                  key={item.id}
+                  href={`/news/${item.id}`}
                   className="news-link"
                   style={{
-                    padding: '24px 0',
-                    borderBottom: index < 3 ? '1px solid var(--line)' : 'none',
+                    padding: '28px 0',
+                    borderBottom: '1px solid var(--line)',
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 19, marginBottom: 8, fontWeight: 600 }}>{item.title}</div>
-                      <div className="section-copy" style={{ fontSize: 15 }}>{item.summary || '新闻摘要待补充。'}</div>
+                      <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
+                      <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '新闻摘要待补充。'}</div>
                     </div>
-                    <span style={{ fontSize: 20, opacity: 0.3, flexShrink: 0 }}>→</span>
+                    <span style={{ fontSize: 22, opacity: 0.25, flexShrink: 0, marginTop: 4 }}>→</span>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
 
-          <div className="site-card" style={{ padding: 40 }}>
+          {/* 公告区域 */}
+          <div>
             <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
             <div className="announcement-list" style={{ display: 'grid', gap: 0 }}>
               {announcements.list.slice(0, 4).map((item, index) => (
-                <Link 
-                  key={item.id} 
-                  href={`/announcements/${item.id}`} 
+                <Link
+                  key={item.id}
+                  href={`/announcements/${item.id}`}
                   className="announcement-link"
                   style={{
-                    padding: '24px 0',
-                    borderBottom: index < 3 ? '1px solid var(--line)' : 'none',
+                    padding: '28px 0',
+                    borderBottom: '1px solid var(--line)',
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 19, marginBottom: 8, fontWeight: 600 }}>{item.title}</div>
-                      <div className="section-copy" style={{ fontSize: 15 }}>{item.summary || '公告摘要待补充。'}</div>
+                      <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
+                      <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '公告摘要待补充。'}</div>
                     </div>
-                    <span style={{ fontSize: 20, opacity: 0.3, flexShrink: 0 }}>→</span>
+                    <span style={{ fontSize: 22, opacity: 0.25, flexShrink: 0, marginTop: 4 }}>→</span>
                   </div>
                 </Link>
               ))}
@@ -113,14 +116,14 @@ export default async function HomePage() {
         .news-link, .announcement-link {
           display: block;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 8px;
+          margin: 0 -12px;
+          padding-left: 12px;
+          padding-right: 12px;
         }
 
         .news-link:hover, .announcement-link:hover {
           background: var(--brand-soft);
-          margin: 0 -40px;
-          padding-left: 40px;
-          padding-right: 40px;
-          border-radius: 8px;
         }
       `}} />
     </>
