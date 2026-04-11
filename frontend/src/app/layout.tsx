@@ -25,9 +25,9 @@ export const metadata: Metadata = buildMetadata({
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN" className={inter.variable}>
-      <body>
+      <body style={{ margin: 0, padding: 0 }}>
         <SiteHeader />
-        <main>{children}</main>
+        <main style={{ margin: 0, padding: 0 }}>{children}</main>
         <SiteFooter />
         <BackToTop />
 

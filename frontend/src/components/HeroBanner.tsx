@@ -9,19 +9,21 @@ export function HeroBanner({ banners }: HeroBannerProps) {
   const banner = banners[0];
 
   return (
-    <section 
-      className="hero-banner animate-fade-in"
+    <section
+      className="hero-banner"
       style={{
         position: 'relative',
-        minHeight: 580,
+        height: '100vh',
+        minHeight: 600,
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
         overflow: 'hidden',
       }}
     >
       {/* 背景图片 */}
       {banner?.imageUrl && (
-        <div 
+        <div
           className="hero-bg"
           style={{
             position: 'absolute',
@@ -33,9 +35,9 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           }}
         />
       )}
-      
+
       {/* 装饰性渐变球 */}
-      <div 
+      <div
         className="hero-decoration-1"
         style={{
           position: 'absolute',
@@ -49,7 +51,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           pointerEvents: 'none',
         }}
       />
-      <div 
+      <div
         className="hero-decoration-2"
         style={{
           position: 'absolute',
@@ -63,7 +65,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           pointerEvents: 'none',
         }}
       />
-      
+
       {/* 渐变遮罩 - 降低透明度使背景图片可见 */}
       <div
         className="hero-overlay"
@@ -75,8 +77,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }}
       />
 
-      {/* 内容 */}
-      <div className="site-shell" style={{ position: 'relative', zIndex: 1, padding: '80px 0' }}>
+      {/* 内容 - 居中 */}
+      <div className="site-shell" style={{ position: 'relative', zIndex: 1, padding: '0' }}>
         <div style={{ maxWidth: 800 }}>
           <h1
             className="animate-fade-in-up delay-100"
@@ -109,45 +111,78 @@ export function HeroBanner({ banners }: HeroBannerProps) {
 
           <div
             className="animate-fade-in-up delay-300"
-            style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 40 }}
+            style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 48 }}
           >
-            <Link
-              href="/products"
-              className="hero-btn-primary"
-            >
+            <Link href="/products" className="hero-btn-primary">
               查看产品
               <span style={{ fontSize: 18, transition: 'transform 0.3s ease' }}>→</span>
             </Link>
-            <Link
-              href="/contact"
-              className="hero-btn-secondary"
-            >
+            <Link href="/contact" className="hero-btn-secondary">
               联系我们
             </Link>
           </div>
         </div>
       </div>
 
+      {/* 下滑指示器 */}
+      <div className="scroll-indicator" style={{
+        position: 'absolute',
+        bottom: 40,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 8,
+        animation: 'bounce 2s infinite',
+        cursor: 'pointer',
+      }}>
+        <span style={{ fontSize: 12, color: 'var(--text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          下滑探索更多
+        </span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--brand)' }}>
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+
       <style dangerouslySetInnerHTML={{ __html: `
         .hero-banner {
           position: relative;
         }
-        
+
         .hero-bg {
           transition: opacity 0.5s ease;
         }
-        
+
         .hero-bg::after {
           content: '';
           position: absolute;
           inset: 0;
           background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 100%);
         }
-        
+
         .hero-overlay {
           backdrop-filter: blur(2px);
           -webkit-backdrop-filter: blur(2px);
           transition: background 0.3s ease;
+        }
+
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateX(-50%) translateY(0);
+          }
+          40% {
+            transform: translateX(-50%) translateY(-12px);
+          }
+          60% {
+            transform: translateX(-50%) translateY(-6px);
+          }
+        }
+
+        .scroll-indicator:hover svg {
+          transform: translateY(4px);
+          transition: transform 0.3s ease;
         }
         
         .hero-btn-primary {
@@ -216,17 +251,21 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         
         @media (max-width: 768px) {
           .hero-banner {
-            min-height: 480px;
+            min-height: 100vh;
           }
-          
+
           .hero-bg {
             background-size: cover !important;
             background-position: center center !important;
           }
-          
+
           .hero-decoration-1,
           .hero-decoration-2 {
             display: none;
+          }
+
+          .scroll-indicator {
+            bottom: 24px;
           }
         }
       `}} />
