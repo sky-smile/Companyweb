@@ -7,6 +7,33 @@ import * as path from 'node:path';
 import { MediaFileEntity } from '@/database/entities/media-file.entity';
 import { UploadedFileView } from './interfaces/uploaded-file-view.interface';
 
+/**
+ * 修复 Multer 解析中文文件名时的编码问题
+ * 
+ * Multer (通过 busboy) 会将 UTF-8 文件名错误地当作 Latin-1 解析
+ * 例如: "伊博.xlsx" 变成 "ä¼å.xlsx"
+ * 
+ * 解决方案: 将错误的字符串转回字节，再用 UTF-8 正确解码
+ */
+function fixFilenameEncoding(filename: string): string {
+  try {
+    // 检查是否包含非 ASCII 字符（可能是错误编码的 UTF-8）
+    if (/[\x80-\xFF]/.test(filename)) {
+      // 将 Latin-1 字符串转回原始字节
+      const buffer = Buffer.from(filename, 'latin1');
+      // 尝试用 UTF-8 解码
+      const decoded = buffer.toString('utf8');
+      // 验证解码结果是否合理（包含中文字符）
+      if (/[\u4e00-\u9fa5]/.test(decoded)) {
+        return decoded;
+      }
+    }
+  } catch {
+    // 解码失败，返回原始文件名
+  }
+  return filename;
+}
+
 @Injectable()
 export class UploadService {
   constructor(
@@ -171,8 +198,8 @@ export class UploadService {
     const normalizedFolder = this.normalizeFolder(folder);
     const targetDir = path.join(uploadDir, normalizedFolder);
     
-    // 使用已正确解码的文件名（由 fileFilter 处理）
-    const originalName = file.originalname;
+    // 修复中文文件名的编码问题
+    const originalName = fixFilenameEncoding(file.originalname);
     const extension = path.extname(originalName);
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${extension}`;
     const storagePath = path.join(targetDir, filename);

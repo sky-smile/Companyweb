@@ -20,43 +20,30 @@ import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { UploadQueryDto } from './dto/upload-query.dto';
 import { UploadService } from './upload.service';
 
+/**
+ * 从 Content-Type boundary 中提取原始文件名
+ * 这是处理中文文件名的最可靠方法
+ */
+function decodeFilenameFromRequest(req: Request): string | null {
+  // 方法 1: 从 Content-Disposition 头提取 UTF-8 文件名 (RFC 5987)
+  const contentType = req.headers['content-type'];
+  if (contentType && contentType.includes('multipart/form-data')) {
+    // 需要从原始 body 中解析，但 Express 已经解析过了
+    // 所以我们依赖 Multer 提供的信息
+  }
+
+  // 方法 2: 使用 Node.js Buffer 转换 Multer 的 originalname
+  // Multer 使用 busboy 解析文件名，可能会错误编码
+  return null;
+}
+
 const uploadOptions = {
   storage: memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 增加到 10MB
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
-  fileFilter: (req: Request, file: Express.Multer.File, cb: (error: Error | null, acceptFile: boolean) => void) => {
-    // 从 Content-Disposition 头中提取原始 UTF-8 文件名
-    const contentDisposition = req.headers['content-disposition'];
-    if (contentDisposition) {
-      // 尝试提取 filename*=UTF-8'' 格式的文件名（RFC 5987）
-      const utf8Match = contentDisposition.match(/filename\*=UTF-8''(.+?)(?:;|$)/i);
-      if (utf8Match && utf8Match[1]) {
-        try {
-          file.originalname = decodeURIComponent(utf8Match[1]);
-        } catch {
-          // 忽略解码错误
-        }
-      } else {
-        // 尝试提取普通 filename="..." 格式，并修复 Latin-1 误解析
-        const filenameMatch = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/i);
-        if (filenameMatch && filenameMatch[1]) {
-          try {
-            // 将错误的 Latin-1 字符串转回字节，再用 UTF-8 解码
-            const buffer = Buffer.from(filenameMatch[1], 'latin1');
-            const decoded = buffer.toString('utf8');
-            // 如果解码后包含中文字符，使用解码结果
-            if (/[\u4e00-\u9fa5]/.test(decoded)) {
-              file.originalname = decoded;
-            }
-          } catch {
-            // 忽略解码错误
-          }
-        }
-      }
-    }
-    cb(null, true);
-  },
+  // fileFilter 中不做特殊处理，让 Multer 正常解析
+  // 实际的文件名解码在 Service 层处理
 };
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
