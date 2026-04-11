@@ -39,7 +39,10 @@ export class UploadController {
     @Query() query: UploadQueryDto,
     @Req() req: any,
   ) {
-    const uploadedBy = req.user?.id;
+    const uploadedBy = req.user?.userId;
+    if (!uploadedBy) {
+      throw new Error('未获取到用户信息');
+    }
     const result = await this.uploadService.saveImage(file, uploadedBy, query.folder);
     return {
       code: 0,
@@ -59,7 +62,10 @@ export class UploadController {
     @Query() query: UploadQueryDto,
     @Req() req: any,
   ) {
-    const uploadedBy = req.user?.id;
+    const uploadedBy = req.user?.userId;
+    if (!uploadedBy) {
+      throw new Error('未获取到用户信息');
+    }
     const result = await this.uploadService.saveFile(file, uploadedBy, query.folder);
     return {
       code: 0,
