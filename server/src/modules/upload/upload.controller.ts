@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import type { Request } from 'express';
 import { Permissions } from '@/common/decorators/permissions.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
@@ -25,7 +26,7 @@ const uploadOptions = {
     fileSize: 10 * 1024 * 1024, // 增加到 10MB
   },
   preserveFilename: true, // 保留原始文件名，确保正确处理中文
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: Request, file: Express.Multer.File, cb: (error: Error | null, acceptFile: boolean) => void) => {
     // 确保文件名正确编码
     if (file.originalname) {
       // 尝试解码可能的错误编码
