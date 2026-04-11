@@ -64,14 +64,14 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }}
       />
       
-      {/* 渐变遮罩 */}
-      <div 
+      {/* 渐变遮罩 - 降低透明度使背景图片可见 */}
+      <div
         className="hero-overlay"
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.9) 100%)',
-          backdropFilter: 'blur(10px)',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.70) 50%, rgba(255, 255, 255, 0.60) 100%)',
+          backdropFilter: 'blur(2px)',
         }}
       />
 
@@ -95,7 +95,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             INDUSTRIAL BRAND STORY
           </div>
 
-          <h1 
+          <h1
             className="animate-fade-in-up delay-200"
             style={{
               margin: 0,
@@ -104,19 +104,21 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               fontWeight: 800,
               letterSpacing: '-0.03em',
               color: 'var(--foreground)',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.08)',
             }}
           >
             {banner?.title || 'Reliable manufacturing, presented with clarity.'}
           </h1>
 
-          <p 
+          <p
             className="animate-fade-in-up delay-300"
             style={{
               margin: '24px 0 0',
               maxWidth: 640,
               fontSize: 19,
-              color: 'rgba(26, 32, 44, 0.68)',
+              color: 'rgba(26, 32, 44, 0.78)',
               lineHeight: 1.75,
+              textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)',
             }}
           >
             {banner?.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
@@ -160,7 +162,9 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }
         
         .hero-overlay {
-          backdrop-filter: blur(10px);
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
+          transition: background 0.3s ease;
         }
         
         .hero-btn-primary {
