@@ -6,7 +6,7 @@ import { siteContentService } from '../services/site-content-service';
 import { BannerItem, CreateBannerPayload, UpdateBannerPayload } from '../types/site-content';
 
 export function BannersPage() {
-  const [bannerForm] = Form.useForm<CreateBannerPayload & { id?: string }>();
+  const [bannerForm] = Form.useForm<BannerItem>();
   const [loading, setLoading] = useState(false);
   const [bannerModalOpen, setBannerModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<BannerItem | null>(null);
@@ -31,29 +31,57 @@ export function BannersPage() {
 
   function handleOpenEditBanner(record: BannerItem) {
     setEditingBanner(record);
-    bannerForm.setFieldsValue(record);
+    bannerForm.setFieldsValue({
+      title: record.title,
+      subtitle: record.subtitle,
+      imageUrl: record.imageUrl,
+      linkUrl: record.linkUrl,
+      sort: record.sort,
+      status: record.status,
+    });
     setBannerModalOpen(true);
   }
 
-  async function handleSaveBanner(values: CreateBannerPayload & { id?: string }) {
-    if (editingBanner) {
-      const updatePayload: UpdateBannerPayload = {
-        title: values.title,
-        subtitle: values.subtitle,
-        imageUrl: values.imageUrl,
-        linkUrl: values.linkUrl,
-        sort: values.sort,
-        status: values.status,
-      };
-      await siteContentService.updateBanner(editingBanner.id, updatePayload);
-      message.success('Banner 已更新');
-    } else {
-      await siteContentService.createBanner(values);
-      message.success('Banner 已创建');
+  async function handleSaveBanner() {
+    const values = bannerForm.getFieldsValue();
+    const imageUrl = values.imageUrl as string;
+
+    if (!imageUrl) {
+      message.error('请上传或输入图片地址');
+      return;
     }
-    setBannerModalOpen(false);
-    bannerForm.resetFields();
-    void loadBanners();
+
+    const payload: CreateBannerPayload & { status?: number } = {
+      title: values.title,
+      subtitle: values.subtitle,
+      imageUrl,
+      linkUrl: values.linkUrl,
+      sort: values.sort ?? 0,
+      status: values.status ?? 1,
+    };
+
+    try {
+      if (editingBanner) {
+        const updatePayload: UpdateBannerPayload = {
+          title: payload.title,
+          subtitle: payload.subtitle,
+          imageUrl: payload.imageUrl,
+          linkUrl: payload.linkUrl,
+          sort: payload.sort,
+          status: payload.status,
+        };
+        await siteContentService.updateBanner(editingBanner.id, updatePayload);
+        message.success('Banner 已更新');
+      } else {
+        await siteContentService.createBanner(payload as CreateBannerPayload);
+        message.success('Banner 已创建');
+      }
+      setBannerModalOpen(false);
+      bannerForm.resetFields();
+      void loadBanners();
+    } catch (error: any) {
+      message.error(error.message || '操作失败');
+    }
   }
 
   async function handleDeleteBanner(id: string) {
@@ -147,7 +175,7 @@ export function BannersPage() {
       <Modal
         title={editingBanner ? '编辑 Banner' : '新增 Banner'}
         open={bannerModalOpen}
-        onCancel={() => setBannerModalOpen(false)}
+        onCancel={() => { setBannerModalOpen(false); setEditingBanner(null); }}
         footer={null}
         destroyOnHidden
         width={720}
@@ -158,29 +186,26 @@ export function BannersPage() {
           onFinish={handleSaveBanner}
           initialValues={{ sort: 0, status: 1 }}
         >
-          <Form.Item label="标题" name="title">
+          <Form.Item label="标题" name="title" rules={[{ required: true, message: '请输入标题' }]}>
             <Input placeholder="Banner 标题" />
           </Form.Item>
           <Form.Item label="副标题" name="subtitle">
-            <Input placeholder="Banner 副标题" />
+            <Input placeholder="Banner 副标题（可选）" />
           </Form.Item>
           <Form.Item
             label="图片"
             name="imageUrl"
             rules={[{ required: true, message: '请上传或输入图片地址' }]}
           >
-            <EnhancedUploadField
-              folder="banners"
-              accept="image/*"
-            />
+            <EnhancedUploadField folder="banners" accept="image/*" />
           </Form.Item>
           <Form.Item label="跳转链接" name="linkUrl">
-            <Input placeholder="https://example.com" />
+            <Input placeholder="https://example.com（可选）" />
           </Form.Item>
-          <Form.Item label="排序" name="sort">
-            <Input type="number" placeholder="值越大越靠前" />
+          <Form.Item label="排序" name="sort" tooltip="值越大越靠前">
+            <Input type="number" placeholder="默认 0" />
           </Form.Item>
-          <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => checked ? 1 : 0}>
+          <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
             <StatusSwitch checkedLabel="启用" uncheckedLabel="禁用" />
           </Form.Item>
           <Button type="primary" htmlType="submit" block icon={<SaveOutlined />}>
