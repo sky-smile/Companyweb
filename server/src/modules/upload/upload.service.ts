@@ -197,9 +197,15 @@ export class UploadService {
     const baseUrl = this.configService.get<string>('upload.baseUrl', 'http://localhost:3000/uploads');
     const normalizedFolder = this.normalizeFolder(folder);
     const targetDir = path.join(uploadDir, normalizedFolder);
-    
+
+    // 调试：打印接收到的文件名和编码信息
+    console.log('[Upload] Received filename (Multer):', file.originalname);
+    console.log('[Upload] Filename bytes:', Buffer.from(file.originalname).toString('hex'));
+
     // 修复中文文件名的编码问题
     const originalName = fixFilenameEncoding(file.originalname);
+    console.log('[Upload] Fixed filename:', originalName);
+    
     const extension = path.extname(originalName);
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${extension}`;
     const storagePath = path.join(targetDir, filename);

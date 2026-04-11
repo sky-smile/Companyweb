@@ -18,6 +18,7 @@
     "migration:run": "ts-node -r tsconfig-paths/register src/database/run-migrations.ts",
     "migration:revert": "node ./node_modules/typeorm/cli.js migration:revert -d dist/database/data-source.js",
     "seed:auth": "ts-node -r tsconfig-paths/register src/database/seeds/auth.seed.ts",
+    "fix-filenames": "ts-node -r tsconfig-paths/register src/fix-filenames.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest",
