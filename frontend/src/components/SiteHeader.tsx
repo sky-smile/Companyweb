@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { publicService } from '@/services/public-service';
 import { MobileMenu } from './MobileMenu';
@@ -41,13 +40,10 @@ export async function SiteHeader() {
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 76 }}>
         <Link href="/" className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {logo ? (
-            <Image
+            <img
               src={logo}
               alt={name || 'Logo'}
-              width={160}
-              height={40}
-              style={{ objectFit: 'contain', maxHeight: 40, width: 'auto' }}
-              priority
+              style={{ maxHeight: 40, width: 'auto', objectFit: 'contain' }}
             />
           ) : null}
           {name && (
