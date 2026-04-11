@@ -1,4 +1,5 @@
 @echo off
+setlocal EnableExtensions
 echo ========================================
 echo Starting MariaDB Database
 echo ========================================
@@ -12,8 +13,26 @@ if %ERRORLEVEL%==0 (
     goto TEST_CONNECTION
 )
 
-echo [2/3] Starting MariaDB...
-start /B "" "D:\Programs\Scoop\ScoopApps\apps\mariadb\current\bin\mysqld.exe" --defaults-file="D:\Programs\Scoop\ScoopApps\apps\mariadb\current\data\my.ini"
+where mysqld >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] mysqld not found in PATH.
+    echo Install MariaDB/MySQL and ensure its bin directory is on PATH, or use Scoop: scoop install mariadb
+    echo.
+    pause
+    exit /b 1
+)
+
+echo [2/3] Starting MariaDB ^(mysqld from PATH^)...
+if defined MARIADB_DEFAULTS_FILE if exist "%MARIADB_DEFAULTS_FILE%" (
+    echo Using MARIADB_DEFAULTS_FILE=%MARIADB_DEFAULTS_FILE%
+    start /B "" mysqld --defaults-file="%MARIADB_DEFAULTS_FILE%"
+) else if defined SCOOP if exist "%SCOOP%\persist\mariadb\data\my.ini" (
+    echo Using Scoop my.ini: %SCOOP%\persist\mariadb\data\my.ini
+    start /B "" mysqld --defaults-file="%SCOOP%\persist\mariadb\data\my.ini"
+) else (
+    echo No defaults-file ^(optional: set MARIADB_DEFAULTS_FILE, or install Scoop mariadb with persist my.ini^)
+    start /B "" mysqld
+)
 timeout /t 3 /nobreak >nul
 
 echo [3/3] Waiting for database ready...
@@ -37,6 +56,8 @@ if %ERRORLEVEL%==0 (
 if %RETRY_COUNT% GEQ %MAX_RETRIES% (
     echo.
     echo [ERROR] MariaDB startup timeout
+    echo If using Scoop, set MARIADB_DEFAULTS_FILE to your my.ini, e.g.:
+    echo   set MARIADB_DEFAULTS_FILE=%SCOOP%\persist\mariadb\data\my.ini
     echo.
     pause
     exit /b 1
@@ -63,7 +84,7 @@ if %ERRORLEVEL%==0 (
 ) else (
     echo.
     echo [ERROR] Database connection failed
-    echo Check error logs: D:\Programs\Scoop\ScoopApps\apps\mariadb\current\data\*.err
+    echo Check the MariaDB error log under your data directory or the path in my.ini.
     echo.
     pause
     exit /b 1

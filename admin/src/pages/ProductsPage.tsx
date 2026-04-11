@@ -22,7 +22,7 @@ export function ProductsPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [categories, setCategories] = useState<ProductCategoryItem[]>([]);
   const [searchText, setSearchText] = useState('');
-  const [filterCategory, setFilterCategory] = useState<number | undefined>(undefined);
+  const [filterCategory, setFilterCategory] = useState<string | undefined>(undefined);
 
   const productColumns = useMemo(
     () => [

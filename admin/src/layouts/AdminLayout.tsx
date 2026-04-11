@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   AppstoreOutlined,
   BellOutlined,
-  BreadcrumbOutlined,
   DashboardOutlined,
   FileTextOutlined,
   FullscreenExitOutlined,
@@ -18,7 +17,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Avatar, Breadcrumb, Button, Dropdown, Layout, Menu, Space, Tooltip, Typography } from 'antd';
-import type { MenuProps } from 'antd';
+import type { BreadcrumbProps, MenuProps } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { authStore } from '../stores/auth-store';
 
@@ -111,19 +110,14 @@ export function AdminLayout() {
   };
 
   // 生成面包屑
-  const generateBreadcrumbs = (): React.ReactNode[] => {
+  const generateBreadcrumbs = (): NonNullable<BreadcrumbProps['items']> => {
     const path = location.pathname;
     if (path === '/') {
-      return [
-        { title: <HomeOutlined /> },
-        { title: '控制台' },
-      ];
+      return [{ title: <HomeOutlined /> }, { title: '控制台' }];
     }
 
     const parts = path.split('/').filter(Boolean);
-    const breadcrumbs: { title: React.ReactNode; href?: string }[] = [
-      { title: <HomeOutlined />, href: '/' },
-    ];
+    const breadcrumbs: NonNullable<BreadcrumbProps['items']> = [{ title: <HomeOutlined />, href: '/' }];
 
     let currentPath = '';
     parts.forEach((part, index) => {
@@ -337,7 +331,6 @@ export function AdminLayout() {
                 fontWeight: 700,
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
                 WebkitTextFillColor: 'transparent',
               }}
             >

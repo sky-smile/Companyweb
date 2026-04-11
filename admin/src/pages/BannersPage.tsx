@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Form, Image, Input, Modal, Popconfirm, Space, Switch, Table, Tag, Typography, message } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SaveOutlined } from '@ant-design/icons';
-import { EnhancedUploadField, StatusSwitch } from '../components/common';
+import { EnhancedUploadField, MediaPicker, StatusSwitch } from '../components/common';
 import { siteContentService } from '../services/site-content-service';
 import { BannerItem, CreateBannerPayload, UpdateBannerPayload } from '../types/site-content';
 
@@ -197,7 +197,13 @@ export function BannersPage() {
             name="imageUrl"
             rules={[{ required: true, message: '请上传或输入图片地址' }]}
           >
-            <EnhancedUploadField folder="banners" accept="image/*" />
+            <Space direction="vertical" style={{ width: '100%' }} size={12}>
+              <MediaPicker folder="banners" />
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                或直接上传新图片：
+              </Typography.Text>
+              <EnhancedUploadField folder="banners" accept="image/*" />
+            </Space>
           </Form.Item>
           <Form.Item label="跳转链接" name="linkUrl">
             <Input placeholder="https://example.com（可选）" />

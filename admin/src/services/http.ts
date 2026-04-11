@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import { message } from 'antd';
 import { authStore } from '../stores/auth-store';
 import { ApiResponse } from '../types/api';
@@ -35,8 +35,10 @@ http.interceptors.response.use(
   },
 );
 
-export async function unwrapResponse<T>(promise: Promise<{ data: ApiResponse<T> }>): Promise<T> {
-  const response = await promise;
+export async function unwrapResponse<T>(
+  input: Promise<AxiosResponse<ApiResponse<T>>> | AxiosResponse<ApiResponse<T>>,
+): Promise<T> {
+  const response = await Promise.resolve(input);
 
   if (response.data.code !== 0) {
     throw new Error(response.data.message);

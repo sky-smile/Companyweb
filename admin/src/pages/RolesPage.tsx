@@ -83,11 +83,8 @@ export function RolesPage() {
                 setEditingRole(record);
                 // 将权限代码转换为权限 ID
                 const permissionIds = record.permissions
-                  .map((code: string) => {
-                    const perm = permissions.find((p) => p.code === code);
-                    return perm?.id;
-                  })
-                  .filter(Boolean);
+                  .map((code: string) => permissions.find((p) => p.code === code)?.id)
+                  .filter((id): id is string => id !== undefined);
                 form.setFieldsValue({
                   name: record.name,
                   code: record.code,

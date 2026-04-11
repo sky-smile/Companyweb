@@ -22,7 +22,7 @@ export function NewsPage() {
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [categories, setCategories] = useState<NewsCategoryItem[]>([]);
   const [searchText, setSearchText] = useState('');
-  const [filterCategory, setFilterCategory] = useState<number | undefined>(undefined);
+  const [filterCategory, setFilterCategory] = useState<string | undefined>(undefined);
 
   const newsColumns = useMemo(
     () => [

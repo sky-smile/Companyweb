@@ -62,7 +62,7 @@ export default async function HomePage() {
           <div style={{ marginBottom: 56 }}>
             <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
             <div className="news-list" style={{ display: 'grid', gap: 0 }}>
-              {news.list.slice(0, 4).map((item, index) => (
+              {news.list.slice(0, 4).map((item) => (
                 <Link
                   key={item.id}
                   href={`/news/${item.id}`}
@@ -72,12 +72,9 @@ export default async function HomePage() {
                     borderBottom: '1px solid var(--line)',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
-                      <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '新闻摘要待补充。'}</div>
-                    </div>
-                    <span style={{ fontSize: 22, opacity: 0.25, flexShrink: 0, marginTop: 4 }}>→</span>
+                  <div>
+                    <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
+                    <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '新闻摘要待补充。'}</div>
                   </div>
                 </Link>
               ))}
@@ -88,7 +85,7 @@ export default async function HomePage() {
           <div>
             <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
             <div className="announcement-list" style={{ display: 'grid', gap: 0 }}>
-              {announcements.list.slice(0, 4).map((item, index) => (
+              {announcements.list.slice(0, 4).map((item) => (
                 <Link
                   key={item.id}
                   href={`/announcements/${item.id}`}
@@ -98,12 +95,9 @@ export default async function HomePage() {
                     borderBottom: '1px solid var(--line)',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
-                      <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '公告摘要待补充。'}</div>
-                    </div>
-                    <span style={{ fontSize: 22, opacity: 0.25, flexShrink: 0, marginTop: 4 }}>→</span>
+                  <div>
+                    <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
+                    <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '公告摘要待补充。'}</div>
                   </div>
                 </Link>
               ))}

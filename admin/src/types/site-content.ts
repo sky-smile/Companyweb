@@ -44,6 +44,7 @@ export interface CreateBannerPayload {
   imageUrl: string;
   linkUrl?: string;
   sort?: number;
+  status?: number;
 }
 
 export interface UpdateBannerPayload {

@@ -87,10 +87,9 @@ export function AdminUsersPage() {
                   nickname: record.nickname,
                   email: record.email,
                   phone: record.phone,
-                  roleIds: record.roles.map(code => {
-                    const role = roles.find(r => r.code === code);
-                    return role?.id;
-                  }).filter(Boolean),
+                  roleIds: record.roles
+                    .map((code) => roles.find((r) => r.code === code)?.id)
+                    .filter((id): id is string => id !== undefined),
                 });
                 setEditModalOpen(true);
               }}

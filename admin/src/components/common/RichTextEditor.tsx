@@ -41,14 +41,12 @@ export function RichTextEditor({
         style={{ borderBottom: '1px solid var(--ant-color-border)' }}
       />
       <Editor
-        defaultConfig={{}}
+        defaultConfig={{ readOnly: disabled, placeholder }}
         value={value}
         onCreated={setEditor}
         onChange={handleChange}
-        disabled={disabled}
         mode="default"
         style={{ height }}
-        placeholder={placeholder}
       />
     </div>
   );

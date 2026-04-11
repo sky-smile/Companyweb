@@ -23,4 +23,4 @@ export interface CreateAnnouncementPayload {
   isTop?: number;
 }
 
-export interface UpdateAnnouncementPayload extends CreateAnnouncementPayload {}
+export type UpdateAnnouncementPayload = Partial<CreateAnnouncementPayload>;

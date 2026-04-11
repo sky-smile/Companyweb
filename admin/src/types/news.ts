@@ -51,4 +51,4 @@ export interface CreateNewsPayload {
   isTop?: number;
 }
 
-export interface UpdateNewsPayload extends CreateNewsPayload {}
+export type UpdateNewsPayload = Partial<CreateNewsPayload>;
