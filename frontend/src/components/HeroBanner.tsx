@@ -85,60 +85,60 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 32 }}>
             <Link 
               href="/products" 
-              style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '16px 28px', 
-                borderRadius: 999, 
-                background: 'var(--gradient-primary)',
-                color: '#ffffff',
-                fontWeight: 600,
-                fontSize: 15,
-                boxShadow: '0 4px 20px var(--brand-glow)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 32px var(--brand-glow)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 20px var(--brand-glow)';
-              }}
+              className="hero-btn-primary"
             >
               查看产品
               <span style={{ fontSize: 18 }}>→</span>
             </Link>
             <Link 
               href="/contact" 
-              style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '16px 28px', 
-                borderRadius: 999, 
-                border: '1px solid var(--line)',
-                background: 'var(--surface-glass)',
-                color: 'var(--foreground)',
-                fontWeight: 500,
-                fontSize: 15,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--brand-light)';
-                e.currentTarget.style.background = 'var(--brand-soft)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--line)';
-                e.currentTarget.style.background = 'var(--surface-glass)';
-              }}
+              className="hero-btn-secondary"
             >
               联系我们
             </Link>
           </div>
         </div>
       </div>
+      
+      <style dangerouslySetInnerHTML={{ __html: `
+        .hero-btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 16px 28px;
+          border-radius: 999px;
+          background: var(--gradient-primary);
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 15px;
+          box-shadow: 0 4px 20px var(--brand-glow);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hero-btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px var(--brand-glow);
+        }
+        
+        .hero-btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 16px 28px;
+          border-radius: 999px;
+          border: 1px solid var(--line);
+          background: var(--surface-glass);
+          color: var(--foreground);
+          font-weight: 500;
+          font-size: 15px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hero-btn-secondary:hover {
+          border-color: var(--brand-light);
+          background: var(--brand-soft);
+        }
+      `}} />
     </section>
   );
 }

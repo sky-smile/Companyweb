@@ -23,15 +23,7 @@ export function SiteHeader() {
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 72 }}>
         <Link 
           href="/" 
-          style={{ 
-            fontSize: 24, 
-            fontWeight: 800, 
-            letterSpacing: '-0.02em',
-            background: 'var(--gradient-primary)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
+          className="header-logo"
         >
           Sky Smile
         </Link>
@@ -42,19 +34,7 @@ export function SiteHeader() {
             <Link 
               key={item.href} 
               href={item.href} 
-              style={{ 
-                color: 'rgba(232, 234, 240, 0.75)',
-                fontWeight: 500,
-                fontSize: 15,
-                transition: 'color 0.2s ease',
-                position: 'relative',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ffffff';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(232, 234, 240, 0.75)';
-              }}
+              className="nav-link"
             >
               {item.label}
             </Link>
@@ -65,8 +45,29 @@ export function SiteHeader() {
         <MobileMenu />
       </div>
 
-      {/* 响应式样式 */}
+      {/* 响应式和交互样式 */}
       <style dangerouslySetInnerHTML={{ __html: `
+        .header-logo {
+          font-size: 24px;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          background: var(--gradient-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .nav-link {
+          color: rgba(232, 234, 240, 0.75);
+          font-weight: 500;
+          font-size: 15px;
+          transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+          color: #ffffff;
+        }
+        
         @media (max-width: 768px) {
           .desktop-nav {
             display: none !important;

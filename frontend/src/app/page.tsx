@@ -49,23 +49,9 @@ export default async function HomePage() {
         <div style={{ display: 'grid', gap: 24, gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))' }}>
           <div className="site-card" style={{ padding: 32 }}>
             <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
-            <div style={{ display: 'grid', gap: 16 }}>
+            <div className="news-list" style={{ display: 'grid', gap: 16 }}>
               {news.list.slice(0, 3).map((item) => (
-                <Link 
-                  key={item.id} 
-                  href={`/news/${item.id}`} 
-                  style={{ 
-                    paddingBottom: 16, 
-                    borderBottom: '1px solid var(--line)',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderBottomColor = 'var(--brand-light)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderBottomColor = 'var(--line)';
-                  }}
-                >
+                <Link key={item.id} href={`/news/${item.id}`} className="news-link">
                   <div style={{ fontSize: 18, marginBottom: 8, fontWeight: 600 }}>{item.title}</div>
                   <div className="section-copy" style={{ fontSize: 15 }}>{item.summary || '新闻摘要待补充。'}</div>
                 </Link>
@@ -74,23 +60,9 @@ export default async function HomePage() {
           </div>
           <div className="site-card" style={{ padding: 32 }}>
             <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
-            <div style={{ display: 'grid', gap: 16 }}>
+            <div className="announcement-list" style={{ display: 'grid', gap: 16 }}>
               {announcements.list.slice(0, 3).map((item) => (
-                <Link 
-                  key={item.id} 
-                  href={`/announcements/${item.id}`} 
-                  style={{ 
-                    paddingBottom: 16, 
-                    borderBottom: '1px solid var(--line)',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderBottomColor = 'var(--brand-light)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderBottomColor = 'var(--line)';
-                  }}
-                >
+                <Link key={item.id} href={`/announcements/${item.id}`} className="announcement-link">
                   <div style={{ fontSize: 18, marginBottom: 8, fontWeight: 600 }}>{item.title}</div>
                   <div className="section-copy" style={{ fontSize: 15 }}>{item.summary || '公告摘要待补充。'}</div>
                 </Link>
@@ -99,6 +71,18 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      
+      <style dangerouslySetInnerHTML={{ __html: `
+        .news-link, .announcement-link {
+          padding-bottom: 16px;
+          border-bottom: 1px solid var(--line);
+          transition: all 0.2s ease;
+        }
+        
+        .news-link:hover, .announcement-link:hover {
+          border-bottom-color: var(--brand-light);
+        }
+      `}} />
     </>
   );
 }

@@ -22,17 +22,36 @@ export default async function ContactPage() {
         <p className="section-copy" style={{ margin: 0, fontSize: 16 }}>{contact.page.content || '请在后台维护公司地址、邮箱、电话与地图嵌入说明。'}</p>
         <div style={{ display: 'grid', gap: 16 }}>
           {contact.settings.map((item) => (
-            <div key={item.settingKey} style={{ 
-              paddingBottom: 16, 
-              borderBottom: '1px solid var(--line)',
-              transition: 'border-color 0.2s ease',
-            }}>
-              <strong style={{ fontSize: 15, fontWeight: 600, color: 'var(--brand-light)' }}>{item.description || item.settingKey}</strong>
-              <div className="section-copy" style={{ marginTop: 6, fontSize: 15 }}>{item.settingValue}</div>
+            <div key={item.settingKey} className="contact-item">
+              <strong>{item.description || item.settingKey}</strong>
+              <div className="section-copy">{item.settingValue}</div>
             </div>
           ))}
         </div>
       </div>
+      
+      <style dangerouslySetInnerHTML={{ __html: `
+        .contact-item {
+          padding-bottom: 16px;
+          border-bottom: 1px solid var(--line);
+          transition: border-color 0.2s ease;
+        }
+        
+        .contact-item:hover {
+          border-bottom-color: var(--brand-light);
+        }
+        
+        .contact-item strong {
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--brand-light);
+        }
+        
+        .contact-item .section-copy {
+          margin-top: 6px;
+          font-size: 15px;
+        }
+      `}} />
     </section>
   );
 }
