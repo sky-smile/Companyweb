@@ -24,6 +24,22 @@ const uploadOptions = {
   limits: {
     fileSize: 10 * 1024 * 1024, // 增加到 10MB
   },
+  preserveFilename: true, // 保留原始文件名，确保正确处理中文
+  fileFilter: (req, file, cb) => {
+    // 确保文件名正确编码
+    if (file.originalname) {
+      // 尝试解码可能的错误编码
+      try {
+        // 如果是 Buffer，转换为字符串
+        if (Buffer.isBuffer(file.originalname)) {
+          file.originalname = file.originalname.toString('utf8');
+        }
+      } catch (error) {
+        // 忽略解码错误，使用原始值
+      }
+    }
+    cb(null, true);
+  },
 };
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)

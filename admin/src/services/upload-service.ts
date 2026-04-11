@@ -3,7 +3,10 @@ import { UploadedFileItem } from '../types/upload';
 
 async function upload(endpoint: '/admin/upload/image' | '/admin/upload/file', file: File, folder: string) {
   const formData = new FormData();
-  formData.append('file', file);
+  
+  // 确保文件名正确编码，处理中文等特殊字符
+  // 使用 file.name 作为原始文件名，浏览器会自动进行 UTF-8 编码
+  formData.append('file', file, file.name);
 
   return unwrapResponse<UploadedFileItem>(
     http.post(`${endpoint}?folder=${encodeURIComponent(folder)}`, formData, {

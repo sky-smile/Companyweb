@@ -170,7 +170,18 @@ export class UploadService {
     const baseUrl = this.configService.get<string>('upload.baseUrl', 'http://localhost:3000/uploads');
     const normalizedFolder = this.normalizeFolder(folder);
     const targetDir = path.join(uploadDir, normalizedFolder);
-    const extension = path.extname(file.originalname);
+    
+    // 正确处理中文文件名
+    let originalName = file.originalname;
+    // 尝试解码 URL 编码的文件名（处理浏览器上传时的编码）
+    try {
+      originalName = decodeURIComponent(file.originalname);
+    } catch {
+      // 如果解码失败，使用原始值
+      originalName = file.originalname;
+    }
+    
+    const extension = path.extname(originalName);
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${extension}`;
     const storagePath = path.join(targetDir, filename);
 
@@ -186,7 +197,7 @@ export class UploadService {
 
     // 保存到数据库
     const insertResult = await this.mediaFileRepository.insert({
-      originalName: file.originalname,
+      originalName,
       filename,
       storagePath,
       publicUrl,
@@ -205,7 +216,7 @@ export class UploadService {
     }) as MediaFileEntity;
 
     return {
-      originalName: file.originalname,
+      originalName,
       mimeType: file.mimetype,
       size: file.size,
       filename,
