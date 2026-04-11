@@ -126,7 +126,19 @@ export function SiteSettingsPage() {
       </div>
 
       {/* 站点基本信息卡片 */}
-      <Card title="站点基本信息">
+      <Card
+        title="站点基本信息"
+        extra={
+          <Button
+            icon={<SaveOutlined />}
+            type="primary"
+            onClick={handleSave}
+            loading={saving}
+          >
+            保存设置
+          </Button>
+        }
+      >
         <Space direction="vertical" size={20} style={{ width: '100%' }}>
           {/* Logo 设置 */}
           <Space direction="vertical" size={8} style={{ width: '100%' }}>
