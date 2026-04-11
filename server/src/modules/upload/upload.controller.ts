@@ -1,10 +1,15 @@
 import {
   Controller,
   Post,
+  Get,
+  Delete,
+  Param,
   Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -17,7 +22,7 @@ import { UploadService } from './upload.service';
 const uploadOptions = {
   storage: memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 10 * 1024 * 1024, // 增加到 10MB
   },
 };
 
@@ -29,14 +34,95 @@ export class UploadController {
   @Post('image')
   @Permissions('upload:image')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
-  uploadImage(@UploadedFile() file: Express.Multer.File, @Query() query: UploadQueryDto) {
-    return this.uploadService.saveImage(file, query.folder);
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Query() query: UploadQueryDto,
+    @Req() req: any,
+  ) {
+    const uploadedBy = req.user?.id;
+    const result = await this.uploadService.saveImage(file, uploadedBy, query.folder);
+    return {
+      code: 0,
+      message: '上传成功',
+      data: {
+        url: result.publicUrl,
+        mediaFile: result.mediaFile,
+      },
+    };
   }
 
   @Post('file')
   @Permissions('upload:file')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Query() query: UploadQueryDto) {
-    return this.uploadService.saveFile(file, query.folder);
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Query() query: UploadQueryDto,
+    @Req() req: any,
+  ) {
+    const uploadedBy = req.user?.id;
+    const result = await this.uploadService.saveFile(file, uploadedBy, query.folder);
+    return {
+      code: 0,
+      message: '上传成功',
+      data: {
+        url: result.publicUrl,
+        mediaFile: result.mediaFile,
+      },
+    };
+  }
+
+  @Get('files')
+  @Permissions('upload:image')
+  async getFiles(
+    @Query('page', new ParseIntPipe()) page: number = 1,
+    @Query('limit', new ParseIntPipe()) limit: number = 20,
+    @Query('folder') folder?: string,
+    @Query('type') type?: string,
+    @Query('keyword') keyword?: string,
+  ) {
+    const result = await this.uploadService.findAll(page, limit, {
+      folder,
+      mimeType: type,
+      keyword,
+    });
+
+    return {
+      code: 0,
+      message: 'ok',
+      data: result,
+    };
+  }
+
+  @Get('files/:id')
+  @Permissions('upload:image')
+  async getFile(@Param('id', new ParseIntPipe()) id: number) {
+    const mediaFile = await this.uploadService.findOne(id);
+    return {
+      code: 0,
+      message: 'ok',
+      data: mediaFile,
+    };
+  }
+
+  @Delete('files/:id')
+  @Permissions('upload:image')
+  async deleteFile(@Param('id', new ParseIntPipe()) id: number) {
+    const result = await this.uploadService.remove(id);
+    return {
+      code: 0,
+      message: result.message,
+      data: null,
+    };
+  }
+
+  @Get('statistics')
+  @Permissions('upload:image')
+  async getStatistics() {
+    const stats = await this.uploadService.getStatistics();
+    return {
+      code: 0,
+      message: 'ok',
+      data: stats,
+    };
   }
 }

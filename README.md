@@ -178,7 +178,7 @@ cd frontend && pnpm run dev
 后台管理系统默认登录信息：
 
 - 用户名：`admin`
-- 密码：`Admin1234567`
+- 密码：`Admin123`
 
 > ⚠️ 首次登录后请及时修改默认密码
 

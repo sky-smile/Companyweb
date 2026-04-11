@@ -13,7 +13,7 @@ if %ERRORLEVEL%==0 (
 )
 
 echo [2/3] Starting MariaDB...
-start /B "" "D:\Programs\Scoop\Scoop\apps\mariadb\current\bin\mysqld.exe" --defaults-file="D:\Programs\Scoop\Scoop\apps\mariadb\current\data\my.ini"
+start /B "" "D:\Programs\Scoop\ScoopApps\apps\mariadb\current\bin\mysqld.exe" --defaults-file="D:\Programs\Scoop\ScoopApps\apps\mariadb\current\data\my.ini"
 timeout /t 3 /nobreak >nul
 
 echo [3/3] Waiting for database ready...
@@ -63,7 +63,7 @@ if %ERRORLEVEL%==0 (
 ) else (
     echo.
     echo [ERROR] Database connection failed
-    echo Check error logs: D:\Programs\Scoop\Scoop\apps\mariadb\current\data\*.err
+    echo Check error logs: D:\Programs\Scoop\ScoopApps\apps\mariadb\current\data\*.err
     echo.
     pause
     exit /b 1

@@ -1,27 +1,171 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { Repository } from 'typeorm';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { MediaFileEntity } from '@/database/entities/media-file.entity';
 import { UploadedFileView } from './interfaces/uploaded-file-view.interface';
 
 @Injectable()
 export class UploadService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectRepository(MediaFileEntity)
+    private readonly mediaFileRepository: Repository<MediaFileEntity>,
+  ) {}
 
-  saveImage(file: Express.Multer.File, folder?: string): UploadedFileView {
+  async saveImage(
+    file: Express.Multer.File,
+    uploadedBy: number,
+    folder?: string,
+  ): Promise<UploadedFileView & { mediaFile: MediaFileEntity }> {
     this.ensureFilePresent(file);
     this.ensureImageFile(file);
 
-    return this.persistFile(file, folder ?? 'images');
+    const result = await this.persistFile(file, uploadedBy, folder ?? 'images');
+    return result;
   }
 
-  saveFile(file: Express.Multer.File, folder?: string): UploadedFileView {
+  async saveFile(
+    file: Express.Multer.File,
+    uploadedBy: number,
+    folder?: string,
+  ): Promise<UploadedFileView & { mediaFile: MediaFileEntity }> {
     this.ensureFilePresent(file);
 
-    return this.persistFile(file, folder ?? 'files');
+    const result = await this.persistFile(file, uploadedBy, folder ?? 'files');
+    return result;
   }
 
-  private persistFile(file: Express.Multer.File, folder: string): UploadedFileView {
+  async findAll(
+    page: number,
+    limit: number,
+    options?: {
+      folder?: string;
+      mimeType?: string;
+      keyword?: string;
+    },
+  ) {
+    const queryBuilder = this.mediaFileRepository.createQueryBuilder('media');
+
+    if (options?.folder) {
+      queryBuilder.andWhere('media.folder = :folder', { folder: options.folder });
+    }
+
+    if (options?.mimeType) {
+      if (options.mimeType === 'image') {
+        queryBuilder.andWhere('media.mime_type LIKE :mimeType', { mimeType: 'image/%' });
+      } else {
+        queryBuilder.andWhere('media.mime_type = :mimeType', { mimeType: options.mimeType });
+      }
+    }
+
+    if (options?.keyword) {
+      queryBuilder.andWhere('media.original_name LIKE :keyword', {
+        keyword: `%${options.keyword}%`,
+      });
+    }
+
+    queryBuilder.orderBy('media.created_at', 'DESC');
+    queryBuilder.skip((page - 1) * limit).take(limit);
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async findOne(id: number) {
+    const mediaFile = await this.mediaFileRepository.findOne({ where: { id } });
+    if (!mediaFile) {
+      throw new BadRequestException('媒体文件不存在');
+    }
+    return mediaFile;
+  }
+
+  async remove(id: number) {
+    const mediaFile = await this.findOne(id);
+
+    // 删除物理文件
+    const fullPath = mediaFile.storagePath;
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+
+    // 删除缩略图
+    if (mediaFile.thumbnailUrl) {
+      const uploadDir = this.configService.get<string>('upload.dir', 'uploads');
+      const thumbnailPath = path.join(uploadDir, mediaFile.thumbnailUrl.split('/uploads/')[1]);
+      if (fs.existsSync(thumbnailPath)) {
+        fs.unlinkSync(thumbnailPath);
+      }
+    }
+
+    // 删除数据库记录
+    await this.mediaFileRepository.delete(id);
+
+    return { message: '删除成功' };
+  }
+
+  async getStatistics() {
+    const [totalResult, imageResult, documentResult, otherResult, folderResult] =
+      await Promise.all([
+        this.mediaFileRepository.count(),
+        this.mediaFileRepository
+          .createQueryBuilder('media')
+          .where('media.mime_type LIKE :type', { type: 'image/%' })
+          .getCount(),
+        this.mediaFileRepository
+          .createQueryBuilder('media')
+          .where('media.mime_type IN (:...types)', {
+            types: [
+              'application/pdf',
+              'application/msword',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+              'text/plain',
+            ],
+          })
+          .getCount(),
+        this.mediaFileRepository
+          .createQueryBuilder('media')
+          .where('media.mime_type NOT LIKE :type1', { type1: 'image/%' })
+          .andWhere('media.mime_type NOT IN (:...types)', {
+            types: [
+              'application/pdf',
+              'application/msword',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+              'text/plain',
+            ],
+          })
+          .getCount(),
+        this.mediaFileRepository
+          .createQueryBuilder('media')
+          .select('media.folder', 'folder')
+          .addSelect('COUNT(*)', 'count')
+          .groupBy('media.folder')
+          .getRawMany(),
+      ]);
+
+    return {
+      total: totalResult,
+      images: imageResult,
+      documents: documentResult,
+      others: otherResult,
+      byFolder: folderResult,
+    };
+  }
+
+  private async persistFile(
+    file: Express.Multer.File,
+    uploadedBy: number,
+    folder: string,
+  ): Promise<UploadedFileView & { mediaFile: MediaFileEntity }> {
     const uploadDir = this.configService.get<string>('upload.dir', 'uploads');
     const baseUrl = this.configService.get<string>('upload.baseUrl', 'http://localhost:3000/uploads');
     const normalizedFolder = this.normalizeFolder(folder);
@@ -33,13 +177,41 @@ export class UploadService {
     fs.mkdirSync(targetDir, { recursive: true });
     fs.writeFileSync(storagePath, file.buffer);
 
+    const publicUrl = `${baseUrl}/${normalizedFolder}/${filename}`;
+
+    // 如果是图片，尝试获取尺寸信息（不生成缩略图）
+    let width: number | null = null;
+    let height: number | null = null;
+    let thumbnailUrl: string | null = null;
+
+    // 保存到数据库
+    const insertResult = await this.mediaFileRepository.insert({
+      originalName: file.originalname,
+      filename,
+      storagePath,
+      publicUrl,
+      mimeType: file.mimetype,
+      size: file.size,
+      extension: extension.replace('.', ''),
+      folder: normalizedFolder,
+      ...(width !== null && { width }),
+      ...(height !== null && { height }),
+      ...(thumbnailUrl !== null && { thumbnailUrl }),
+      uploadedBy,
+    });
+
+    const savedMediaFile = await this.mediaFileRepository.findOne({
+      where: { id: insertResult.generatedMaps[0] as any },
+    }) as MediaFileEntity;
+
     return {
       originalName: file.originalname,
       mimeType: file.mimetype,
       size: file.size,
       filename,
       storagePath,
-      publicUrl: `${baseUrl}/${normalizedFolder}/${filename}`,
+      publicUrl,
+      mediaFile: savedMediaFile,
     };
   }
 

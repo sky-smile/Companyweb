@@ -62,7 +62,7 @@ cd frontend && pnpm run dev
 
 ### 默认账号
 - 用户名: `admin`
-- 密码: `Admin1234567`
+- 密码: `Admin123`
 
 ### 停止服务
 ```bash

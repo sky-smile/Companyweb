@@ -7,6 +7,7 @@ import { AddNewsTables1712603600000 } from './migrations/1712603600000-add-news-
 import { AddProductTables1712614400000 } from './migrations/1712614400000-add-product-tables';
 import { AddSiteContentTables1712610800000 } from './migrations/1712610800000-add-site-content-tables';
 import { InitAuthRbac1712600000000 } from './migrations/1712600000000-init-auth-rbac';
+import { AddMediaFilesTable1712620000000 } from './migrations/1712620000000-add-media-files-table';
 
 const config = appConfig();
 
@@ -24,6 +25,7 @@ export const AppDataSource = new DataSource({
     AddAnnouncementsTable1712607200000,
     AddSiteContentTables1712610800000,
     AddProductTables1712614400000,
+    AddMediaFilesTable1712620000000,
   ],
   synchronize: false,
   logging: config.database.logging,

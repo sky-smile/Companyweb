@@ -22,4 +22,40 @@ export const uploadService = {
   uploadFile(file: File, folder: string) {
     return upload('/admin/upload/file', file, folder);
   },
+
+  async getFiles(
+    page: number = 1,
+    limit: number = 20,
+    options?: {
+      folder?: string;
+      type?: string;
+      keyword?: string;
+    },
+  ) {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(options?.folder && { folder: options.folder }),
+      ...(options?.type && { type: options.type }),
+      ...(options?.keyword && { keyword: options.keyword }),
+    });
+
+    const response = await http.get(`/admin/upload/files?${params.toString()}`);
+    return unwrapResponse(response);
+  },
+
+  async getFile(id: number) {
+    const response = await http.get(`/admin/upload/files/${id}`);
+    return unwrapResponse(response);
+  },
+
+  async deleteFile(id: number) {
+    const response = await http.delete(`/admin/upload/files/${id}`);
+    return unwrapResponse(response);
+  },
+
+  async getStatistics() {
+    const response = await http.get('/admin/upload/statistics');
+    return unwrapResponse(response);
+  },
 };

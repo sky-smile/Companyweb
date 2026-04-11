@@ -1,4 +1,7 @@
 @echo off
+REM 设置 Node.js 和 pnpm 环境变量
+set PATH=D:\Programs\Scoop\ScoopApps\apps\nodejs-lts\current;D:\Programs\Scoop\ScoopApps\apps\nodejs-lts\current\bin;D:\Programs\Scoop\ScoopApps\persist\nodejs-lts\bin;%PATH%
+
 echo ========================================
 echo CompanyWeb Dev Environment Startup
 echo ========================================
@@ -40,7 +43,7 @@ echo   Database:    127.0.0.1:3306
 echo.
 echo Default Admin Account:
 echo   Username: admin
-echo   Password: Admin1234567
+echo   Password: Admin123
 echo.
 echo Tips:
 echo   - Each service runs in a separate window

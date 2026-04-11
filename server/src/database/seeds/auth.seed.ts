@@ -90,7 +90,7 @@ async function seed(): Promise<void> {
       );
     }
 
-    const passwordHash = await hashPassword('Admin123456');
+    const passwordHash = await hashPassword('Admin123');
 
     await queryRunner.manager.query(
       'INSERT INTO admin_users (username, password_hash, nickname, status, is_super_admin) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), nickname = VALUES(nickname), status = VALUES(status), is_super_admin = VALUES(is_super_admin)',
