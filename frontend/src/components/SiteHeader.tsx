@@ -104,27 +104,22 @@ export async function SiteHeader() {
 
         .header-site-name {
           font-size: 20px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          font-weight: 700;
+          letter-spacing: -0.01em;
+          color: var(--foreground);
+          transition: color 0.3s ease;
         }
 
         .header-default-name {
-          font-size: 24px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: -0.01em;
+          color: var(--foreground);
           transition: all 0.3s ease;
         }
 
         .nav-link {
-          color: rgba(26, 32, 44, 0.72);
+          color: var(--foreground);
           font-weight: 500;
           font-size: 15px;
           transition: all 0.25s ease;
@@ -139,7 +134,7 @@ export async function SiteHeader() {
           left: 0;
           width: 0;
           height: 2px;
-          background: var(--gradient-primary);
+          background: var(--brand);
           transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           border-radius: 2px;
         }
