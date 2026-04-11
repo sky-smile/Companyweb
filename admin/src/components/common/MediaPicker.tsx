@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Image, Input, Modal, Space, Table, Typography, message } from 'antd';
 import { PictureOutlined, SearchOutlined } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
@@ -15,6 +15,12 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
+
+  // 当外部 value 变化时同步到内部输入框
+  const [inputValue, setInputValue] = useState(value || '');
+  useEffect(() => {
+    setInputValue(value || '');
+  }, [value]);
 
   async function loadFiles() {
     setLoading(true);
@@ -35,6 +41,11 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
   function handleSelect(file: MediaFile) {
     onChange?.(file.publicUrl);
     setOpen(false);
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputValue(e.target.value);
+    onChange?.(e.target.value);
   }
 
   const columns = [
@@ -92,21 +103,33 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
   ];
 
   return (
-    <Space.Compact style={{ width: '100%' }}>
-      <Input
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        placeholder="从媒体中心选择或直接输入图片 URL"
-      />
-      <Button
-        icon={<PictureOutlined />}
-        onClick={() => {
-          console.log('[MediaPicker] Button clicked, opening modal...');
-          setOpen(true);
-        }}
-      >
-        从媒体中心选择
-      </Button>
+    <div>
+      {/* 已选图片预览 */}
+      {value && (
+        <div style={{ marginBottom: 12 }}>
+          <Image
+            src={value}
+            alt="已选图片"
+            style={{ maxWidth: 300, maxHeight: 120, objectFit: 'contain', borderRadius: 8, border: '1px solid #f0f0f0' }}
+          />
+        </div>
+      )}
+
+      <Space.Compact style={{ width: '100%' }}>
+        <Input
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="从媒体中心选择或直接输入图片 URL"
+        />
+        <Button
+          icon={<PictureOutlined />}
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          从媒体中心选择
+        </Button>
+      </Space.Compact>
 
       <Modal
         title="从媒体中心选择图片"
@@ -115,9 +138,8 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
         footer={null}
         width={900}
         destroyOnHidden
-        afterOpenChange={(open) => {
-          console.log('[MediaPicker] Modal open changed:', open);
-          if (open) {
+        afterOpenChange={(isOpen) => {
+          if (isOpen) {
             void loadFiles();
           }
         }}
@@ -146,6 +168,6 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
           locale={{ emptyText: '暂无图片，请先上传' }}
         />
       </Modal>
-    </Space.Compact>
+    </div>
   );
 }

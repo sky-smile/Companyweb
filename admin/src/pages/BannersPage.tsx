@@ -197,13 +197,14 @@ export function BannersPage() {
             name="imageUrl"
             rules={[{ required: true, message: '请上传或输入图片地址' }]}
           >
-            <Space direction="vertical" style={{ width: '100%' }} size={12}>
-              <MediaPicker folder="banners" />
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                或直接上传新图片：
-              </Typography.Text>
-              <EnhancedUploadField folder="banners" accept="image/*" />
-            </Space>
+            <MediaPicker folder="banners" />
+          </Form.Item>
+          <Form.Item label="上传新图片">
+            <EnhancedUploadField
+              folder="banners"
+              accept="image/*"
+              onChange={(url) => bannerForm.setFieldValue('imageUrl', url)}
+            />
           </Form.Item>
           <Form.Item label="跳转链接" name="linkUrl">
             <Input placeholder="https://example.com（可选）" />
