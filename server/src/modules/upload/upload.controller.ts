@@ -25,18 +25,34 @@ const uploadOptions = {
   limits: {
     fileSize: 10 * 1024 * 1024, // 增加到 10MB
   },
-  preserveFilename: true, // 保留原始文件名，确保正确处理中文
   fileFilter: (req: Request, file: Express.Multer.File, cb: (error: Error | null, acceptFile: boolean) => void) => {
-    // 确保文件名正确编码
-    if (file.originalname) {
-      // 尝试解码可能的错误编码
-      try {
-        // 如果是 Buffer，转换为字符串
-        if (Buffer.isBuffer(file.originalname)) {
-          file.originalname = file.originalname.toString('utf8');
+    // 从 Content-Disposition 头中提取原始 UTF-8 文件名
+    const contentDisposition = req.headers['content-disposition'];
+    if (contentDisposition) {
+      // 尝试提取 filename*=UTF-8'' 格式的文件名（RFC 5987）
+      const utf8Match = contentDisposition.match(/filename\*=UTF-8''(.+?)(?:;|$)/i);
+      if (utf8Match && utf8Match[1]) {
+        try {
+          file.originalname = decodeURIComponent(utf8Match[1]);
+        } catch {
+          // 忽略解码错误
         }
-      } catch (error) {
-        // 忽略解码错误，使用原始值
+      } else {
+        // 尝试提取普通 filename="..." 格式，并修复 Latin-1 误解析
+        const filenameMatch = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/i);
+        if (filenameMatch && filenameMatch[1]) {
+          try {
+            // 将错误的 Latin-1 字符串转回字节，再用 UTF-8 解码
+            const buffer = Buffer.from(filenameMatch[1], 'latin1');
+            const decoded = buffer.toString('utf8');
+            // 如果解码后包含中文字符，使用解码结果
+            if (/[\u4e00-\u9fa5]/.test(decoded)) {
+              file.originalname = decoded;
+            }
+          } catch {
+            // 忽略解码错误
+          }
+        }
       }
     }
     cb(null, true);

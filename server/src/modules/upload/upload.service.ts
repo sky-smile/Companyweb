@@ -171,33 +171,8 @@ export class UploadService {
     const normalizedFolder = this.normalizeFolder(folder);
     const targetDir = path.join(uploadDir, normalizedFolder);
     
-    // 正确处理中文文件名
-    // Multer 会将 UTF-8 文件名错误地解析为 Latin-1，需要转换回来
-    let originalName = file.originalname;
-    
-    // 方法 1：尝试修复 Latin-1 误解析为 UTF-8 的问题
-    try {
-      // 将错误的 Latin-1 字符串转回字节，再用 UTF-8 解码
-      const buffer = Buffer.from(file.originalname, 'latin1');
-      const decoded = buffer.toString('utf8');
-      // 如果解码后看起来合理（包含中文字符），使用解码后的值
-      if (/[\u4e00-\u9fa5]/.test(decoded)) {
-        originalName = decoded;
-      }
-    } catch {
-      // 忽略解码错误
-    }
-    
-    // 方法 2：尝试 URL 解码（处理浏览器预编码的情况）
-    try {
-      const urlDecoded = decodeURIComponent(originalName);
-      if (urlDecoded !== originalName) {
-        originalName = urlDecoded;
-      }
-    } catch {
-      // 忽略解码错误
-    }
-    
+    // 使用已正确解码的文件名（由 fileFilter 处理）
+    const originalName = file.originalname;
     const extension = path.extname(originalName);
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${extension}`;
     const storagePath = path.join(targetDir, filename);
