@@ -52,13 +52,6 @@ export default async function AboutPage() {
         }} />
 
         <div className="site-shell" style={{ position: 'relative', zIndex: 1 }}>
-          {/* 面包屑 */}
-          <nav className="about-breadcrumb" style={{ fontSize: 14, color: 'rgba(15, 23, 42, 0.5)', marginBottom: 32 }}>
-            <Link href="/" style={{ color: 'rgba(15, 23, 42, 0.5)', textDecoration: 'none', transition: 'color 0.2s' }}>首页</Link>
-            <span style={{ margin: '0 10px' }}>/</span>
-            <span style={{ color: 'var(--brand)', fontWeight: 500 }}>关于我们</span>
-          </nav>
-
           <div style={{ maxWidth: 800 }}>
             <div style={{
               color: 'var(--brand)',
@@ -431,10 +424,6 @@ export default async function AboutPage() {
       </section>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .about-breadcrumb a:hover {
-          color: var(--brand) !important;
-        }
-
         .about-pillar:hover {
           transform: translateY(-6px);
           box-shadow: var(--shadow-lg);

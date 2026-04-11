@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { buildMetadata, pickDescription } from '@/lib/seo';
 import { RichContent } from '@/components/RichContent';
 import { publicService } from '@/services/public-service';
@@ -40,13 +39,6 @@ export default async function ContactPage() {
         }} />
 
         <div className="site-shell" style={{ position: 'relative', zIndex: 1 }}>
-          {/* 面包屑 */}
-          <nav style={{ fontSize: 14, color: 'rgba(15, 23, 42, 0.5)', marginBottom: 28 }}>
-            <Link href="/" style={{ color: 'rgba(15, 23, 42, 0.5)', textDecoration: 'none', transition: 'color 0.2s' }}>首页</Link>
-            <span style={{ margin: '0 10px' }}>/</span>
-            <span style={{ color: 'var(--brand)', fontWeight: 500 }}>联系我们</span>
-          </nav>
-
           <div style={{ maxWidth: 700 }}>
             <div style={{
               color: 'var(--brand)',

@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { ApiError } from '@/lib/api';
 import { formatPublicDate, parseProductParameters, parseStringArray } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
-import { Breadcrumb } from '@/components/Breadcrumb';
 import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
 import { ProductJsonLd } from '@/components/JsonLd';
@@ -81,15 +80,6 @@ export default function ProductDetailPage() {
 
   return (
     <section className="site-shell" style={{ padding: '42px 0' }}>
-      {/* 面包屑导航 */}
-      <Breadcrumb
-        items={[
-          { label: '首页', href: '/' },
-          { label: '产品中心', href: '/products' },
-          { label: item.name },
-        ]}
-      />
-
       <article className="site-card" style={{ padding: 36, display: 'grid', gap: 24 }}>
         {/* 分类和日期 */}
         <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--accent)', flexWrap: 'wrap' }}>

@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import { ApiError } from '@/lib/api';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
-import { Breadcrumb } from '@/components/Breadcrumb';
 import { RichContent } from '@/components/RichContent';
 import { ListSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
@@ -67,15 +66,6 @@ export default function AnnouncementDetailPage() {
 
   return (
     <section className="site-shell" style={{ padding: '42px 0' }}>
-      {/* 面包屑导航 */}
-      <Breadcrumb
-        items={[
-          { label: '首页', href: '/' },
-          { label: '公告', href: '/announcements' },
-          { label: item.title },
-        ]}
-      />
-
       <article className="site-card" style={{ padding: 36 }}>
         {/* 置顶标记和日期 */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 13, color: 'var(--brand)', flexWrap: 'wrap', alignItems: 'center' }}>

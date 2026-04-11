@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
 import { ApiError } from '@/lib/api';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
-import { Breadcrumb } from '@/components/Breadcrumb';
 import { RichContent } from '@/components/RichContent';
 import { NewsArticleJsonLd } from '@/components/JsonLd';
 import { ListSkeleton } from '@/components/Skeleton';
@@ -69,15 +67,6 @@ export default function NewsDetailPage() {
 
   return (
     <section className="site-shell" style={{ padding: '42px 0' }}>
-      {/* 面包屑导航 */}
-      <Breadcrumb
-        items={[
-          { label: '首页', href: '/' },
-          { label: '新闻中心', href: '/news' },
-          { label: item.title },
-        ]}
-      />
-
       <article className="site-card" style={{ padding: 36 }}>
         {/* 分类和日期 */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 13, color: 'var(--brand)', flexWrap: 'wrap' }}>
