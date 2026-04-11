@@ -18,7 +18,7 @@ export function SiteHeader() {
       zIndex: 20, 
       backdropFilter: 'blur(20px)', 
       borderBottom: '1px solid var(--line)', 
-      background: 'rgba(10, 14, 26, 0.85)',
+      background: 'rgba(255, 255, 255, 0.95)',
     }}>
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 72 }}>
         <Link 
@@ -51,21 +51,23 @@ export function SiteHeader() {
           font-size: 24px;
           font-weight: 800;
           letter-spacing: -0.02em;
-          background: var(--gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: var(--brand);
+          transition: opacity 0.2s ease;
+        }
+        
+        .header-logo:hover {
+          opacity: 0.8;
         }
         
         .nav-link {
-          color: rgba(232, 234, 240, 0.75);
+          color: rgba(26, 32, 44, 0.75);
           font-weight: 500;
           font-size: 15px;
           transition: color 0.2s ease;
         }
         
         .nav-link:hover {
-          color: #ffffff;
+          color: var(--brand);
         }
         
         @media (max-width: 768px) {

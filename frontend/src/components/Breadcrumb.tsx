@@ -18,7 +18,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
       style={{
         marginBottom: 28,
         fontSize: 14,
-        color: 'rgba(232, 234, 240, 0.5)',
+        color: 'rgba(26, 32, 44, 0.5)',
       }}
     >
       <ol
@@ -44,13 +44,13 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
               <Link
                 href={item.href}
                 style={{
-                  color: 'rgba(232, 234, 240, 0.65)',
+                  color: 'rgba(26, 32, 44, 0.65)',
                   textDecoration: 'none',
                   transition: 'color 0.2s',
                   fontWeight: 500,
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--brand-light)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(232, 234, 240, 0.65)')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--brand)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(26, 32, 44, 0.65)')}
               >
                 {item.label}
               </Link>

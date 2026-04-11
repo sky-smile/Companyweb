@@ -8,7 +8,7 @@ export function SectionHeading({ eyebrow, title, description }: SectionHeadingPr
   return (
     <div style={{ display: 'grid', gap: 12, marginBottom: 28 }}>
       <div style={{ 
-        color: 'var(--brand-light)', 
+        color: 'var(--brand)', 
         textTransform: 'uppercase', 
         letterSpacing: '0.2em', 
         fontSize: 12,

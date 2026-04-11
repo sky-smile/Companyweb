@@ -38,13 +38,13 @@ export default async function ContactPage() {
         }
         
         .contact-item:hover {
-          border-bottom-color: var(--brand-light);
+          border-bottom-color: var(--brand);
         }
         
         .contact-item strong {
           font-size: 15px;
           font-weight: 600;
-          color: var(--brand-light);
+          color: var(--brand);
         }
         
         .contact-item .section-copy {

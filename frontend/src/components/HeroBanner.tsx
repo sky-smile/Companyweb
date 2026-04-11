@@ -40,7 +40,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(10, 14, 26, 0.92) 0%, rgba(10, 14, 26, 0.75) 100%)',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
         }}
       />
 
@@ -51,7 +51,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             display: 'flex',
             alignItems: 'center',
             gap: 8,
-            color: 'var(--brand-light)',
+            color: 'var(--brand)',
             letterSpacing: '0.2em',
             fontSize: 13,
             fontWeight: 600,
@@ -67,8 +67,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             lineHeight: 1.05,
             fontWeight: 800,
             letterSpacing: '-0.03em',
-            color: '#ffffff',
-            textShadow: '0 2px 20px rgba(0, 0, 0, 0.3)',
+            color: 'var(--foreground)',
           }}>
             {banner?.title || 'Reliable manufacturing, presented with clarity.'}
           </h1>
@@ -77,9 +76,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             margin: '20px 0 0',
             maxWidth: 640,
             fontSize: 18,
-            color: 'rgba(255, 255, 255, 0.85)',
+            color: 'rgba(26, 32, 44, 0.7)',
             lineHeight: 1.7,
-            textShadow: '0 1px 10px rgba(0, 0, 0, 0.2)',
           }}>
             {banner?.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
           </p>
@@ -147,18 +145,18 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           gap: 8px;
           padding: 16px 28px;
           border-radius: 999px;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          background: rgba(255, 255, 255, 0.05);
-          color: #ffffff;
+          border: 1px solid var(--line);
+          background: var(--surface);
+          color: var(--foreground);
           font-weight: 500;
           font-size: 15px;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          backdrop-filter: blur(10px);
         }
 
         .hero-btn-secondary:hover {
-          border-color: var(--brand-light);
+          border-color: var(--brand);
           background: var(--brand-soft);
+          color: var(--brand);
         }
         
         @media (max-width: 768px) {

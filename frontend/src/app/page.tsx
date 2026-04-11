@@ -80,7 +80,7 @@ export default async function HomePage() {
         }
         
         .news-link:hover, .announcement-link:hover {
-          border-bottom-color: var(--brand-light);
+          border-bottom-color: var(--brand);
         }
       `}} />
     </>
