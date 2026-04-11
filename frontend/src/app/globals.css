@@ -103,6 +103,85 @@ img {
   background: rgba(255, 248, 241, 0.8);
 }
 
+/* Shimmer 动画（用于骨架屏和图片加载） */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.lazy-image-shimmer,
+.skeleton-shimmer {
+  animation: shimmer 1.5s infinite;
+  background: linear-gradient(90deg, var(--line) 25%, rgba(255,248,241,0.6) 50%, var(--line) 75%);
+  background-size: 200% 100%;
+}
+
+/* 富文本内容样式 */
+.rich-content {
+  line-height: 1.9;
+  color: rgba(29, 20, 15, 0.7);
+}
+
+.rich-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.rich-content p {
+  margin-bottom: 16px;
+}
+
+.rich-content h1,
+.rich-content h2,
+.rich-content h3,
+.rich-content h4,
+.rich-content h5,
+.rich-content h6 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.rich-content ul,
+.rich-content ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.rich-content a {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.rich-content blockquote {
+  border-left: 4px solid var(--brand);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: rgba(29, 20, 15, 0.7);
+}
+
+.rich-content code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.rich-content pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
 @media (max-width: 640px) {
   .status-card {
     padding: 36px 24px;

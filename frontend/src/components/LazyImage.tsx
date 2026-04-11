@@ -1,0 +1,117 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+
+interface LazyImageProps {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  threshold?: number;
+}
+
+export function LazyImage({
+  src,
+  alt,
+  width,
+  height = 220,
+  className,
+  style,
+  threshold = 0.1,
+}: LazyImageProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  const handleLoad = () => setIsLoaded(true);
+  const handleError = () => {
+    setHasError(true);
+    setIsLoaded(true);
+  };
+
+  return (
+    <div
+      ref={imgRef}
+      className={className}
+      style={{
+        position: 'relative',
+        width: width || '100%',
+        height,
+        overflow: 'hidden',
+        borderRadius: 20,
+        background: 'var(--line)',
+        ...style,
+      }}
+    >
+      {/* 加载占位符 */}
+      {!isLoaded && (
+        <div
+          className="lazy-image-shimmer"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(90deg, var(--line) 25%, rgba(255,248,241,0.6) 50%, var(--line) 75%)',
+            backgroundSize: '200% 100%',
+          }}
+        />
+      )}
+
+      {/* 错误占位符 */}
+      {hasError && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'var(--surface)',
+            color: 'rgba(29, 20, 15, 0.4)',
+            fontSize: 14,
+          }}
+        >
+          图片加载失败
+        </div>
+      )}
+
+      {/* 实际图片 */}
+      {isInView && (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          onLoad={handleLoad}
+          onError={handleError}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: isLoaded ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+          }}
+        />
+      )}
+    </div>
+  );
+}
