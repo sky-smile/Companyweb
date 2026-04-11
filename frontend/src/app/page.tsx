@@ -27,9 +27,16 @@ export default async function HomePage() {
     <>
       <HeroBanner banners={home.banners} />
 
-      <section className="site-shell animate-fade-in-up delay-100" style={{ padding: '32px 0 32px' }}>
-        <div className="site-card" style={{ padding: 48 }}>
-          <SectionHeading eyebrow="About" title={home.page.title || 'A focused company presence built for clarity.'} description={home.page.content || 'Use the admin site content module to enrich the homepage introduction, advantages, and structured content.'} />
+      <section className="animate-fade-in-up delay-100" style={{ 
+        padding: '40px 0',
+        background: 'var(--surface)',
+        borderTop: '1px solid var(--line)',
+        borderBottom: '1px solid var(--line)',
+      }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ padding: '20px 0' }}>
+            <SectionHeading eyebrow="About" title={home.page.title || 'A focused company presence built for clarity.'} description={home.page.content || 'Use the admin site content module to enrich the homepage introduction, advantages, and structured content.'} />
+          </div>
         </div>
       </section>
 
