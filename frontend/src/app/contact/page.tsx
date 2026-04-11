@@ -16,11 +16,11 @@ export default async function ContactPage() {
   const contact = await publicService.getContact();
 
   return (
-    <section className="site-shell" style={{ padding: '48px 0' }}>
-      <div className="site-card" style={{ padding: 48, display: 'grid', gap: 24 }}>
+    <section className="site-shell animate-fade-in-up" style={{ padding: '56px 0' }}>
+      <div className="site-card" style={{ padding: 56, display: 'grid', gap: 28 }}>
         <h1 className="section-title">{contact.page.title || '联系我们'}</h1>
-        <p className="section-copy" style={{ margin: 0, fontSize: 16 }}>{contact.page.content || '请在后台维护公司地址、邮箱、电话与地图嵌入说明。'}</p>
-        <div style={{ display: 'grid', gap: 16 }}>
+        <p className="section-copy" style={{ margin: 0, fontSize: 17 }}>{contact.page.content || '请在后台维护公司地址、邮箱、电话与地图嵌入说明。'}</p>
+        <div style={{ display: 'grid', gap: 18 }}>
           {contact.settings.map((item) => (
             <div key={item.settingKey} className="contact-item">
               <strong>{item.description || item.settingKey}</strong>
@@ -32,23 +32,28 @@ export default async function ContactPage() {
       
       <style dangerouslySetInnerHTML={{ __html: `
         .contact-item {
-          padding-bottom: 16px;
-          border-bottom: 1px solid var(--line);
-          transition: border-color 0.2s ease;
+          padding: 20px;
+          border-radius: 12px;
+          border: 1px solid var(--line);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .contact-item:hover {
-          border-bottom-color: var(--brand);
+          border-color: var(--brand);
+          background: var(--brand-soft);
+          transform: translateX(4px);
         }
         
         .contact-item strong {
           font-size: 15px;
           font-weight: 600;
           color: var(--brand);
+          display: block;
+          margin-bottom: 6px;
         }
         
         .contact-item .section-copy {
-          margin-top: 6px;
+          margin: 0;
           font-size: 15px;
         }
       `}} />

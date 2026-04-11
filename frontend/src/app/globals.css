@@ -101,16 +101,15 @@ img {
 }
 
 /* ====================================
-   卡片组件 - 玻璃态 + 科技未来感
+   卡片组件 - 现代简洁
    ==================================== */
 
 .site-card {
   background: var(--surface);
-  backdrop-filter: blur(20px);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -121,16 +120,16 @@ img {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--brand-soft), transparent);
+  height: 2px;
+  background: var(--gradient-primary);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease;
 }
 
 .site-card:hover {
-  border-color: var(--line-hover);
-  box-shadow: var(--shadow-lg), 0 0 0 1px var(--brand-soft);
-  transform: translateY(-2px);
+  border-color: transparent;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(37, 99, 235, 0.1);
+  transform: translateY(-4px);
 }
 
 .site-card:hover::before {
@@ -242,10 +241,93 @@ img {
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+/* 延迟类 */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
 .lazy-image-shimmer,
 .skeleton-shimmer {
   animation: shimmer 1.5s infinite;
-  background: linear-gradient(90deg, var(--line) 25%, rgba(15, 20, 35, 0.6) 50%, var(--line) 75%);
+  background: linear-gradient(90deg, var(--line) 25%, rgba(247, 250, 252, 0.6) 50%, var(--line) 75%);
   background-size: 200% 100%;
 }
 
