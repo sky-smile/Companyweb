@@ -20,6 +20,10 @@
   --page-top-detail: calc(var(--header-height) + 24px);
   --page-top-detail-mobile: calc(var(--header-height-mobile) + 16px);
   
+  /* 底栏与内容间距 */
+  --footer-spacing: 64px;
+  --footer-spacing-mobile: 48px;
+  
   /* 表面色 */
   --surface: #ffffff;
   --surface-elevated: #ffffff;
@@ -89,6 +93,15 @@ body {
   padding-top: var(--page-top-detail);
 }
 
+/* 页面底栏上方间距工具类 */
+.page-content-end {
+  padding-bottom: var(--footer-spacing);
+}
+
+.page-content-end-compact {
+  padding-bottom: calc(var(--footer-spacing) * 0.75);
+}
+
 @media (max-width: 768px) {
   .page-hero {
     padding-top: var(--page-top-mobile) !important;
@@ -96,6 +109,14 @@ body {
   
   .page-detail {
     padding-top: var(--page-top-detail-mobile) !important;
+  }
+
+  .page-content-end {
+    padding-bottom: var(--footer-spacing-mobile) !important;
+  }
+
+  .page-content-end-compact {
+    padding-bottom: var(--footer-spacing-mobile) !important;
   }
 }
 

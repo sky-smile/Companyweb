@@ -44,7 +44,7 @@ export default function NewsDetailPage() {
 
   if (loading) {
     return (
-      <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+      <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
         <div className="site-card" style={{ padding: 36 }}>
           <ListSkeleton count={1} />
         </div>
@@ -54,7 +54,7 @@ export default function NewsDetailPage() {
 
   if (error || !item) {
     return (
-      <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+      <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
         <EmptyState
           title={error || '加载失败'}
           description="当前新闻可能已下线或尚未发布。"
@@ -66,7 +66,7 @@ export default function NewsDetailPage() {
   }
 
   return (
-    <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+    <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
       <article className="site-card" style={{ padding: 36 }}>
         {/* 分类和日期 */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 13, color: 'var(--brand)', flexWrap: 'wrap' }}>

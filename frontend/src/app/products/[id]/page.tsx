@@ -54,7 +54,7 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+      <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
         <div className="site-card" style={{ padding: 36 }}>
           <ListSkeleton count={1} />
         </div>
@@ -64,7 +64,7 @@ export default function ProductDetailPage() {
 
   if (error || !item) {
     return (
-      <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+      <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
         <EmptyState
           title={error || '加载失败'}
           description="当前产品可能已下线或尚未发布。"
@@ -79,7 +79,7 @@ export default function ProductDetailPage() {
   const parameters = parseProductParameters(item.parametersJson);
 
   return (
-    <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+    <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
       <article className="site-card" style={{ padding: 36, display: 'grid', gap: 24 }}>
         {/* 分类和日期 */}
         <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--accent)', flexWrap: 'wrap' }}>

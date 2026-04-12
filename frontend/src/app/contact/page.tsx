@@ -71,7 +71,7 @@ export default async function ContactPage() {
       </section>
 
       {/* 联系信息卡片 */}
-      <section className="site-shell" style={{ padding: '48px 0' }}>
+      <section className="site-shell page-content-end" style={{ paddingTop: 64 }}>
         <div style={{ display: 'grid', gap: 18, gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
           {contact.settings.map((item) => (
             <div key={item.settingKey} style={{

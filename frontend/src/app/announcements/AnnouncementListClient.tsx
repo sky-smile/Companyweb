@@ -96,7 +96,7 @@ export function AnnouncementListClient() {
       </section>
 
       {/* 公告列表 */}
-      <section className="site-shell" style={{ padding: '48px 0' }}>
+      <section className="site-shell page-content-end" style={{ paddingTop: 64 }}>
         {loading ? (
           <ListSkeleton count={5} />
         ) : announcements.length === 0 ? (

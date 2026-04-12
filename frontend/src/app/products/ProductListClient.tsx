@@ -95,7 +95,7 @@ export function ProductListClient() {
       </section>
 
       {/* 产品列表 */}
-      <section className="site-shell" style={{ padding: '48px 0' }}>
+      <section className="site-shell page-content-end" style={{ paddingTop: 64 }}>
         {loading ? (
           <GridSkeleton count={6} />
         ) : products.length === 0 ? (

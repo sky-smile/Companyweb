@@ -3,7 +3,7 @@ export function SiteFooter() {
     <footer
       className="site-footer"
       style={{
-        marginTop: 100,
+        marginTop: 'var(--footer-spacing, 64px)',
         background: 'linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)',
         borderTop: '1px solid var(--line)',
       }}
@@ -64,7 +64,7 @@ export function SiteFooter() {
         
         @media (max-width: 768px) {
           .site-footer {
-            margin-top: 60px;
+            margin-top: var(--footer-spacing-mobile, 48px);
           }
           
           .site-shell {

@@ -186,8 +186,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="animate-fade-in-up delay-300" style={{
-        padding: '48px 0',
+      <section className="home-news-section animate-fade-in-up delay-300" style={{
+        padding: '64px 0',
         background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
         borderTop: '1px solid var(--line)',
       }}>
@@ -276,6 +276,10 @@ export default async function HomePage() {
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
           }
+
+          .home-news-section {
+            padding: 48px 0;
+          }
         }
 
         @media (max-width: 480px) {
@@ -285,6 +289,10 @@ export default async function HomePage() {
 
           .about-pillars {
             grid-template-columns: 1fr;
+          }
+
+          .home-news-section {
+            padding: 36px 0;
           }
         }
       `}} />

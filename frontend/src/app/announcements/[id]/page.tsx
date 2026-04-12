@@ -43,9 +43,9 @@ export default function AnnouncementDetailPage() {
 
   if (loading) {
     return (
-      <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+      <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
         <div className="site-card" style={{ padding: 36 }}>
-          <ListSkeleton count={1) />
+          <ListSkeleton count={1} />
         </div>
       </section>
     );
@@ -53,7 +53,7 @@ export default function AnnouncementDetailPage() {
 
   if (error || !item) {
     return (
-      <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+      <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
         <EmptyState
           title={error || '加载失败'}
           description="当前公告可能已下线或尚未发布。"
@@ -65,7 +65,7 @@ export default function AnnouncementDetailPage() {
   }
 
   return (
-    <section className="site-shell page-detail" style={{ paddingTop: 'var(--page-top-detail, 100px)', paddingBottom: 24 }}>
+    <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
       <article className="site-card" style={{ padding: 36 }}>
         {/* 置顶标记和日期 */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 13, color: 'var(--brand)', flexWrap: 'wrap', alignItems: 'center' }}>

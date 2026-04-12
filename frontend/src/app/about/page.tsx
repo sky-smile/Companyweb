@@ -490,6 +490,10 @@ export default async function AboutPage() {
           .about-timeline {
             padding-left: 32px;
           }
+
+          .about-cta {
+            padding: 48px 0;
+          }
         }
 
         @media (max-width: 480px) {
@@ -509,6 +513,10 @@ export default async function AboutPage() {
 
           .about-timeline-card {
             padding: 18px 20px;
+          }
+
+          .about-cta {
+            padding: 40px 0;
           }
         }
       `}} />
