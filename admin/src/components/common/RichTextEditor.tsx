@@ -1,7 +1,10 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
 import { Editor, Toolbar } from '@wangeditor/editor-for-react';
 import '@wangeditor/editor/dist/css/style.css';
+import { Space, Button, message, Tooltip } from 'antd';
+import { PaperClipOutlined } from '@ant-design/icons';
+import { uploadService } from '../../services/upload-service';
 
 interface RichTextEditorProps {
   value?: string;
@@ -9,37 +12,48 @@ interface RichTextEditorProps {
   height?: number;
   placeholder?: string;
   disabled?: boolean;
+  folder?: string;
 }
 
 /**
- * 清理 wangEditor 输出的 HTML，去除不必要的行内样式和标签
- * - 移除所有 style 属性（颜色、字体、背景等 Word/网页粘贴残留）
- * - 移除 <span> 标签（仅保留内部文本）
- * - 移除空标签
- * - 保留语义标签：p, h1-h6, ul, ol, li, a, strong, b, em, i, blockquote, img, br, hr, pre, code, table, thead, tbody, tr, th, td
+ * 清理 HTML — 保留必要的结构性属性（图片宽高、表格边框等）
+ * 仅移除危险标签和样式，保留富媒体内容
  */
 function sanitizeHtml(html: string): string {
   if (!html) return '';
 
-  // 1. 移除所有 style 属性
-  let result = html.replace(/\s+style\s*=\s*["'][^"']*["']/gi, '');
+  let result = html;
 
-  // 2. 移除 <span> 标签（保留内部内容）
-  result = result.replace(/<span[^>]*>/gi, '');
-  result = result.replace(/<\/span>/gi, '');
+  // 1. 移除 script 标签及其内容
+  result = result.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
-  // 3. 移除 <font> 标签（旧版 Word 粘贴残留）
+  // 2. 移除事件处理器
+  result = result.replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '');
+
+  // 3. 移除危险协议
+  result = result.replace(/href\s*=\s*["']javascript:[^"']*["']/gi, 'href="#"');
+
+  // 4. 移除仅包含字体颜色/背景色的 style 属性（保留布局相关样式）
+  result = result.replace(
+    /\s+style\s*=\s*"([^"]*(?:color|font-family|font-size|background-color|letter-spacing)[^"]*)"/gi,
+    ''
+  );
+
+  // 5. 移除 <font> 标签（旧版 Word 粘贴残留）
   result = result.replace(/<font[^>]*>/gi, '');
   result = result.replace(/<\/font>/gi, '');
 
-  // 4. 移除 class 属性（wangEditor 自身不依赖 class，外部粘贴可能带来）
-  result = result.replace(/\s+class\s*=\s*["'][^"']*["']/gi, '');
+  // 6. 移除仅包含空白的 span 标签
+  result = result.replace(/<span[^>]*>(\s*)<\/span>/gi, '$1');
 
-  // 5. 移除空段落（仅含空白字符的 p/div/h 标签）
+  // 7. 移除空段落
   result = result.replace(/<(p|div|h[1-6])[^>]*>\s*<\/\1>/gi, '');
 
-  // 6. 清理多余空行（连续2个以上空行合并为1个）
+  // 8. 清理多余连续空行
   result = result.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
+
+  // 9. 确保 img 标签有 alt 属性
+  result = result.replace(/(<img(?![^>]*?\s+alt=)[^>]*)>/gi, '$1 alt="">');
 
   return result.trim();
 }
@@ -50,8 +64,10 @@ export function RichTextEditor({
   height = 500,
   placeholder = '请输入内容...',
   disabled = false,
+  folder = 'content',
 }: RichTextEditorProps) {
   const [editor, setEditor] = useState<IDomEditor | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -61,11 +77,10 @@ export function RichTextEditor({
     };
   }, [editor]);
 
-  // 工具栏配置：精简按钮，去除颜色/字体/背景等易产生行内样式的功能
+  // 工具栏配置：保留图片、表格等功能
   const toolbarConfig = useMemo<IToolbarConfig>(() => ({
     excludeKeys: [
       'headerSelect',       // 标题选择（保留其他标题方式）
-      'italic',             // 斜体（可选，按需注释）
       'group-more-style',   // 更多风格（下划线、删除线等）
       'color',              // 文字颜色
       'bgColor',            // 背景颜色
@@ -75,50 +90,110 @@ export function RichTextEditor({
       'indent',             // 缩进
       'delIndent',          // 取消缩进
       'emotion',            // 表情
-      'insertLink',         // 插入链接（按需，可注释以允许）
-      'editLink',           // 编辑链接
-      'unLink',             // 取消链接
-      'viewLink',           // 查看链接
       'codeBlock',          // 代码块
-      'blockquote',         // 引用（按需）
-      'divider',            // 分割线
+      'fullScreen',         // 全屏（在 Modal 中不需要）
     ],
   }), []);
 
-  // 编辑器配置：粘贴时自动去除样式
+  // 编辑器核心配置
   const editorConfig = useMemo<IEditorConfig>(() => ({
     readOnly: disabled,
     placeholder,
-    // 粘贴时仅保留纯文本，去除所有格式
-    pasteFilterStyle: true,
-    // 忽略粘贴内容中的图片（防止外部图片链接失效）
+    
+    // 粘贴时保留格式（保留图片、表格等结构）
+    pasteFilterStyle: false,
     pasteIgnoreImg: false,
-    // 自定义粘贴处理：将粘贴内容转为纯文本格式再插入
-    customPaste: (ed: IDomEditor, event: ClipboardEvent) => {
-      event.preventDefault();
-      const text = event.clipboardData?.getData('text/plain') || '';
-      if (text) {
-        // 按换行分段插入
-        const paragraphs = text.split(/\n\s*\n/);
-        paragraphs.forEach((para, index) => {
-          const trimmed = para.trim();
-          if (trimmed) {
-            ed.insertText(trimmed);
-            if (index < paragraphs.length - 1) {
-              ed.insertBreak();
-            }
+
+    // 图片上传配置 — 使用自有后端
+    MENU_CONF: {
+      uploadImage: {
+        // 将 folder 参数拼接到 URL query string
+        server: `/api/admin/upload/image?folder=${encodeURIComponent(folder)}`,
+        fieldName: 'file',
+        maxFileSize: 10 * 1024 * 1024,
+        allowedFileTypes: ['image/*'],
+        // 携带 cookie 和自定义 header
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+        // 自定义响应解析
+        customInsert(res: any, insertFn: Function) {
+          // 后端返回 { code:0, data:{ url } }
+          if (res.code === 0 && res.data?.url) {
+            insertFn(res.data.url, '', '');
+          } else {
+            message.error(res.message || '图片上传失败');
           }
-        });
-      }
-      return false; // 返回 false 阻止默认粘贴行为
+        },
+        // 错误处理
+        onError(file: File, err: any, res: any) {
+          console.error('[Editor] Image upload error:', file.name, err, res);
+          const msg = res?.message || err?.message || '图片上传失败';
+          message.error(msg);
+        },
+        // 超时设置
+        timeout: 30 * 1000,
+      },
+      
+      // 插入网络图片配置
+      insertImage: {
+        checkImage(src: string): boolean | string | undefined {
+          if (src.startsWith('http://') || src.startsWith('https://') || 
+              src.startsWith('data:image/') || src.startsWith('/') || 
+              src.startsWith('./')) {
+            return true;
+          }
+          return '图片地址格式不正确';
+        },
+        parseImageSrc(src: string): string {
+          return src.trim();
+        },
+      },
     },
-  }), [disabled, placeholder]);
+  }), [disabled, placeholder, folder]);
 
   const handleChange = (ed: IDomEditor) => {
     const raw = ed.getHtml();
     const cleaned = sanitizeHtml(raw);
     onChange?.(cleaned);
   };
+
+  // 插入附件（文件上传后生成下载链接）
+  const handleInsertAttachment = useCallback(async () => {
+    if (!editor || uploadingFile) return;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar';
+
+    input.onchange = async (e: Event) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      setUploadingFile(true);
+      try {
+        const result = await uploadService.uploadFile(file, `${folder}-files`);
+        const fileName = file.name;
+        
+        // 在光标位置插入一个下载链接
+        editor.dangerouslyInsertHtml(
+          `<p><a href="${result.publicUrl}" target="_blank" download="${fileName}" ` +
+          `style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;` +
+          `background:#f0f5ff;border:1px solid #d4e3fc;border-radius:6px;color:#1677ff;text-decoration:none;">` +
+          `<span>📎</span>${fileName}</a></p>`
+        );
+        message.success(`附件 "${fileName}" 已插入`);
+      } catch (error: any) {
+        console.error('Attachment upload error:', error);
+        message.error(error?.message || '附件上传失败');
+      } finally {
+        setUploadingFile(false);
+      }
+    };
+
+    input.click();
+  }, [editor, uploadingFile, folder]);
 
   return (
     <div style={{ border: '1px solid var(--ant-color-border)', borderRadius: 8, overflow: 'hidden' }}>
@@ -136,6 +211,39 @@ export function RichTextEditor({
         mode="default"
         style={{ height }}
       />
+      
+      {/* 底部工具栏：附件上传 */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 12px',
+          borderTop: '1px solid var(--ant-color-border)',
+          background: 'var(--ant-color-bg-container)',
+          fontSize: 13,
+        }}
+      >
+        <Space>
+          <Tooltip title="插入附件（PDF、Word、Excel 等）">
+            <Button
+              size="small"
+              icon={<PaperClipOutlined />}
+              loading={uploadingFile}
+              onClick={handleInsertAttachment}
+              disabled={disabled}
+            >
+              插入附件
+            </Button>
+          </Tooltip>
+          <span style={{ color: 'var(--ant-color-text-secondary)', fontSize: 12 }}>
+            支持拖拽图片到编辑区域直接上传
+          </span>
+        </Space>
+        <span style={{ color: 'var(--ant-color-text-quaternary)', fontSize: 12 }}>
+          {value ? `${(new DOMParser().parseFromString(value, 'text/html').body.textContent || '').length} 字` : ''}
+        </span>
+      </div>
     </div>
   );
 }
