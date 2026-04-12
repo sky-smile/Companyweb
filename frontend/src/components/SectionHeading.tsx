@@ -8,11 +8,11 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ eyebrow, title, description }: SectionHeadingProps) {
   return (
-    <div style={{ display: 'grid', gap: 12, marginBottom: 28 }}>
-      <div style={{ 
-        color: 'var(--brand)', 
-        textTransform: 'uppercase', 
-        letterSpacing: '0.2em', 
+    <div style={{ display: 'grid', gap: 12, marginBottom: 28, justifyItems: 'center', textAlign: 'center' }}>
+      <div style={{
+        color: 'var(--brand)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.2em',
         fontSize: 12,
         fontWeight: 600,
       }}>
@@ -22,7 +22,7 @@ export function SectionHeading({ eyebrow, title, description }: SectionHeadingPr
       <RichContent
         content={description}
         className="section-copy"
-        style={{ margin: 0, maxWidth: 700 }}
+        style={{ margin: '0 auto', maxWidth: 700, textAlign: 'center' }}
       />
     </div>
   );
