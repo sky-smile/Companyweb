@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { HeroBanner } from '@/components/HeroBanner';
-import { NewsCardImage } from '@/components/NewsCardImage';
 import { SectionHeading } from '@/components/SectionHeading';
 import { buildMetadata, pickDescription } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
@@ -256,24 +255,6 @@ export default async function HomePage() {
                     className="news-card"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="news-image-wrapper">
-                      {item.coverImage ? (
-                        <NewsCardImage
-                          src={item.coverImage}
-                          alt={item.title}
-                          loading={index < 2 ? 'eager' : 'lazy'}
-                        />
-                      ) : (
-                        <div className="news-image-placeholder">
-                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <path d="M21 15l-5-5L5 21" />
-                          </svg>
-                          <span>暂无图片</span>
-                        </div>
-                      )}
-                    </div>
                     <div className="news-body">
                       <div className="news-date">
                         <span className="news-day">{day}</span>
@@ -281,13 +262,19 @@ export default async function HomePage() {
                         <span className="news-year">{year}</span>
                       </div>
                       <div className="news-content">
-                        <h3 className="news-title">{item.title}</h3>
+                        <div className="news-header">
+                          <h3 className="news-title">{item.title}</h3>
+                          <span className="news-category">{item.categoryName || '新闻'}</span>
+                        </div>
                         <p className="news-summary">{item.summary || '暂无摘要信息'}</p>
-                      </div>
-                      <div className="news-arrow">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
+                        <div className="news-footer">
+                          <span className="news-read-more">阅读全文</span>
+                          <div className="news-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -511,7 +498,7 @@ export default async function HomePage() {
           transform: translateX(4px);
         }
 
-        /* 新闻模块样式 */
+        /* 新闻模块样式 - 无图片优化版 */
         .news-list {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
@@ -527,16 +514,27 @@ export default async function HomePage() {
 
         .news-card {
           display: flex;
-          flex-direction: column;
           background: #ffffff;
           border: 1px solid var(--line);
           border-radius: 16px;
           text-decoration: none;
           color: inherit;
-          overflow: hidden;
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           opacity: 0;
           animation: fadeInUp 0.6s ease forwards;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .news-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 100%;
+          background: linear-gradient(to bottom, var(--brand-soft), rgba(37, 99, 235, 0.1));
+          transition: width 0.3s ease;
         }
 
         .news-card:hover {
@@ -545,65 +543,41 @@ export default async function HomePage() {
           transform: translateY(-4px);
         }
 
-        .news-image-wrapper {
-          position: relative;
-          width: 100%;
-          height: 180px;
-          background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-          overflow: hidden;
-        }
-
-        .news-image {
-          object-fit: cover;
-          transition: transform 0.5s ease;
-        }
-
-        .news-card:hover .news-image {
-          transform: scale(1.05);
-        }
-
-        .news-image-placeholder {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          color: #94a3b8;
-          gap: 8px;
-        }
-
-        .news-image-placeholder span {
-          font-size: 13px;
+        .news-card:hover::before {
+          width: 8px;
         }
 
         .news-body {
           display: flex;
           align-items: flex-start;
           gap: 20px;
-          padding: 24px;
+          padding: 28px;
+          width: 100%;
         }
 
         .news-date {
           display: flex;
           flex-direction: column;
           align-items: center;
-          min-width: 56px;
-          padding: 10px 14px;
-          background: linear-gradient(135deg, var(--brand-soft) 0%, rgba(37, 99, 235, 0.05) 100%);
-          border-radius: 10px;
+          min-width: 68px;
+          padding: 12px 16px;
+          background: linear-gradient(135deg, var(--brand-soft) 0%, rgba(37, 99, 235, 0.08) 100%);
+          border-radius: 12px;
           text-align: center;
           transition: all 0.3s ease;
           flex-shrink: 0;
+          border: 1px solid rgba(37, 99, 235, 0.1);
         }
 
         .news-card:hover .news-date {
           background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+          border-color: rgba(37, 99, 235, 0.3);
           color: white;
+          transform: scale(1.05);
         }
 
         .news-day {
-          font-size: 24px;
+          font-size: 28px;
           font-weight: 800;
           line-height: 1;
           color: var(--brand);
@@ -615,11 +589,11 @@ export default async function HomePage() {
         }
 
         .news-month {
-          font-size: 12px;
-          font-weight: 500;
-          margin: 2px 0;
+          font-size: 13px;
+          font-weight: 600;
+          margin: 4px 0;
           color: var(--brand);
-          opacity: 0.8;
+          opacity: 0.9;
           transition: color 0.3s ease;
         }
 
@@ -628,55 +602,110 @@ export default async function HomePage() {
         }
 
         .news-year {
-          font-size: 10px;
+          font-size: 11px;
           color: var(--text-muted);
           transition: color 0.3s ease;
+          font-weight: 500;
         }
 
         .news-card:hover .news-year {
-          color: rgba(255, 255, 255, 0.7);
+          color: rgba(255, 255, 255, 0.8);
         }
 
         .news-content {
           flex: 1;
           min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .news-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 4px;
         }
 
         .news-title {
-          font-size: 17px;
-          font-weight: 600;
-          line-height: 1.5;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.4;
           color: var(--foreground);
-          margin: 0 0 8px;
+          margin: 0;
           transition: color 0.3s ease;
           display: -webkit-box;
-          -webkit-line-clamp: 1;
+          -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          flex: 1;
+          min-width: 0;
         }
 
         .news-card:hover .news-title {
           color: var(--brand);
         }
 
+        .news-category {
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--brand);
+          background: rgba(37, 99, 235, 0.1);
+          padding: 4px 10px;
+          border-radius: 20px;
+          white-space: nowrap;
+          flex-shrink: 0;
+          border: 1px solid rgba(37, 99, 235, 0.2);
+          transition: all 0.3s ease;
+        }
+
+        .news-card:hover .news-category {
+          background: var(--brand);
+          color: white;
+          border-color: var(--brand);
+          transform: translateY(-1px);
+        }
+
         .news-summary {
-          font-size: 14px;
+          font-size: 15px;
           line-height: 1.7;
           color: var(--text-muted);
           margin: 0;
           display: -webkit-box;
-          -webkit-line-clamp: 2;
+          -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          min-height: 64px;
+        }
+
+        .news-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 8px;
+        }
+
+        .news-read-more {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--brand);
+          opacity: 0.8;
+          transition: all 0.3s ease;
+        }
+
+        .news-card:hover .news-read-more {
+          opacity: 1;
+          color: var(--accent);
         }
 
         .news-arrow {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
           background: var(--surface);
           color: var(--brand);
           transition: all 0.3s ease;
@@ -686,7 +715,7 @@ export default async function HomePage() {
         .news-card:hover .news-arrow {
           background: var(--brand);
           color: white;
-          transform: translateX(4px);
+          transform: translateX(4px) scale(1.1);
         }
 
         /* 公告模块样式 */
@@ -857,47 +886,62 @@ export default async function HomePage() {
           }
 
           .news-card {
-            flex-direction: row;
-            flex-wrap: wrap;
-          }
-
-          .news-image-wrapper {
-            width: 100%;
-            height: 140px;
+            flex-direction: column;
           }
 
           .news-body {
-            padding: 16px;
-            gap: 12px;
-            width: 100%;
+            padding: 20px;
+            gap: 16px;
+            flex-direction: column;
+            align-items: flex-start;
           }
 
           .news-date {
-            min-width: 48px;
-            padding: 8px 10px;
+            min-width: 60px;
+            padding: 10px 12px;
+            align-self: flex-start;
           }
 
           .news-day {
-            font-size: 20px;
+            font-size: 24px;
           }
 
           .news-month {
-            font-size: 11px;
+            font-size: 12px;
+          }
+
+          .news-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
           }
 
           .news-title {
-            font-size: 15px;
+            font-size: 16px;
             line-height: 1.4;
+            -webkit-line-clamp: 2;
+          }
+
+          .news-category {
+            align-self: flex-start;
           }
 
           .news-summary {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.6;
-            -webkit-line-clamp: 1;
+            -webkit-line-clamp: 2;
+            min-height: auto;
+          }
+
+          .news-footer {
+            width: 100%;
+            margin-top: 12px;
           }
 
           .news-arrow {
-            display: none;
+            display: flex;
+            width: 32px;
+            height: 32px;
           }
 
           .announcement-card {
