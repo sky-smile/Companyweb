@@ -241,7 +241,9 @@ export default async function HomePage() {
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           {/* 新闻区域 */}
           <div style={{ marginBottom: 72 }}>
-            <SectionHeading eyebrow="新闻动态" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
+            <div style={{ textAlign: 'center', marginBottom: 40 }}>
+              <SectionHeading eyebrow="新闻动态" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
+            </div>
             <div className="news-list">
               {news.list.slice(0, 3).map((item, index) => {
                 const date = new Date(item.publishedAt || '');
@@ -253,7 +255,7 @@ export default async function HomePage() {
                     key={item.id}
                     href={`/news/${item.id}`}
                     className="news-card"
-                    style={{ animationDelay: `${index * 100}ms` }}
+                    style={{ animationDelay: `${index * 100}ms`, maxWidth: 800, margin: '0 auto' }}
                   >
                     <div className="news-body">
                       <div className="news-date">
@@ -267,14 +269,6 @@ export default async function HomePage() {
                           <span className="news-category">{item.categoryName || '新闻'}</span>
                         </div>
                         <p className="news-summary">{item.summary || '暂无摘要信息'}</p>
-                        <div className="news-footer">
-                          <span className="news-read-more">阅读全文</span>
-                          <div className="news-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </Link>
@@ -283,7 +277,7 @@ export default async function HomePage() {
             </div>
 
             {/* 查看全部新闻 */}
-            <div className="news-footer">
+            <div className="news-footer" style={{ textAlign: 'center' }}>
               <Link href="/news" className="news-view-all">
                 查看更多新闻
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -683,45 +677,6 @@ export default async function HomePage() {
           min-height: 64px;
         }
 
-        .news-footer {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-top: 8px;
-        }
-
-        .news-read-more {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--brand);
-          opacity: 0.8;
-          transition: all 0.3s ease;
-        }
-
-        .news-card:hover .news-read-more {
-          opacity: 1;
-          color: var(--accent);
-        }
-
-        .news-arrow {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          border-radius: 10px;
-          background: var(--surface);
-          color: var(--brand);
-          transition: all 0.3s ease;
-          flex-shrink: 0;
-        }
-
-        .news-card:hover .news-arrow {
-          background: var(--brand);
-          color: white;
-          transform: translateX(4px) scale(1.1);
-        }
-
         /* 新闻查看全部按钮 */
         .news-footer {
           text-align: center;
@@ -972,17 +927,6 @@ export default async function HomePage() {
             line-height: 1.6;
             -webkit-line-clamp: 2;
             min-height: auto;
-          }
-
-          .news-footer {
-            width: 100%;
-            margin-top: 12px;
-          }
-
-          .news-arrow {
-            display: flex;
-            width: 32px;
-            height: 32px;
           }
 
           /* 移动端新闻查看全部按钮适配 */
