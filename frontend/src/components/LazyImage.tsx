@@ -10,6 +10,7 @@ interface LazyImageProps {
   className?: string;
   style?: React.CSSProperties;
   threshold?: number;
+  borderRadius?: number;
 }
 
 export function LazyImage({
@@ -20,6 +21,7 @@ export function LazyImage({
   className,
   style,
   threshold = 0.1,
+  borderRadius = 20,
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
@@ -59,7 +61,7 @@ export function LazyImage({
         width: width || '100%',
         height,
         overflow: 'hidden',
-        borderRadius: 20,
+        borderRadius,
         background: 'var(--line)',
         ...style,
       }}

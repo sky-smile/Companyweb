@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import { ApiError } from '@/lib/api';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
+import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
 import { NewsArticleJsonLd } from '@/components/JsonLd';
 import { ListSkeleton } from '@/components/Skeleton';
@@ -71,27 +71,13 @@ export default function NewsDetailPage() {
       <article className="news-detail-article">
         {/* 封面图片 */}
         {item.coverImage && (
-          <div className="news-cover-image-wrapper">
-            <Image
+          <div className="news-cover-wrapper">
+            <LazyImage
               src={item.coverImage}
               alt={item.title}
-              fill
-              className="news-cover-image"
-              priority
-              sizes="(max-width: 768px) 100vw, 800px"
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.parentElement?.classList.add('news-cover-error');
-              }}
+              height={400}
+              borderRadius={0}
             />
-            <div className="news-cover-placeholder">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <path d="M21 15l-5-5L5 21" />
-              </svg>
-              <span>图片加载失败</span>
-            </div>
           </div>
         )}
 
@@ -141,40 +127,12 @@ export default function NewsDetailPage() {
           margin: 0 auto;
         }
 
-        .news-cover-image-wrapper {
-          position: relative;
+        .news-cover-wrapper {
           width: 100%;
-          height: 400px;
-          background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-          overflow: hidden;
         }
 
-        .news-cover-image {
-          object-fit: cover;
-          transition: transform 0.6s ease;
-        }
-
-        .news-detail-article:hover .news-cover-image {
-          transform: scale(1.03);
-        }
-
-        .news-cover-placeholder {
-          position: absolute;
-          inset: 0;
-          display: none;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          color: #94a3b8;
-          gap: 12px;
-        }
-
-        .news-cover-error .news-cover-placeholder {
-          display: flex;
-        }
-
-        .news-cover-error :global(img) {
-          display: none;
+        .news-cover-wrapper :global(.lazy-image-shimmer) {
+          border-radius: 0;
         }
 
         .news-content-wrapper {
@@ -233,6 +191,7 @@ export default function NewsDetailPage() {
           margin: 0 0 1.5em;
         }
 
+        /* 富文本内容中的图片样式 */
         .news-detail-body :global(img) {
           max-width: 100%;
           height: auto;
@@ -264,8 +223,8 @@ export default function NewsDetailPage() {
             box-shadow: none;
           }
 
-          .news-cover-image-wrapper {
-            height: 240px;
+          .news-cover-wrapper :global(.lazy-image-shimmer) {
+            border-radius: 0;
           }
 
           .news-content-wrapper {
