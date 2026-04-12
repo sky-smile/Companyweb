@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { HeroBanner } from '@/components/HeroBanner';
+import { NewsCardImage } from '@/components/NewsCardImage';
 import { SectionHeading } from '@/components/SectionHeading';
 import { buildMetadata, pickDescription } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
@@ -258,18 +258,11 @@ export default async function HomePage() {
                   >
                     <div className="news-image-wrapper">
                       {item.coverImage ? (
-                        <Image
+                        <NewsCardImage
                           src={item.coverImage}
                           alt={item.title}
-                          fill
-                          className="news-image"
                           loading={index < 2 ? 'eager' : 'lazy'}
                           sizes="(max-width: 768px) 100vw, 280px"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            target.parentElement?.classList.add('news-image-error');
-                          }}
                         />
                       ) : null}
                       <div className="news-image-placeholder">
