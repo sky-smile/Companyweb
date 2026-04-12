@@ -480,6 +480,93 @@ img {
   color: var(--brand) !important;
 }
 
+/* ====== 富文本 - 表格样式（新增）====== */
+.rich-content table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.95em;
+  overflow-x: auto;
+  display: block;
+}
+
+.rich-content thead {
+  background: var(--surface);
+}
+
+.rich-content th,
+.rich-content td {
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rich-content th {
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--foreground);
+}
+
+.rich-content tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.rich-content tbody tr:hover {
+  background: rgba(37, 99, 235, 0.04);
+}
+
+/* ====== 富文本 - 附件/下载链接样式 ====== */
+.rich-content a[download] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 10px 18px !important;
+  margin: 12px 0 !important;
+  background: linear-gradient(135deg, #f0f5ff 0%, #e8f0fe 100%) !important;
+  border: 1px solid #d4e3fc !important;
+  border-radius: 8px !important;
+  color: #1677ff !important;
+  text-decoration: none !important;
+  font-size: 0.92em;
+  transition: all 0.2s ease;
+  max-width: fit-content;
+}
+
+.rich-content a[download]:hover {
+  background: linear-gradient(135deg, #d4e3fc 0%, #c5d8fc 100%) !important;
+  border-color: #91caff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.15);
+}
+
+/* ====== 富文本 - 视频嵌入 ====== */
+.rich-content iframe {
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 1px solid var(--line);
+}
+
+/* ====== 响应式 - 富文本内容 ====== */
+@media (max-width: 640px) {
+  .rich-content table {
+    font-size: 0.85em;
+  }
+
+  .rich-content th,
+  .rich-content td {
+    padding: 8px 10px;
+  }
+
+  .rich-content a[download] {
+    padding: 8px 14px !important;
+    font-size: 0.88em;
+  }
+}
+
 /* ====================================
    响应式
    ==================================== */
