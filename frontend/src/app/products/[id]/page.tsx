@@ -9,6 +9,7 @@ import { publicService } from '@/services/public-service';
 import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
 import { ProductJsonLd } from '@/components/JsonLd';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { ListSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
 
@@ -81,6 +82,14 @@ export default function ProductDetailPage() {
   return (
     <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
       <article className="site-card" style={{ padding: 36, display: 'grid', gap: 24 }}>
+        {/* 面包屑导航 */}
+        <Breadcrumb items={[
+          { label: '首页', href: '/' },
+          { label: '产品中心', href: '/products' },
+          { label: item.categoryName || '产品详情' },
+          { label: item.name },
+        ]} />
+
         {/* 分类和日期 */}
         <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--accent)', flexWrap: 'wrap' }}>
           <span style={{ fontWeight: 500 }}>{item.categoryName || '产品'}</span>

@@ -7,7 +7,8 @@ import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
 import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
-import { NewsArticleJsonLd } from '@/components/JsonLd';
+import { NewsArticleJsonLd, BreadcrumbListJsonLd } from '@/components/JsonLd';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { ListSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
 
@@ -76,6 +77,13 @@ export default function NewsDetailPage() {
   return (
     <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
       <article className="news-detail-article">
+        {/* 面包屑导航 */}
+        <Breadcrumb items={[
+          { label: '首页', href: '/' },
+          { label: '新闻中心', href: '/news' },
+          { label: item.title },
+        ]} />
+
         {/* 封面图片 */}
         {item.coverImage && (
           <div className="news-cover-wrapper">
@@ -122,6 +130,13 @@ export default function NewsDetailPage() {
         datePublished={item.publishedAt || new Date().toISOString()}
         image={item.coverImage || undefined}
       />
+
+      {/* 面包屑 JSON-LD */}
+      <BreadcrumbListJsonLd items={[
+        { name: '首页', url: 'http://localhost:3001/' },
+        { name: '新闻中心', url: 'http://localhost:3001/news' },
+        { name: item.title },
+      ]} />
 
       {/* 样式 */}
       <style jsx>{`

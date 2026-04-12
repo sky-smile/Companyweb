@@ -6,6 +6,7 @@ import { ApiError } from '@/lib/api';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
 import { RichContent } from '@/components/RichContent';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { ListSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
 
@@ -67,6 +68,13 @@ export default function AnnouncementDetailPage() {
   return (
     <section className="site-shell page-detail page-content-end-compact" style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
       <article className="site-card" style={{ padding: 36 }}>
+        {/* 面包屑导航 */}
+        <Breadcrumb items={[
+          { label: '首页', href: '/' },
+          { label: '公告中心', href: '/announcements' },
+          { label: item.title },
+        ]} />
+
         {/* 置顶标记和日期 */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 13, color: 'var(--brand)', flexWrap: 'wrap', alignItems: 'center' }}>
           {item.isTop && <span style={{ background: 'var(--brand)', color: '#fff', padding: '2px 8px', borderRadius: 4, fontSize: 12 }}>置顶</span>}
