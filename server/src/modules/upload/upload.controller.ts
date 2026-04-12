@@ -68,7 +68,12 @@ export class UploadController {
       code: 0,
       message: '上传成功',
       data: {
-        url: result.publicUrl,
+        originalName: result.originalName,
+        mimeType: result.mimeType,
+        size: result.size,
+        filename: result.filename,
+        storagePath: result.storagePath,
+        publicUrl: result.publicUrl,
         mediaFile: result.mediaFile,
       },
     };
@@ -91,7 +96,12 @@ export class UploadController {
       code: 0,
       message: '上传成功',
       data: {
-        url: result.publicUrl,
+        originalName: result.originalName,
+        mimeType: result.mimeType,
+        size: result.size,
+        filename: result.filename,
+        storagePath: result.storagePath,
+        publicUrl: result.publicUrl,
         mediaFile: result.mediaFile,
       },
     };
