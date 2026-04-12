@@ -329,6 +329,17 @@ export default async function HomePage() {
                 );
               })}
             </div>
+
+            {/* 查看更多公告 */}
+            <div className="announcement-footer" style={{ textAlign: 'center' }}>
+              <Link href="/announcements" className="view-all-btn">
+                查看更多公告
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -477,33 +488,7 @@ export default async function HomePage() {
           text-align: center;
         }
 
-        .products-view-all {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          padding: 16px 32px;
-          background: var(--gradient-primary);
-          color: white;
-          font-size: 15px;
-          font-weight: 600;
-          text-decoration: none;
-          border-radius: 999px;
-          box-shadow: 0 4px 16px var(--brand-glow);
-          transition: all 0.3s ease;
-        }
 
-        .products-view-all:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px var(--brand-glow);
-        }
-
-        .products-view-all svg {
-          transition: transform 0.3s ease;
-        }
-
-        .products-view-all:hover svg {
-          transform: translateX(4px);
-        }
 
         /* 新闻模块样式 - 单列布局 */
         .news-list {
@@ -682,17 +667,14 @@ export default async function HomePage() {
           min-height: 64px;
         }
 
-        /* 新闻查看全部按钮 */
-        .news-footer {
-          text-align: center;
-          margin-top: 48px;
-        }
-
+        /* 统一查看全部按钮样式 */
+        .view-all-btn,
+        .products-view-all,
         .news-view-all {
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          padding: 14px 32px;
+          padding: 16px 32px;
           background: var(--surface);
           color: var(--brand);
           font-size: 15px;
@@ -703,6 +685,8 @@ export default async function HomePage() {
           transition: all 0.3s ease;
         }
 
+        .view-all-btn:hover,
+        .products-view-all:hover,
         .news-view-all:hover {
           background: var(--brand);
           color: white;
@@ -711,24 +695,44 @@ export default async function HomePage() {
           box-shadow: 0 8px 24px var(--brand-glow);
         }
 
+        .view-all-btn svg,
+        .products-view-all svg,
         .news-view-all svg {
           transition: transform 0.3s ease;
         }
 
+        .view-all-btn:hover svg,
+        .products-view-all:hover svg,
         .news-view-all:hover svg {
           transform: translateX(4px);
         }
 
+        /* 新闻查看全部按钮 */
+        .news-footer {
+          text-align: center;
+          margin-top: 48px;
+        }
+
+        /* 公告查看更多按钮 */
+        .announcement-footer {
+          text-align: center;
+          margin-top: 48px;
+        }
+
         /* 公告模块样式 */
         .announcement-list {
-          display: grid;
+          display: flex;
+          flex-direction: column;
           gap: 12px;
+          align-items: center;
         }
 
         .announcement-card {
           display: flex;
           align-items: center;
           gap: 20px;
+          width: 100%;
+          max-width: 800px;
           padding: 20px 28px;
           background: #ffffff;
           border: 1px solid var(--line);
@@ -941,11 +945,14 @@ export default async function HomePage() {
             min-height: auto;
           }
 
-          /* 移动端新闻查看全部按钮适配 */
-          .news-footer {
+          /* 移动端查看全部按钮统一适配 */
+          .news-footer,
+          .announcement-footer {
             margin-top: 36px;
           }
 
+          .view-all-btn,
+          .products-view-all,
           .news-view-all {
             padding: 12px 28px;
             font-size: 14px;
@@ -954,6 +961,7 @@ export default async function HomePage() {
           .announcement-card {
             padding: 16px 20px;
             gap: 16px;
+            max-width: 100%;
           }
 
           .announcement-icon {
