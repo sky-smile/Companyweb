@@ -262,17 +262,17 @@ export default async function HomePage() {
                           src={item.coverImage}
                           alt={item.title}
                           loading={index < 2 ? 'eager' : 'lazy'}
-                          sizes="(max-width: 768px) 100vw, 280px"
                         />
-                      ) : null}
-                      <div className="news-image-placeholder">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <rect x="3" y="3" width="18" height="18" rx="2" />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <path d="M21 15l-5-5L5 21" />
-                        </svg>
-                        <span>暂无图片</span>
-                      </div>
+                      ) : (
+                        <div className="news-image-placeholder">
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <path d="M21 15l-5-5L5 21" />
+                          </svg>
+                          <span>暂无图片</span>
+                        </div>
+                      )}
                     </div>
                     <div className="news-body">
                       <div className="news-date">
@@ -571,14 +571,6 @@ export default async function HomePage() {
           justify-content: center;
           color: #94a3b8;
           gap: 8px;
-        }
-
-        .news-image-wrapper:has(img) .news-image-placeholder {
-          display: none;
-        }
-
-        .news-image-error .news-image-placeholder {
-          display: flex !important;
         }
 
         .news-image-placeholder span {
