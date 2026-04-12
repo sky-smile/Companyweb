@@ -145,9 +145,9 @@ export default function NewsDetailPage() {
 
       {/* 面包屑 JSON-LD */}
       <BreadcrumbListJsonLd items={[
-        { name: '首页', url: 'http://localhost:3001/' },
-        { name: '新闻中心', url: 'http://localhost:3001/news' },
-        { name: item.title },
+        { position: 1, name: '首页', item: 'http://localhost:3001/' },
+        { position: 2, name: '新闻中心', item: 'http://localhost:3001/news' },
+        { position: 3, name: item.title, item: `http://localhost:3001/news/${item.id}` },
       ]} />
 
       {/* 样式 */}

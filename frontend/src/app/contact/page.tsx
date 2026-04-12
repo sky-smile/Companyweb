@@ -62,7 +62,7 @@ export default async function ContactPage() {
       </section>
 
       {/* 样式 */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* ========== 页面头部 Hero ========== */
         .contact-hero {
           position: relative;
@@ -132,7 +132,7 @@ export default async function ContactPage() {
           max-width: 600px;
         }
 
-        .hero-description :global(p) {
+        .hero-description p {
           margin: 0;
         }
 
@@ -232,13 +232,13 @@ export default async function ContactPage() {
           word-break: break-word;
         }
 
-        .contact-info-value :global(a) {
+        .contact-info-value a {
           color: var(--brand);
           text-decoration: none;
           transition: color 0.2s ease;
         }
 
-        .contact-info-value :global(a:hover) {
+        .contact-info-value a:hover {
           color: var(--brand-light);
           text-decoration: underline;
         }
@@ -344,7 +344,7 @@ export default async function ContactPage() {
             font-size: 14px;
           }
         }
-      `}</style>
+      `}} />
     </>
   );
 }

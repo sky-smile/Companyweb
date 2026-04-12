@@ -1,0 +1,9 @@
+{
+  "name": "company-web-monorepo",
+  "private": true,
+  "workspaces": [
+    "admin",
+    "frontend",
+    "server"
+  ]
+}

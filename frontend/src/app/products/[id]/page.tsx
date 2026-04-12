@@ -100,7 +100,9 @@ export default function ProductDetailPage() {
                   src={imageUrl}
                   alt={`${item.name} - 图片 ${index + 1}`}
                   height={320}
-                  borderRadius={index === 0 ? '16px 0 0 0' : index === images.length - 1 ? '0 0 16px 0' : '0'}
+                  style={{ 
+                    borderRadius: index === 0 ? '16px 0 0 0' : index === images.length - 1 ? '0 0 16px 0' : '0'
+                  }}
                 />
               ))}
             </div>

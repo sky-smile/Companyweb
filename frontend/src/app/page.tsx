@@ -245,7 +245,7 @@ export default async function HomePage() {
             <SectionHeading eyebrow="新闻动态" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
             <div className="news-list">
               {news.list.slice(0, 4).map((item, index) => {
-                const date = new Date(item.publishedAt || item.createdAt);
+                const date = new Date(item.publishedAt || '');
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = (date.getMonth() + 1).toString().padStart(2, '0') + '月';
                 const year = date.getFullYear();
@@ -301,7 +301,7 @@ export default async function HomePage() {
             <SectionHeading eyebrow="通知公告" title="官方公告" description="发布重要通知、业务变更及合作伙伴相关公告信息" />
             <div className="announcement-list">
               {announcements.list.slice(0, 4).map((item, index) => {
-                const date = new Date(item.publishedAt || item.createdAt);
+                const date = new Date(item.publishedAt || '');
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = (date.getMonth() + 1).toString().padStart(2, '0') + '月';
                 const year = date.getFullYear();
