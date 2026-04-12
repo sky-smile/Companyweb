@@ -141,9 +141,9 @@ export default async function HomePage() {
             borderTop: '1px solid var(--line)',
           }}>
             {[
-              { value: '15+', label: '年行业经验' },
+              { value: '5+', label: '年行业经验' },
               { value: '200+', label: '服务客户' },
-              { value: '50+', label: '专业技术团队' },
+              { value: '10+', label: '专业技术团队' },
               { value: '99%', label: '客户满意度' },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: 'center' }}>
@@ -242,7 +242,7 @@ export default async function HomePage() {
           {/* 新闻区域 */}
           <div style={{ marginBottom: 72 }}>
             <div style={{ textAlign: 'center', marginBottom: 40 }}>
-              <SectionHeading eyebrow="新闻动态" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
+              <SectionHeading eyebrow="News" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
             </div>
             <div className="news-list">
               {news.list.slice(0, 3).map((item, index) => {
@@ -291,7 +291,7 @@ export default async function HomePage() {
           {/* 公告区域 */}
           <div>
             <div style={{ textAlign: 'center', marginBottom: 40 }}>
-              <SectionHeading eyebrow="通知公告" title="官方公告" description="发布重要通知、业务变更及合作伙伴相关公告信息" />
+              <SectionHeading eyebrow="Announcements" title="官方公告" description="发布重要通知、业务变更及合作伙伴相关公告信息" />
             </div>
             <div className="announcement-list">
               {announcements.list.slice(0, 4).map((item, index) => {
@@ -306,24 +306,20 @@ export default async function HomePage() {
                     className="announcement-card"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="announcement-icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                      </svg>
-                    </div>
-                    <div className="announcement-content">
-                      <h3 className="announcement-title">{item.title}</h3>
-                      <p className="announcement-summary">{item.summary || '暂无摘要信息'}</p>
-                    </div>
-                    <div className="announcement-date">
-                      <span>{day} {month}</span>
-                      <span>{year}</span>
-                    </div>
-                    <div className="announcement-arrow">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
+                    <div className="announcement-body">
+                      <div className="announcement-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                        </svg>
+                      </div>
+                      <div className="announcement-content">
+                        <div className="announcement-header">
+                          <h3 className="announcement-title">{item.title}</h3>
+                          <span className="announcement-badge">公告</span>
+                        </div>
+                        <p className="announcement-summary">{item.summary || '暂无摘要信息'}</p>
+                      </div>
                     </div>
                   </Link>
                 );
@@ -725,87 +721,156 @@ export default async function HomePage() {
           margin-top: 48px;
         }
 
-        /* 公告模块样式 */
+        /* 公告模块样式 - 与新闻卡片完全一致 */
         .announcement-list {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 20px;
           align-items: center;
         }
 
         .announcement-card {
           display: flex;
-          align-items: center;
-          gap: 20px;
           width: 100%;
           max-width: 100%;
-          padding: 20px 28px;
           background: #ffffff;
           border: 1px solid var(--line);
-          border-radius: 12px;
+          border-radius: 16px;
           text-decoration: none;
           color: inherit;
-          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           opacity: 0;
-          animation: fadeInUp 0.5s ease forwards;
+          animation: fadeInUp 0.6s ease forwards;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .announcement-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 100%;
+          background: linear-gradient(to bottom, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
+          transition: width 0.3s ease;
         }
 
         .announcement-card:hover {
-          border-color: rgba(245, 158, 11, 0.4);
-          box-shadow: 0 8px 24px rgba(245, 158, 11, 0.1);
-          transform: translateX(8px);
+          border-color: rgba(245, 158, 11, 0.3);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+          transform: translateY(-4px);
+        }
+
+        .announcement-card:hover::before {
+          width: 8px;
+        }
+
+        .announcement-body {
+          display: flex;
+          align-items: flex-start;
+          gap: 20px;
+          padding: 28px;
+          width: 100%;
         }
 
         .announcement-icon {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
+          min-width: 68px;
+          padding: 12px 16px;
           background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-          color: #f59e0b;
-          flex-shrink: 0;
+          border-radius: 12px;
+          text-align: center;
           transition: all 0.3s ease;
+          flex-shrink: 0;
+          border: 1px solid rgba(245, 158, 11, 0.1);
+          color: #f59e0b;
         }
 
         .announcement-card:hover .announcement-icon {
           background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          border-color: rgba(245, 158, 11, 0.3);
           color: white;
-          transform: scale(1.1) rotate(10deg);
+          transform: scale(1.05);
+        }
+
+        .announcement-icon svg {
+          width: 28px;
+          height: 28px;
+          transition: transform 0.3s ease;
+        }
+
+        .announcement-card:hover .announcement-icon svg {
+          transform: scale(1.1);
         }
 
         .announcement-content {
           flex: 1;
           min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .announcement-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 4px;
         }
 
         .announcement-title {
-          font-size: 15px;
-          font-weight: 600;
-          line-height: 1.5;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.4;
           color: var(--foreground);
-          margin: 0 0 4px;
+          margin: 0;
           transition: color 0.3s ease;
           display: -webkit-box;
-          -webkit-line-clamp: 1;
+          -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          flex: 1;
+          min-width: 0;
         }
 
         .announcement-card:hover .announcement-title {
           color: #f59e0b;
         }
 
+        .announcement-badge {
+          font-size: 12px;
+          font-weight: 600;
+          color: #d97706;
+          background: rgba(245, 158, 11, 0.1);
+          padding: 4px 10px;
+          border-radius: 20px;
+          white-space: nowrap;
+          flex-shrink: 0;
+          border: 1px solid rgba(245, 158, 11, 0.2);
+          transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover .announcement-badge {
+          background: #f59e0b;
+          color: white;
+          border-color: #f59e0b;
+          transform: translateY(-1px);
+        }
+
         .announcement-summary {
-          font-size: 13px;
-          line-height: 1.6;
+          font-size: 15px;
+          line-height: 1.7;
           color: var(--text-muted);
           margin: 0;
           display: -webkit-box;
-          -webkit-line-clamp: 1;
+          -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          min-height: 64px;
         }
 
         .announcement-date {
@@ -964,36 +1029,50 @@ export default async function HomePage() {
           }
 
           .announcement-card {
-            padding: 16px 20px;
+            flex-direction: column;
+          }
+
+          .announcement-body {
+            padding: 20px;
             gap: 16px;
+            flex-direction: row;
+            align-items: flex-start;
           }
 
           .announcement-icon {
-            width: 40px;
-            height: 40px;
+            min-width: 56px;
+            padding: 10px 12px;
+            align-self: flex-start;
           }
 
           .announcement-icon svg {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+          }
+
+          .announcement-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
           }
 
           .announcement-title {
-            font-size: 14px;
+            font-size: 15px;
             line-height: 1.4;
+            -webkit-line-clamp: 2;
+          }
+
+          .announcement-badge {
+            align-self: flex-start;
+            font-size: 11px;
+            padding: 3px 8px;
           }
 
           .announcement-summary {
-            display: none;
-          }
-
-          .announcement-date {
-            padding: 6px 10px;
-            font-size: 11px;
-          }
-
-          .announcement-arrow {
-            display: none;
+            font-size: 14px;
+            line-height: 1.6;
+            -webkit-line-clamp: 2;
+            min-height: auto;
           }
 
           .about-section {
