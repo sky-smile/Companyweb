@@ -15,7 +15,12 @@ async function bootstrap(): Promise<void> {
   const uploadDir = configService.get<string>('upload.dir', 'uploads');
 
   app.setGlobalPrefix(globalPrefix);
-  app.enableCors();
+  app.enableCors({
+    origin: true, // 允许所有来源（开发环境）
+    credentials: true, // 允许携带 cookie
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization, Accept',
+  });
   app.use('/uploads', express.static(uploadDir));
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());

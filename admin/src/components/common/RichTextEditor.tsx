@@ -15,6 +15,9 @@ interface RichTextEditorProps {
   folder?: string;
 }
 
+// 获取 API 基础 URL（从环境变量或默认值）
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:3000/api';
+
 /**
  * 清理 HTML — 保留必要的结构性属性（图片宽高、表格边框等）
  * 仅移除危险标签和样式，保留富媒体内容
@@ -107,8 +110,8 @@ export function RichTextEditor({
     // 图片上传配置 — 使用自有后端
     MENU_CONF: {
       uploadImage: {
-        // 将 folder 参数拼接到 URL query string
-        server: `/api/admin/upload/image?folder=${encodeURIComponent(folder)}`,
+        // 使用完整 URL，wangEditor 不会使用 axios 的 baseURL
+        server: `${API_BASE_URL}/admin/upload/image?folder=${encodeURIComponent(folder)}`,
         fieldName: 'file',
         maxFileSize: 10 * 1024 * 1024,
         allowedFileTypes: ['image/*'],
@@ -117,20 +120,28 @@ export function RichTextEditor({
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
-        // 自定义响应解析
-        customInsert(res: any, insertFn: Function) {
+        // 自定义响应解析 - wangEditor 要求使用 insertFn 插入图片
+        customInsert(res: any, insertFn: (url: string, alt: string, href: string) => void) {
+          console.log('[Editor] Upload response:', res);
           // 后端返回 { code:0, data:{ url } }
           if (res.code === 0 && res.data?.url) {
-            insertFn(res.data.url, '', '');
+            insertFn(res.data.url, '', res.data.url);
           } else {
+            console.error('[Editor] Upload failed:', res);
             message.error(res.message || '图片上传失败');
           }
         },
         // 错误处理
         onError(file: File, err: any, res: any) {
-          console.error('[Editor] Image upload error:', file.name, err, res);
-          const msg = res?.message || err?.message || '图片上传失败';
-          message.error(msg);
+          console.error('[Editor] Image upload error - file:', file.name);
+          console.error('[Editor] Image upload error - err:', err);
+          console.error('[Editor] Image upload error - res:', res);
+          const msg = res?.message || err?.message || err?.toString() || '图片上传失败';
+          message.error(`上传失败: ${msg}`);
+        },
+        // 成功回调（可选）
+        onSuccess(file: File, res: any) {
+          console.log('[Editor] Image upload success:', file.name, res);
         },
         // 超时设置
         timeout: 30 * 1000,
