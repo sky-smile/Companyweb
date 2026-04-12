@@ -30,9 +30,20 @@ export async function fetchApi<T>(
 ): Promise<T> {
   const { revalidate = CACHE_DURATION.SHORT, tags } = options || {};
 
-  const response = await fetch(`${apiBaseUrl}${path}`, {
-    next: { revalidate, tags },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${apiBaseUrl}${path}`, {
+      next: { revalidate, tags },
+    });
+  } catch (error) {
+    // 网络错误或 fetch 失败
+    console.error(`[API] Fetch failed for ${path}:`, error);
+    throw new ApiError(
+      `无法连接到 API 服务，请确认后端服务已启动。${error instanceof Error ? error.message : ''}`,
+      0,
+      10001
+    );
+  }
 
   const payload = (await response.json().catch(() => null)) as
     | { code: number; message: string; data: T }

@@ -16,8 +16,15 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix(globalPrefix);
   app.enableCors({
-    origin: true, // 允许所有来源（开发环境）
-    credentials: true, // 允许携带 cookie
+    origin: [
+      'http://localhost:3001',
+      'http://127.0.0.1:3001',
+      'http://localhost:3100',
+      'http://127.0.0.1:3100',
+      'http://localhost:3101',
+      'http://127.0.0.1:3101',
+    ],
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, Accept',
   });

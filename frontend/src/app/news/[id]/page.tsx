@@ -27,8 +27,15 @@ export default function NewsDetailPage() {
         const data = await publicService.getNewsDetail(id);
         setItem(data);
       } catch (err) {
-        if (err instanceof ApiError && err.status === 404) {
-          setError('新闻不存在或尚未发布。');
+        if (err instanceof ApiError) {
+          if (err.status === 404) {
+            setError('新闻不存在或尚未发布。');
+          } else if (err.status === 0) {
+            // 网络连接错误
+            setError(err.message || '无法连接到服务器，请检查网络或后端服务。');
+          } else {
+            setError(err.message || '加载失败，请稍后重试。');
+          }
         } else {
           setError('加载失败，请稍后重试。');
         }
