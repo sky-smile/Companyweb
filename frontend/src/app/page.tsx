@@ -238,7 +238,7 @@ export default async function HomePage() {
         padding: '80px 0',
         background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
       }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
+        <div className="site-shell home-news-shell">
           {/* 新闻区域 */}
           <div style={{ marginBottom: 72 }}>
             <div style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -491,6 +491,12 @@ export default async function HomePage() {
 
 
         /* 新闻模块样式 - 单列布局 */
+        .home-news-shell {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+
         .news-list {
           display: flex;
           flex-direction: column;
@@ -501,7 +507,7 @@ export default async function HomePage() {
         .news-card {
           display: flex;
           width: 100%;
-          max-width: 800px;
+          max-width: 100%;
           background: #ffffff;
           border: 1px solid var(--line);
           border-radius: 16px;
@@ -732,7 +738,7 @@ export default async function HomePage() {
           align-items: center;
           gap: 20px;
           width: 100%;
-          max-width: 800px;
+          max-width: 100%;
           padding: 20px 28px;
           background: #ffffff;
           border: 1px solid var(--line);
@@ -892,7 +898,6 @@ export default async function HomePage() {
 
           .news-card {
             flex-direction: column;
-            max-width: 100%;
           }
 
           .news-body {
@@ -961,7 +966,6 @@ export default async function HomePage() {
           .announcement-card {
             padding: 16px 20px;
             gap: 16px;
-            max-width: 100%;
           }
 
           .announcement-icon {
