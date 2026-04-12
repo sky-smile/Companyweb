@@ -22,7 +22,8 @@ export default async function AboutPage() {
       {/* 页面头部 Hero */}
       <section className="about-hero" style={{
         position: 'relative',
-        padding: '100px 0 64px',
+        paddingTop: 'var(--page-top, 108px)',
+        paddingBottom: 64,
         overflow: 'hidden',
         background: 'linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%)',
         borderBottom: '1px solid var(--line)',
@@ -469,7 +470,8 @@ export default async function AboutPage() {
 
         @media (max-width: 768px) {
           .about-hero {
-            padding: 72px 0 48px;
+            padding-top: var(--page-top-mobile, 84px);
+            padding-bottom: 48px;
           }
 
           .about-pillars {
@@ -492,7 +494,8 @@ export default async function AboutPage() {
 
         @media (max-width: 480px) {
           .about-hero {
-            padding: 56px 0 40px;
+            padding-top: var(--page-top-mobile, 84px);
+            padding-bottom: 40px;
           }
 
           .about-stats {

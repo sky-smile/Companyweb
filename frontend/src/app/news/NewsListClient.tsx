@@ -46,9 +46,10 @@ export function NewsListClient() {
   return (
     <>
       {/* 页面头部 Hero */}
-      <section style={{
+      <section className="page-hero" style={{
         position: 'relative',
-        padding: '80px 0 48px',
+        paddingTop: 'var(--page-top, 108px)',
+        paddingBottom: 48,
         overflow: 'hidden',
         background: 'linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%)',
         borderBottom: '1px solid var(--line)',

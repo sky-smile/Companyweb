@@ -58,7 +58,7 @@ export function SiteHeader() {
         borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent',
       }}
     >
-      <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 76 }}>
+      <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 'var(--header-height, 76px)' }}>
         <Link href="/" className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {logo ? (
             <img
@@ -180,6 +180,10 @@ export function SiteHeader() {
           .header-site-name,
           .header-default-name {
             font-size: 18px;
+          }
+
+          .site-shell {
+            min-height: var(--header-height-mobile, 64px) !important;
           }
         }
       `}} />
