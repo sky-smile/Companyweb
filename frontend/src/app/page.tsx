@@ -241,12 +241,12 @@ export default async function HomePage() {
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           {/* 新闻区域 */}
           <div style={{ marginBottom: 72 }}>
-            <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
+            <SectionHeading eyebrow="新闻动态" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
             <div className="news-list">
               {news.list.slice(0, 4).map((item, index) => {
                 const date = new Date(item.publishedAt || item.createdAt);
                 const day = date.getDate().toString().padStart(2, '0');
-                const month = date.toLocaleDateString('en-US', { month: 'short' });
+                const month = (date.getMonth() + 1).toString().padStart(2, '0') + '月';
                 const year = date.getFullYear();
                 return (
                   <Link
@@ -262,7 +262,7 @@ export default async function HomePage() {
                     </div>
                     <div className="news-content">
                       <h3 className="news-title">{item.title}</h3>
-                      <p className="news-summary">{item.summary || 'No summary available.'}</p>
+                      <p className="news-summary">{item.summary || '暂无摘要信息'}</p>
                     </div>
                     <div className="news-arrow">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -277,12 +277,12 @@ export default async function HomePage() {
 
           {/* 公告区域 */}
           <div>
-            <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
+            <SectionHeading eyebrow="通知公告" title="官方公告" description="发布重要通知、业务变更及合作伙伴相关公告信息" />
             <div className="announcement-list">
               {announcements.list.slice(0, 4).map((item, index) => {
                 const date = new Date(item.publishedAt || item.createdAt);
                 const day = date.getDate().toString().padStart(2, '0');
-                const month = date.toLocaleDateString('en-US', { month: 'short' });
+                const month = (date.getMonth() + 1).toString().padStart(2, '0') + '月';
                 const year = date.getFullYear();
                 return (
                   <Link
@@ -299,7 +299,7 @@ export default async function HomePage() {
                     </div>
                     <div className="announcement-content">
                       <h3 className="announcement-title">{item.title}</h3>
-                      <p className="announcement-summary">{item.summary || 'No summary available.'}</p>
+                      <p className="announcement-summary">{item.summary || '暂无摘要信息'}</p>
                     </div>
                     <div className="announcement-date">
                       <span>{day} {month}</span>
@@ -547,10 +547,8 @@ export default async function HomePage() {
         }
 
         .news-month {
-          font-size: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
+          font-size: 13px;
+          font-weight: 500;
           margin: 4px 0;
           color: var(--brand);
           opacity: 0.8;
@@ -577,12 +575,11 @@ export default async function HomePage() {
         }
 
         .news-title {
-          font-size: 18px;
+          font-size: 17px;
           font-weight: 600;
-          line-height: 1.4;
+          line-height: 1.5;
           color: var(--foreground);
           margin: 0 0 8px;
-          letter-spacing: -0.01em;
           transition: color 0.3s ease;
           display: -webkit-box;
           -webkit-line-clamp: 1;
@@ -596,7 +593,7 @@ export default async function HomePage() {
 
         .news-summary {
           font-size: 14px;
-          line-height: 1.6;
+          line-height: 1.7;
           color: var(--text-muted);
           margin: 0;
           display: -webkit-box;
@@ -676,12 +673,11 @@ export default async function HomePage() {
         }
 
         .announcement-title {
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 600;
-          line-height: 1.4;
+          line-height: 1.5;
           color: var(--foreground);
           margin: 0 0 4px;
-          letter-spacing: -0.01em;
           transition: color 0.3s ease;
           display: -webkit-box;
           -webkit-line-clamp: 1;
@@ -695,7 +691,7 @@ export default async function HomePage() {
 
         .announcement-summary {
           font-size: 13px;
-          line-height: 1.5;
+          line-height: 1.6;
           color: var(--text-muted);
           margin: 0;
           display: -webkit-box;
@@ -807,15 +803,17 @@ export default async function HomePage() {
           }
 
           .news-month {
-            font-size: 11px;
+            font-size: 12px;
           }
 
           .news-title {
-            font-size: 16px;
+            font-size: 15px;
+            line-height: 1.4;
           }
 
           .news-summary {
             font-size: 13px;
+            line-height: 1.6;
             -webkit-line-clamp: 1;
           }
 
@@ -839,7 +837,8 @@ export default async function HomePage() {
           }
 
           .announcement-title {
-            font-size: 15px;
+            font-size: 14px;
+            line-height: 1.4;
           }
 
           .announcement-summary {
@@ -848,7 +847,7 @@ export default async function HomePage() {
 
           .announcement-date {
             padding: 6px 10px;
-            font-size: 12px;
+            font-size: 11px;
           }
 
           .announcement-arrow {
