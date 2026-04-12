@@ -31,8 +31,6 @@ export default async function HomePage() {
       <section className="about-section animate-fade-in-up delay-100" style={{ 
         padding: '80px 0',
         background: 'var(--surface)',
-        borderTop: '1px solid var(--line)',
-        borderBottom: '1px solid var(--line)',
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           <SectionHeading 
@@ -195,11 +193,6 @@ export default async function HomePage() {
                 className="product-card"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                {/* 产品图标/编号 */}
-                <div className="product-card-badge">
-                  <span>0{index + 1}</span>
-                </div>
-                
                 {/* 产品分类标签 */}
                 <div className="product-card-category">
                   {item.categoryName || '产品'}
@@ -244,7 +237,6 @@ export default async function HomePage() {
       <section className="home-news-section animate-fade-in-up delay-300" style={{
         padding: '64px 0',
         background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-        borderTop: '1px solid var(--line)',
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           {/* 新闻区域 */}
@@ -302,16 +294,6 @@ export default async function HomePage() {
           background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
           position: relative;
           overflow: hidden;
-        }
-
-        .products-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent 0%, var(--line) 50%, transparent 100%);
         }
 
         .products-header {
@@ -375,30 +357,6 @@ export default async function HomePage() {
           transform: translateY(-8px);
           border-color: rgba(37, 99, 235, 0.2);
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(37, 99, 235, 0.08);
-        }
-
-        .product-card-badge {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          background: linear-gradient(135deg, var(--brand-soft) 0%, rgba(37, 99, 235, 0.05) 100%);
-          border: 1px solid rgba(37, 99, 235, 0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          font-weight: 700;
-          color: var(--brand);
-          transition: all 0.3s ease;
-        }
-
-        .product-card:hover .product-card-badge {
-          background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-          color: white;
-          transform: scale(1.1);
         }
 
         .product-card-category {
