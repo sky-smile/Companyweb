@@ -255,7 +255,7 @@ export default async function HomePage() {
                     key={item.id}
                     href={`/news/${item.id}`}
                     className="news-card"
-                    style={{ animationDelay: `${index * 100}ms`, maxWidth: 800, margin: '0 auto' }}
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="news-body">
                       <div className="news-date">
@@ -290,7 +290,9 @@ export default async function HomePage() {
 
           {/* 公告区域 */}
           <div>
-            <SectionHeading eyebrow="通知公告" title="官方公告" description="发布重要通知、业务变更及合作伙伴相关公告信息" />
+            <div style={{ textAlign: 'center', marginBottom: 40 }}>
+              <SectionHeading eyebrow="通知公告" title="官方公告" description="发布重要通知、业务变更及合作伙伴相关公告信息" />
+            </div>
             <div className="announcement-list">
               {announcements.list.slice(0, 4).map((item, index) => {
                 const date = new Date(item.publishedAt || '');
@@ -508,10 +510,13 @@ export default async function HomePage() {
           display: flex;
           flex-direction: column;
           gap: 20px;
+          align-items: center;
         }
 
         .news-card {
           display: flex;
+          width: 100%;
+          max-width: 800px;
           background: #ffffff;
           border: 1px solid var(--line);
           border-radius: 16px;
@@ -883,27 +888,32 @@ export default async function HomePage() {
 
           .news-card {
             flex-direction: column;
+            max-width: 100%;
           }
 
           .news-body {
             padding: 20px;
             gap: 16px;
-            flex-direction: column;
+            flex-direction: row;
             align-items: flex-start;
           }
 
           .news-date {
-            min-width: 60px;
+            min-width: 56px;
             padding: 10px 12px;
             align-self: flex-start;
           }
 
           .news-day {
-            font-size: 24px;
+            font-size: 22px;
           }
 
           .news-month {
-            font-size: 12px;
+            font-size: 11px;
+          }
+
+          .news-year {
+            font-size: 10px;
           }
 
           .news-header {
@@ -913,13 +923,15 @@ export default async function HomePage() {
           }
 
           .news-title {
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1.4;
             -webkit-line-clamp: 2;
           }
 
           .news-category {
             align-self: flex-start;
+            font-size: 11px;
+            padding: 3px 8px;
           }
 
           .news-summary {
