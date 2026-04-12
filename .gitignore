@@ -12,7 +12,6 @@ coverage/
 vite.config.js
 vite.config.d.ts
 next-env.d.ts
-opencode.json
 
 # logs
 *.log
