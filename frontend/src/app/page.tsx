@@ -243,7 +243,7 @@ export default async function HomePage() {
           <div style={{ marginBottom: 72 }}>
             <SectionHeading eyebrow="新闻动态" title="最新资讯" description="了解公司最新发展、行业趋势及重要事项公告" />
             <div className="news-list">
-              {news.list.slice(0, 4).map((item, index) => {
+              {news.list.slice(0, 3).map((item, index) => {
                 const date = new Date(item.publishedAt || '');
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = (date.getMonth() + 1).toString().padStart(2, '0') + '月';
@@ -280,6 +280,17 @@ export default async function HomePage() {
                   </Link>
                 );
               })}
+            </div>
+
+            {/* 查看全部新闻 */}
+            <div className="news-footer">
+              <Link href="/news" className="news-view-all">
+                查看更多新闻
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           </div>
 
@@ -498,18 +509,11 @@ export default async function HomePage() {
           transform: translateX(4px);
         }
 
-        /* 新闻模块样式 - 无图片优化版 */
+        /* 新闻模块样式 - 单列布局 */
         .news-list {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 24px;
-        }
-
-        @media (max-width: 968px) {
-          .news-list {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
         }
 
         .news-card {
@@ -716,6 +720,43 @@ export default async function HomePage() {
           background: var(--brand);
           color: white;
           transform: translateX(4px) scale(1.1);
+        }
+
+        /* 新闻查看全部按钮 */
+        .news-footer {
+          text-align: center;
+          margin-top: 48px;
+        }
+
+        .news-view-all {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 14px 32px;
+          background: var(--surface);
+          color: var(--brand);
+          font-size: 15px;
+          font-weight: 600;
+          text-decoration: none;
+          border-radius: 999px;
+          border: 2px solid rgba(37, 99, 235, 0.2);
+          transition: all 0.3s ease;
+        }
+
+        .news-view-all:hover {
+          background: var(--brand);
+          color: white;
+          border-color: var(--brand);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px var(--brand-glow);
+        }
+
+        .news-view-all svg {
+          transition: transform 0.3s ease;
+        }
+
+        .news-view-all:hover svg {
+          transform: translateX(4px);
         }
 
         /* 公告模块样式 */
@@ -942,6 +983,16 @@ export default async function HomePage() {
             display: flex;
             width: 32px;
             height: 32px;
+          }
+
+          /* 移动端新闻查看全部按钮适配 */
+          .news-footer {
+            margin-top: 36px;
+          }
+
+          .news-view-all {
+            padding: 12px 28px;
+            font-size: 14px;
           }
 
           .announcement-card {
