@@ -235,53 +235,84 @@ export default async function HomePage() {
       </section>
 
       <section className="home-news-section animate-fade-in-up delay-300" style={{
-        padding: '64px 0',
-        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+        padding: '80px 0',
+        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           {/* 新闻区域 */}
-          <div style={{ marginBottom: 56 }}>
+          <div style={{ marginBottom: 72 }}>
             <SectionHeading eyebrow="News" title="Latest News" description="Keep visitors informed with the latest company updates and industry developments." />
-            <div className="news-list" style={{ display: 'grid', gap: 0 }}>
-              {news.list.slice(0, 4).map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/news/${item.id}`}
-                  className="news-link"
-                  style={{
-                    padding: '28px 0',
-                    borderBottom: '1px solid var(--line)',
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
-                    <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '新闻摘要待补充。'}</div>
-                  </div>
-                </Link>
-              ))}
+            <div className="news-list">
+              {news.list.slice(0, 4).map((item, index) => {
+                const date = new Date(item.publishedAt || item.createdAt);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = date.toLocaleDateString('en-US', { month: 'short' });
+                const year = date.getFullYear();
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/news/${item.id}`}
+                    className="news-card"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="news-date">
+                      <span className="news-day">{day}</span>
+                      <span className="news-month">{month}</span>
+                      <span className="news-year">{year}</span>
+                    </div>
+                    <div className="news-content">
+                      <h3 className="news-title">{item.title}</h3>
+                      <p className="news-summary">{item.summary || 'No summary available.'}</p>
+                    </div>
+                    <div className="news-arrow">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
           {/* 公告区域 */}
           <div>
             <SectionHeading eyebrow="Announcements" title="Official Notices" description="Highlight top notices and operational announcements for customers and partners." />
-            <div className="announcement-list" style={{ display: 'grid', gap: 0 }}>
-              {announcements.list.slice(0, 4).map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/announcements/${item.id}`}
-                  className="announcement-link"
-                  style={{
-                    padding: '28px 0',
-                    borderBottom: '1px solid var(--line)',
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: 20, marginBottom: 10, fontWeight: 600, letterSpacing: '-0.01em' }}>{item.title}</div>
-                    <div className="section-copy" style={{ fontSize: 15, lineHeight: 1.7 }}>{item.summary || '公告摘要待补充。'}</div>
-                  </div>
-                </Link>
-              ))}
+            <div className="announcement-list">
+              {announcements.list.slice(0, 4).map((item, index) => {
+                const date = new Date(item.publishedAt || item.createdAt);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = date.toLocaleDateString('en-US', { month: 'short' });
+                const year = date.getFullYear();
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/announcements/${item.id}`}
+                    className="announcement-card"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="announcement-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                      </svg>
+                    </div>
+                    <div className="announcement-content">
+                      <h3 className="announcement-title">{item.title}</h3>
+                      <p className="announcement-summary">{item.summary || 'No summary available.'}</p>
+                    </div>
+                    <div className="announcement-date">
+                      <span>{day} {month}</span>
+                      <span>{year}</span>
+                    </div>
+                    <div className="announcement-arrow">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -459,6 +490,261 @@ export default async function HomePage() {
           transform: translateX(4px);
         }
 
+        /* 新闻模块样式 */
+        .news-list {
+          display: grid;
+          gap: 16px;
+        }
+
+        .news-card {
+          display: flex;
+          align-items: flex-start;
+          gap: 24px;
+          padding: 28px 32px;
+          background: #ffffff;
+          border: 1px solid var(--line);
+          border-radius: 16px;
+          text-decoration: none;
+          color: inherit;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          opacity: 0;
+          animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .news-card:hover {
+          border-color: rgba(37, 99, 235, 0.3);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+          transform: translateY(-4px);
+        }
+
+        .news-date {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 64px;
+          padding: 12px 16px;
+          background: linear-gradient(135deg, var(--brand-soft) 0%, rgba(37, 99, 235, 0.05) 100%);
+          border-radius: 12px;
+          text-align: center;
+          transition: all 0.3s ease;
+        }
+
+        .news-card:hover .news-date {
+          background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+          color: white;
+        }
+
+        .news-day {
+          font-size: 28px;
+          font-weight: 800;
+          line-height: 1;
+          color: var(--brand);
+          transition: color 0.3s ease;
+        }
+
+        .news-card:hover .news-day {
+          color: white;
+        }
+
+        .news-month {
+          font-size: 12px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          margin: 4px 0;
+          color: var(--brand);
+          opacity: 0.8;
+          transition: color 0.3s ease;
+        }
+
+        .news-card:hover .news-month {
+          color: white;
+        }
+
+        .news-year {
+          font-size: 11px;
+          color: var(--text-muted);
+          transition: color 0.3s ease;
+        }
+
+        .news-card:hover .news-year {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .news-content {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .news-title {
+          font-size: 18px;
+          font-weight: 600;
+          line-height: 1.4;
+          color: var(--foreground);
+          margin: 0 0 8px;
+          letter-spacing: -0.01em;
+          transition: color 0.3s ease;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .news-card:hover .news-title {
+          color: var(--brand);
+        }
+
+        .news-summary {
+          font-size: 14px;
+          line-height: 1.6;
+          color: var(--text-muted);
+          margin: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .news-arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          background: var(--surface);
+          color: var(--brand);
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+        }
+
+        .news-card:hover .news-arrow {
+          background: var(--brand);
+          color: white;
+          transform: translateX(4px);
+        }
+
+        /* 公告模块样式 */
+        .announcement-list {
+          display: grid;
+          gap: 12px;
+        }
+
+        .announcement-card {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          padding: 20px 28px;
+          background: #ffffff;
+          border: 1px solid var(--line);
+          border-radius: 12px;
+          text-decoration: none;
+          color: inherit;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          opacity: 0;
+          animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .announcement-card:hover {
+          border-color: rgba(245, 158, 11, 0.4);
+          box-shadow: 0 8px 24px rgba(245, 158, 11, 0.1);
+          transform: translateX(8px);
+        }
+
+        .announcement-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+          color: #f59e0b;
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover .announcement-icon {
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          color: white;
+          transform: scale(1.1) rotate(10deg);
+        }
+
+        .announcement-content {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .announcement-title {
+          font-size: 16px;
+          font-weight: 600;
+          line-height: 1.4;
+          color: var(--foreground);
+          margin: 0 0 4px;
+          letter-spacing: -0.01em;
+          transition: color 0.3s ease;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .announcement-card:hover .announcement-title {
+          color: #f59e0b;
+        }
+
+        .announcement-summary {
+          font-size: 13px;
+          line-height: 1.5;
+          color: var(--text-muted);
+          margin: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .announcement-date {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+          padding: 8px 16px;
+          font-size: 13px;
+          color: var(--text-muted);
+          background: var(--surface);
+          border-radius: 8px;
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover .announcement-date {
+          background: #fef3c7;
+          color: #92400e;
+        }
+
+        .announcement-arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          background: var(--surface);
+          color: var(--text-muted);
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+          opacity: 0;
+          transform: translateX(-8px);
+        }
+
+        .announcement-card:hover .announcement-arrow {
+          opacity: 1;
+          transform: translateX(0);
+          background: #f59e0b;
+          color: white;
+        }
+
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -506,17 +792,67 @@ export default async function HomePage() {
             padding: 28px 24px;
           }
 
-          .news-link, .announcement-link {
-            display: block;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 8px;
-            margin: 0 -12px;
-            padding-left: 12px;
-            padding-right: 12px;
+          .news-card {
+            padding: 20px;
+            gap: 16px;
           }
 
-          .news-link:hover, .announcement-link:hover {
-            background: var(--brand-soft);
+          .news-date {
+            min-width: 56px;
+            padding: 10px 12px;
+          }
+
+          .news-day {
+            font-size: 22px;
+          }
+
+          .news-month {
+            font-size: 11px;
+          }
+
+          .news-title {
+            font-size: 16px;
+          }
+
+          .news-summary {
+            font-size: 13px;
+            -webkit-line-clamp: 1;
+          }
+
+          .news-arrow {
+            display: none;
+          }
+
+          .announcement-card {
+            padding: 16px 20px;
+            gap: 16px;
+          }
+
+          .announcement-icon {
+            width: 40px;
+            height: 40px;
+          }
+
+          .announcement-icon svg {
+            width: 20px;
+            height: 20px;
+          }
+
+          .announcement-title {
+            font-size: 15px;
+          }
+
+          .announcement-summary {
+            display: none;
+          }
+
+          .announcement-date {
+            padding: 6px 10px;
+            font-size: 12px;
+          }
+
+          .announcement-arrow {
+            display: none;
           }
 
           .about-section {
