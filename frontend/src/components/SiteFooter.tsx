@@ -24,7 +24,6 @@ const footerSections: FooterSection[] = [
     title: '关于我们',
     links: [
       { label: '公司简介', href: '/about' },
-      { label: '发展历程', href: '/about' },
       { label: '联系我们', href: '/contact' },
     ],
   },
