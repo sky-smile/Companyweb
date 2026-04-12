@@ -139,9 +139,9 @@ export default async function AboutPage() {
 
           <div className={styles.aboutStats}>
             {[
-              { value: '15+', label: '年行业深耕', sub: '持续稳定发展' },
+              { value: '5+', label: '年行业深耕', sub: '持续稳定发展' },
               { value: '200+', label: '服务客户', sub: '遍布全球各地' },
-              { value: '50+', label: '技术团队', sub: '专业研发力量' },
+              { value: '100+', label: '技术团队', sub: '专业研发力量' },
               { value: '99%', label: '客户满意度', sub: '口碑铸就品牌' },
             ].map((stat) => (
               <div key={stat.label} className={styles.aboutStatCard}>
