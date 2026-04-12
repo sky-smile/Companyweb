@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { HeroBanner } from '@/components/HeroBanner';
 import { SectionHeading } from '@/components/SectionHeading';
 import { buildMetadata, pickDescription } from '@/lib/seo';
@@ -255,19 +256,46 @@ export default async function HomePage() {
                     className="news-card"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="news-date">
-                      <span className="news-day">{day}</span>
-                      <span className="news-month">{month}</span>
-                      <span className="news-year">{year}</span>
+                    <div className="news-image-wrapper">
+                      {item.coverImage ? (
+                        <Image
+                          src={item.coverImage}
+                          alt={item.title}
+                          fill
+                          className="news-image"
+                          loading={index < 2 ? 'eager' : 'lazy'}
+                          sizes="(max-width: 768px) 100vw, 280px"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement?.classList.add('news-image-error');
+                          }}
+                        />
+                      ) : null}
+                      <div className="news-image-placeholder">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <path d="M21 15l-5-5L5 21" />
+                        </svg>
+                        <span>暂无图片</span>
+                      </div>
                     </div>
-                    <div className="news-content">
-                      <h3 className="news-title">{item.title}</h3>
-                      <p className="news-summary">{item.summary || '暂无摘要信息'}</p>
-                    </div>
-                    <div className="news-arrow">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
+                    <div className="news-body">
+                      <div className="news-date">
+                        <span className="news-day">{day}</span>
+                        <span className="news-month">{month}</span>
+                        <span className="news-year">{year}</span>
+                      </div>
+                      <div className="news-content">
+                        <h3 className="news-title">{item.title}</h3>
+                        <p className="news-summary">{item.summary || '暂无摘要信息'}</p>
+                      </div>
+                      <div className="news-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </div>
                     </div>
                   </Link>
                 );
@@ -493,19 +521,26 @@ export default async function HomePage() {
         /* 新闻模块样式 */
         .news-list {
           display: grid;
-          gap: 16px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+        }
+
+        @media (max-width: 968px) {
+          .news-list {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
         }
 
         .news-card {
           display: flex;
-          align-items: flex-start;
-          gap: 24px;
-          padding: 28px 32px;
+          flex-direction: column;
           background: #ffffff;
           border: 1px solid var(--line);
           border-radius: 16px;
           text-decoration: none;
           color: inherit;
+          overflow: hidden;
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           opacity: 0;
           animation: fadeInUp 0.6s ease forwards;
@@ -517,16 +552,64 @@ export default async function HomePage() {
           transform: translateY(-4px);
         }
 
+        .news-image-wrapper {
+          position: relative;
+          width: 100%;
+          height: 180px;
+          background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+          overflow: hidden;
+        }
+
+        .news-image {
+          object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+
+        .news-card:hover .news-image {
+          transform: scale(1.05);
+        }
+
+        .news-image-placeholder {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: #94a3b8;
+          gap: 8px;
+        }
+
+        .news-image-wrapper:has(img) .news-image-placeholder {
+          display: none;
+        }
+
+        .news-image-error .news-image-placeholder {
+          display: flex !important;
+        }
+
+        .news-image-placeholder span {
+          font-size: 13px;
+        }
+
+        .news-body {
+          display: flex;
+          align-items: flex-start;
+          gap: 20px;
+          padding: 24px;
+        }
+
         .news-date {
           display: flex;
           flex-direction: column;
           align-items: center;
-          min-width: 64px;
-          padding: 12px 16px;
+          min-width: 56px;
+          padding: 10px 14px;
           background: linear-gradient(135deg, var(--brand-soft) 0%, rgba(37, 99, 235, 0.05) 100%);
-          border-radius: 12px;
+          border-radius: 10px;
           text-align: center;
           transition: all 0.3s ease;
+          flex-shrink: 0;
         }
 
         .news-card:hover .news-date {
@@ -535,7 +618,7 @@ export default async function HomePage() {
         }
 
         .news-day {
-          font-size: 28px;
+          font-size: 24px;
           font-weight: 800;
           line-height: 1;
           color: var(--brand);
@@ -547,9 +630,9 @@ export default async function HomePage() {
         }
 
         .news-month {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 500;
-          margin: 4px 0;
+          margin: 2px 0;
           color: var(--brand);
           opacity: 0.8;
           transition: color 0.3s ease;
@@ -560,7 +643,7 @@ export default async function HomePage() {
         }
 
         .news-year {
-          font-size: 11px;
+          font-size: 10px;
           color: var(--text-muted);
           transition: color 0.3s ease;
         }
@@ -789,21 +872,32 @@ export default async function HomePage() {
           }
 
           .news-card {
-            padding: 20px;
-            gap: 16px;
+            flex-direction: row;
+            flex-wrap: wrap;
+          }
+
+          .news-image-wrapper {
+            width: 100%;
+            height: 140px;
+          }
+
+          .news-body {
+            padding: 16px;
+            gap: 12px;
+            width: 100%;
           }
 
           .news-date {
-            min-width: 56px;
-            padding: 10px 12px;
+            min-width: 48px;
+            padding: 8px 10px;
           }
 
           .news-day {
-            font-size: 22px;
+            font-size: 20px;
           }
 
           .news-month {
-            font-size: 12px;
+            font-size: 11px;
           }
 
           .news-title {
