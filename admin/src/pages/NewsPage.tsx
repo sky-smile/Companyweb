@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography, message } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { EnhancedUploadField, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
+import { EnhancedUploadField, MediaPicker, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
 import { newsService } from '../services/news-service';
 import {
   CreateNewsCategoryPayload,
@@ -324,8 +324,19 @@ export function NewsPage() {
           <Form.Item label="摘要" name="summary">
             <Input.TextArea rows={3} placeholder="新闻简要摘要" />
           </Form.Item>
-          <Form.Item label="封面图" name="coverImage">
-            <EnhancedUploadField folder="news" accept="image/*" />
+          <Form.Item
+            label="封面图"
+            name="coverImage"
+            rules={[{ required: false }]}
+          >
+            <MediaPicker folder="news" />
+          </Form.Item>
+          <Form.Item label="上传新图片">
+            <EnhancedUploadField
+              folder="news"
+              accept="image/*"
+              onChange={(url) => newsForm.setFieldValue('coverImage', url)}
+            />
           </Form.Item>
           <Form.Item label="正文" name="content" rules={[{ required: true, message: '请输入正文内容' }]}>
             <RichTextEditor height={400} placeholder="请输入新闻正文..." />

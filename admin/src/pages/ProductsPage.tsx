@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography, message } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { EnhancedUploadField, PublishStatus, RichTextEditor, SortInput, StatusSwitch } from '../components/common';
+import { EnhancedUploadField, MediaPicker, MultiImageUploadField, PublishStatus, RichTextEditor, SortInput, StatusSwitch } from '../components/common';
 import { productService } from '../services/product-service';
 import {
   CreateProductCategoryPayload,
@@ -325,7 +325,7 @@ export function ProductsPage() {
             <Input.TextArea rows={3} placeholder="产品简要摘要" />
           </Form.Item>
           <Form.Item label="产品图片" name="imagesJson">
-            <EnhancedUploadField folder="products" accept="image/*" />
+            <MultiImageUploadField folder="products" accept="image/*" maxCount={5} />
           </Form.Item>
           <Form.Item label="参数 JSON" name="parametersJson">
             <Input.TextArea rows={4} placeholder='如：{"纯度": "99%", "包装": "25kg/桶"}' />
