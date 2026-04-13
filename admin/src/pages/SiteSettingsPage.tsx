@@ -120,6 +120,19 @@ export function SiteSettingsPage() {
         />
       ),
     },
+    {
+      key: 'copyright',
+      label: '版权设置',
+      children: (
+        <CopyrightTab
+          editingData={editingData}
+          getSettingValue={getSettingValue}
+          setSettingValue={setSettingValue}
+          handleSave={handleSave}
+          saving={saving}
+        />
+      ),
+    },
   ];
 
   return (
@@ -241,6 +254,54 @@ function SiteInfoTab({ editingData, getSettingValue, setSettingValue, loading, s
             style={{ maxWidth: 400 }}
           />
         </Space>
+      </Space>
+    </Card>
+  );
+}
+
+// ==================== 版权设置 Tab ====================
+
+interface CopyrightTabProps {
+  editingData: SiteSettingItem[];
+  getSettingValue: (key: string) => string;
+  setSettingValue: (key: string, value: string) => void;
+  handleSave: () => void;
+  saving: boolean;
+}
+
+function CopyrightTab({ getSettingValue, setSettingValue, handleSave, saving }: CopyrightTabProps) {
+  return (
+    <Card
+      extra={
+        <Button icon={<SaveOutlined />} type="primary" onClick={handleSave} loading={saving}>
+          保存设置
+        </Button>
+      }
+    >
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        {/* 版权信息 */}
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Typography.Text strong>网站版权信息</Typography.Text>
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+            显示在页脚底部，支持自定义文本，如：© 2024 公司名称. All rights reserved.
+          </Typography.Text>
+          <Input.TextArea
+            value={getSettingValue('copyrightText')}
+            onChange={(e) => setSettingValue('copyrightText', e.target.value)}
+            placeholder="例如：© 2024 白银市伊博化工科技有限公司. All rights reserved."
+            rows={3}
+            maxLength={200}
+            showCount
+            style={{ maxWidth: 600 }}
+          />
+        </Space>
+
+        {/* 提示信息 */}
+        <div style={{ padding: '12px 16px', background: '#f0f5ff', borderRadius: 6, border: '1px solid #d4e3fc' }}>
+          <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+            💡 提示：如不设置，将默认显示 "© 当前年份 公司名称. All rights reserved."
+          </Typography.Text>
+        </div>
       </Space>
     </Card>
   );
