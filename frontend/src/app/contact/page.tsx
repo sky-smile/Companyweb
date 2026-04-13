@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { buildMetadata, pickDescription } from '@/lib/seo';
 import { RichContent } from '@/components/RichContent';
 import { publicService } from '@/services/public-service';
+import { ContactMap } from '@/components/ContactMap';
 
 export async function generateMetadata(): Promise<Metadata> {
   const contact = await publicService.getContact();
@@ -34,8 +35,30 @@ export default async function ContactPage() {
   // 获取地址用于地图
   const address = contact.settings.find(s => s.settingKey === 'contactAddress')?.settingValue || '';
   
-  // 调试日志
-  console.log('[Contact Page] Address:', address);
+  // 使用 Nominatim 地理编码服务将地址转换为经纬度
+  let latitude = 0;
+  let longitude = 0;
+  
+  if (address) {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+        {
+          headers: {
+            'User-Agent': 'CompanyWeb/1.0',
+          },
+        }
+      );
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        latitude = parseFloat(data[0].lat);
+        longitude = parseFloat(data[0].lon);
+      }
+    } catch (error) {
+      console.error('[Contact Page] Geocoding failed:', error);
+    }
+  }
 
   return (
     <>
@@ -91,23 +114,11 @@ export default async function ContactPage() {
           {/* 右侧地图 */}
           <div className="contact-map-side">
             <div className="contact-map-container">
-              {address ? (
-                <iframe
-                  className="contact-map-iframe"
-                  src={`https://www.openstreetmap.org/search?query=${encodeURIComponent(address)}`}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="公司位置地图"
-                />
-              ) : (
-                <div className="contact-map-placeholder">
-                  <p>暂无地图信息</p>
-                </div>
-              )}
+              <ContactMap 
+                address={address}
+                latitude={latitude}
+                longitude={longitude}
+              />
             </div>
           </div>
         </div>
