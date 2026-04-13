@@ -34,6 +34,7 @@ import {
 } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import { uploadService } from '../services/upload-service';
+import { FolderSelector } from '../components/common/FolderSelector';
 
 const { Dragger } = Upload;
 
@@ -334,12 +335,9 @@ export function MediaCenterPage() {
         <Space direction="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
           <Space>
             <span>上传到目录：</span>
-            <Input
+            <FolderSelector
               value={uploadFolder}
-              onChange={(e) => setUploadFolder(e.target.value)}
-              placeholder="输入目录名称，如：banners、news、products"
-              style={{ width: 300 }}
-              prefix={<FolderOutlined />}
+              onChange={(folder) => setUploadFolder(folder)}
             />
           </Space>
 
@@ -349,7 +347,7 @@ export function MediaCenterPage() {
             </p>
             <p className="ant-upload-text">点击或拖拽文件到此区域上传</p>
             <p className="ant-upload-hint">
-              支持批量上传，图片最大 10MB，自动会生成缩略图
+              支持批量上传，图片最大 10MB，文件将上传到 <Tag color="blue" style={{ margin: '0 4px' }}>{uploadFolder}</Tag> 目录
             </p>
           </Dragger>
         </Space>
