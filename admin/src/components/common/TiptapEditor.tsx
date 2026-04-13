@@ -184,7 +184,7 @@ export function RichTextEditor({
     const incomingHTML = sanitizeHtml(value);
     if (currentHTML !== incomingHTML) {
       isUpdatingFromPropRef.current = true;
-      editor.commands.setContent(value || '', false);
+      editor.commands.setContent(value || '', { emitUpdate: false });
       isUpdatingFromPropRef.current = false;
     }
   }, [value, editor]);

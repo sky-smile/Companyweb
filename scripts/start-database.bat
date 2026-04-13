@@ -8,6 +8,7 @@ echo.
 
 REM ========== Config ==========
 set "DB_DATA_DIR=D:\Programs\Scoop\Scoop\apps\mariadb\current\data"
+set "DB_DATA_DIR=D:\Programs\Scoop\ScoopApps\apps\mariadb\current\data"
 set "MAX_WAIT=15"
 REM ============================
 

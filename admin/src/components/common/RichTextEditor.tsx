@@ -81,7 +81,7 @@ export function RichTextEditor({
   }, [editor]);
 
   // 工具栏配置：保留图片、表格等功能
-  const toolbarConfig = useMemo<IToolbarConfig>(() => ({
+  const toolbarConfig = useMemo(() => ({
     excludeKeys: [
       'headerSelect',       // 标题选择（保留其他标题方式）
       'group-more-style',   // 更多风格（下划线、删除线等）
@@ -99,10 +99,10 @@ export function RichTextEditor({
   }), []);
 
   // 编辑器核心配置
-  const editorConfig = useMemo<IEditorConfig>(() => ({
+  const editorConfig = useMemo(() => ({
     readOnly: disabled,
     placeholder,
-    
+
     // 粘贴时保留格式（保留图片、表格等结构）
     pasteFilterStyle: false,
     pasteIgnoreImg: false,

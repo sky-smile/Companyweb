@@ -55,6 +55,7 @@ export interface AnnouncementItem {
   content: string;
   status: number;
   isTop: number;
+  typeName?: string;
   publishedAt: string | null;
 }
 
