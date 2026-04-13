@@ -94,7 +94,15 @@ export function SiteSettingsPage() {
     {
       key: 'contact',
       label: '联系我们',
-      children: <ContactTab editingData={editingData} getSettingValue={getSettingValue} setSettingValue={setSettingValue} handleValueChange={handleValueChange} />,
+      children: (
+        <ContactTab
+          editingData={editingData}
+          setEditingData={setEditingData}
+          getSettingValue={getSettingValue}
+          setSettingValue={setSettingValue}
+          handleValueChange={handleValueChange}
+        />
+      ),
     },
     {
       key: 'site',
@@ -130,12 +138,13 @@ export function SiteSettingsPage() {
 
 interface ContactTabProps {
   editingData: SiteSettingItem[];
+  setEditingData: React.Dispatch<React.SetStateAction<SiteSettingItem[]>>;
   getSettingValue: (key: string) => string;
   setSettingValue: (key: string, value: string) => void;
   handleValueChange: (index: number, value: string) => void;
 }
 
-function ContactTab({ editingData, getSettingValue, setSettingValue }: ContactTabProps) {
+function ContactTab({ editingData, setEditingData, getSettingValue, setSettingValue }: ContactTabProps) {
   const contactFields = [
     { key: 'contactAddress', label: '公司地址', icon: <EnvironmentOutlined />, placeholder: '请输入公司详细地址' },
     { key: 'contactEmail', label: '电子邮箱', icon: <MailOutlined />, placeholder: 'example@company.com' },
@@ -147,9 +156,8 @@ function ContactTab({ editingData, getSettingValue, setSettingValue }: ContactTa
   return (
     <Card>
       <Space direction="vertical" size={24} style={{ width: '100%' }}>
-        {contactFields.map((field, index) => {
-          const currentValue = editingData.find(s => s.settingKey === field.key)?.settingValue || '';
-          const currentIndex = editingData.findIndex(s => s.settingKey === field.key);
+        {contactFields.map((field) => {
+          const currentValue = getSettingValue(field.key);
 
           return (
             <Space key={field.key} direction="vertical" size={8} style={{ width: '100%' }}>
@@ -159,18 +167,7 @@ function ContactTab({ editingData, getSettingValue, setSettingValue }: ContactTa
               </Space>
               <Input
                 value={currentValue}
-                onChange={(e) => {
-                  if (currentIndex >= 0) {
-                    // 更新现有项
-                    setEditingData(prev => {
-                      const newData = [...prev];
-                      newData[currentIndex] = { ...newData[currentIndex], settingValue: e.target.value };
-                      return newData;
-                    });
-                  } else {
-                    setSettingValue(field.key, e.target.value);
-                  }
-                }}
+                onChange={(e) => setSettingValue(field.key, e.target.value)}
                 placeholder={field.placeholder}
                 style={{ maxWidth: 500 }}
               />
