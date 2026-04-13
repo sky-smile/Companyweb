@@ -1,11 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
 // 修复 Leaflet 标记图标路径问题
-const defaultIcon = L.icon({
+const defaultIconConfig = {
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -13,7 +11,7 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
-});
+};
 
 interface ContactMapProps {
   address: string;
@@ -31,14 +29,18 @@ export function ContactMap({ address, latitude, longitude }: ContactMapProps) {
     const initMap = async () => {
       if (!mapRef.current || !latitude || !longitude) return;
 
-      // 动态加载 Leaflet
-      const L = await import('leaflet');
+      // 动态导入 leaflet CSS 和库（仅在客户端）
+      await import('leaflet/dist/leaflet.css');
+      const L = (await import('leaflet')).default;
       if (!mounted) return;
 
       // 避免重复初始化
       if (leafletRef.current) {
         leafletRef.current.remove();
       }
+
+      // 创建图标
+      const defaultIcon = L.icon(defaultIconConfig);
 
       // 创建地图实例
       const map = L.map(mapRef.current).setView([latitude, longitude], 15);
