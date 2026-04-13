@@ -318,10 +318,7 @@ export function SiteFooter({
           line-height: 1.6;
           text-decoration: none;
           transition: all 0.25s ease;
-          padding: 18px 20px;
-          border-radius: 12px;
-          background: #f1f5f9;
-          border: 1px solid #e2e8f0;
+          padding: 4px 0;
         }
 
         .contact-info-link {
@@ -330,8 +327,6 @@ export function SiteFooter({
 
         .contact-info-item:hover {
           color: #3b82f6;
-          background: rgba(59, 130, 246, 0.08);
-          border-color: rgba(59, 130, 246, 0.2);
           transform: translateX(4px);
         }
 
