@@ -142,10 +142,11 @@ export function SiteFooter({
       {/* 样式 */}
       <style>{`
         .site-footer {
-          background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-          color: #e2e8f0;
+          background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+          color: #1e293b;
           position: relative;
           margin-top: auto;
+          border-top: 1px solid #e2e8f0;
         }
 
         .footer-main {
@@ -179,21 +180,20 @@ export function SiteFooter({
           max-height: 48px;
           height: auto;
           object-fit: contain;
-          filter: brightness(0) invert(1);
         }
 
         .footer-logo-text {
           font-size: 26px;
           font-weight: 800;
           letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 100%);
+          background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
 
         .footer-description {
-          color: #94a3b8;
+          color: #64748b;
           font-size: 15px;
           line-height: 1.8;
           margin: 0;
@@ -216,7 +216,7 @@ export function SiteFooter({
         .footer-links-title {
           font-size: 15px;
           font-weight: 700;
-          color: #f1f5f9;
+          color: #0f172a;
           margin: 0;
           letter-spacing: 0.02em;
           text-transform: uppercase;
@@ -245,7 +245,7 @@ export function SiteFooter({
         }
 
         .footer-link {
-          color: #94a3b8;
+          color: #475569;
           font-size: 14px;
           text-decoration: none;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -261,11 +261,11 @@ export function SiteFooter({
           opacity: 0;
           transform: translateX(-8px);
           transition: all 0.25s ease;
-          color: #38bdf8;
+          color: #3b82f6;
         }
 
         .footer-link:hover {
-          color: #38bdf8;
+          color: #3b82f6;
           padding-left: 20px;
         }
 
@@ -284,7 +284,7 @@ export function SiteFooter({
         .footer-contact-title {
           font-size: 15px;
           font-weight: 700;
-          color: #f1f5f9;
+          color: #0f172a;
           margin: 0;
           letter-spacing: 0.02em;
           text-transform: uppercase;
@@ -306,22 +306,18 @@ export function SiteFooter({
         .footer-contact-list {
           display: flex;
           flex-direction: column;
-          gap: 18px;
+          gap: 16px;
         }
 
         .contact-info-item {
           display: flex;
           align-items: flex-start;
           gap: 14px;
-          color: #94a3b8;
+          color: #475569;
           font-size: 14px;
           line-height: 1.6;
           text-decoration: none;
           transition: all 0.25s ease;
-          padding: 12px 16px;
-          border-radius: 10px;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .contact-info-link {
@@ -329,17 +325,14 @@ export function SiteFooter({
         }
 
         .contact-info-item:hover {
-          color: #38bdf8;
-          background: rgba(56, 189, 248, 0.08);
-          border-color: rgba(56, 189, 248, 0.2);
-          transform: translateX(4px);
+          color: #3b82f6;
         }
 
         .contact-icon {
           width: 20px;
           height: 20px;
           flex-shrink: 0;
-          color: #38bdf8;
+          color: #3b82f6;
           margin-top: 2px;
           transition: transform 0.25s ease;
         }
@@ -354,9 +347,8 @@ export function SiteFooter({
 
         /* 底部版权区 */
         .footer-bottom {
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          background: rgba(15, 23, 42, 0.6);
-          backdrop-filter: blur(10px);
+          border-top: 1px solid #e2e8f0;
+          background: #f8fafc;
         }
 
         .footer-bottom-inner {
@@ -401,10 +393,6 @@ export function SiteFooter({
             justify-content: center;
             gap: 16px;
           }
-
-          .contact-info-item {
-            flex: 0 1 calc(50% - 8px);
-          }
         }
 
         @media (max-width: 768px) {
@@ -431,10 +419,6 @@ export function SiteFooter({
             flex-direction: column;
             align-items: stretch;
             gap: 12px;
-          }
-
-          .contact-info-item {
-            flex: none;
           }
 
           .footer-bottom-inner {
@@ -470,7 +454,6 @@ export function SiteFooter({
           }
 
           .contact-info-item {
-            padding: 10px 14px;
             font-size: 13px;
           }
 
