@@ -14,9 +14,9 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
     "build": "nest build",
-    "typeorm": "node ./node_modules/typeorm/cli.js -d dist/database/data-source.js",
+    "typeorm": "typeorm-ts-node-commonjs -d dist/database/data-source.js",
     "migration:run": "ts-node -r tsconfig-paths/register src/database/run-migrations.ts",
-    "migration:revert": "node ./node_modules/typeorm/cli.js migration:revert -d dist/database/data-source.js",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d dist/database/data-source.js",
     "seed:auth": "ts-node -r tsconfig-paths/register src/database/seeds/auth.seed.ts",
     "fix-filenames": "ts-node -r tsconfig-paths/register src/fix-filenames.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -25,7 +25,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/jest/bin/jest --runInBand"
+    "test:debug": "pnpm exec node --inspect-brk -r tsconfig-paths/register -r ts-node/register -- jest --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.15",
