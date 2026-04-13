@@ -91,7 +91,7 @@ export default async function ContactPage() {
               {address ? (
                 <iframe
                   className="contact-map-iframe"
-                  src={`https://map.tianditu.gov.cn/search?keyword=${encodeURIComponent(address)}`}
+                  src={`https://www.openstreetmap.org/export/embed.html?q=${encodeURIComponent(address)}`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
