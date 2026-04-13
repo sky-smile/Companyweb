@@ -306,38 +306,46 @@ export function SiteFooter({
         .footer-contact-list {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
         }
 
         .contact-info-item {
           display: flex;
           align-items: flex-start;
-          gap: 10px;
+          gap: 14px;
           color: #475569;
           font-size: 14px;
           line-height: 1.6;
           text-decoration: none;
+          transition: all 0.25s ease;
+          padding: 18px 20px;
+          border-radius: 12px;
+          background: #f1f5f9;
+          border: 1px solid #e2e8f0;
         }
 
         .contact-info-link {
           cursor: pointer;
-          transition: color 0.2s ease;
         }
 
-        .contact-info-link:hover {
+        .contact-info-item:hover {
           color: #3b82f6;
+          background: rgba(59, 130, 246, 0.08);
+          border-color: rgba(59, 130, 246, 0.2);
+          transform: translateX(4px);
         }
 
         .contact-icon {
-          width: 16px;
-          height: 16px;
+          width: 20px;
+          height: 20px;
           flex-shrink: 0;
-          color: #64748b;
+          color: #3b82f6;
           margin-top: 2px;
+          transition: transform 0.25s ease;
         }
 
-        .contact-info-link:hover .contact-icon {
-          color: #3b82f6;
+        .contact-info-item:hover .contact-icon {
+          transform: scale(1.15) rotate(5deg);
         }
 
         .contact-text {
