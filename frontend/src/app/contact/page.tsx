@@ -31,6 +31,9 @@ export default async function ContactPage() {
     })
     .filter((item): item is NonNullable<typeof item> => item !== null);
 
+  // 获取地址用于地图
+  const address = contact.settings.find(s => s.settingKey === 'contactAddress')?.settingValue || '';
+
   return (
     <>
       {/* 页面头部 Hero */}
@@ -49,34 +52,61 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      {/* 联系信息卡片 */}
-      <section className="site-shell contact-info-section">
-        <div className="contact-info-grid">
-          {filteredSettings.length > 0 ? (
-            filteredSettings.map((item, index) => (
-              <div key={item.settingKey} className="contact-info-card">
-                <div className="contact-info-icon">
-                  {getContactIcon(item.icon)}
+      {/* 联系信息和地图 */}
+      <section className="site-shell contact-content">
+        <div className="contact-layout">
+          {/* 左侧联系信息列表 */}
+          <div className="contact-info-side">
+            <h2 className="contact-info-title">联系信息</h2>
+            {filteredSettings.length > 0 ? (
+              <ul className="contact-info-list">
+                {filteredSettings.map((item) => (
+                  <li key={item.settingKey} className="contact-info-item">
+                    <div className="contact-info-icon">
+                      {getContactIcon(item.icon)}
+                    </div>
+                    <div className="contact-info-text">
+                      <div className="contact-info-label">{item.label}</div>
+                      <div className="contact-info-value">
+                        {item.settingKey === 'contactEmail' ? (
+                          <a href={`mailto:${item.settingValue}`}>{item.settingValue}</a>
+                        ) : item.settingKey === 'contactPhone' ? (
+                          <a href={`tel:${item.settingValue}`}>{item.settingValue}</a>
+                        ) : (
+                          item.settingValue
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="contact-info-empty">暂无联系信息</div>
+            )}
+          </div>
+
+          {/* 右侧地图 */}
+          <div className="contact-map-side">
+            <div className="contact-map-container">
+              {address ? (
+                <iframe
+                  className="contact-map-iframe"
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="公司位置地图"
+                />
+              ) : (
+                <div className="contact-map-placeholder">
+                  <p>暂无地图信息</p>
                 </div>
-                <div className="contact-info-content">
-                  <div className="contact-info-label">
-                    {item.label}
-                  </div>
-                  <div className="contact-info-value">
-                    {item.settingKey === 'contactEmail' ? (
-                      <a href={`mailto:${item.settingValue}`}>{item.settingValue}</a>
-                    ) : item.settingKey === 'contactPhone' ? (
-                      <a href={`tel:${item.settingValue}`}>{item.settingValue}</a>
-                    ) : (
-                      item.settingValue
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="contact-info-empty">暂无联系信息</div>
-          )}
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -156,81 +186,79 @@ export default async function ContactPage() {
         }
 
         /* ========== 联系信息区域 ========== */
-        .contact-info-section {
+        .contact-content {
           padding-top: 72px;
           padding-bottom: 72px;
         }
 
-        .contact-info-grid {
+        .contact-layout {
           display: grid;
-          gap: 24px;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          grid-template-columns: 1fr 1fr;
+          gap: 48px;
+          align-items: start;
         }
 
-        /* ========== 联系信息卡片 ========== */
-        .contact-info-card {
-          display: flex;
-          align-items: flex-start;
-          gap: 20px;
-          padding: 28px;
+        /* 左侧联系信息 */
+        .contact-info-side {
+          padding: 32px;
+          background: #ffffff;
           border-radius: 16px;
           border: 1px solid var(--line);
-          background: #ffffff;
-          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-          overflow: hidden;
+          min-height: 400px;
         }
 
-        .contact-info-card::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 4px;
-          background: linear-gradient(180deg, var(--brand), var(--accent));
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          border-radius: 2px;
+        .contact-info-title {
+          margin: 0 0 32px 0;
+          font-size: 24px;
+          font-weight: 700;
+          color: var(--foreground);
+          letter-spacing: -0.02em;
         }
 
-        .contact-info-card:hover {
-          border-color: rgba(37, 99, 235, 0.2);
-          transform: translateY(-4px);
-          box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
+        .contact-info-list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 28px;
         }
 
-        .contact-info-card:hover::before {
-          opacity: 1;
+        .contact-info-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+          padding: 20px;
+          border-radius: 12px;
+          background: var(--brand-soft, rgba(37, 99, 235, 0.05));
+          transition: all 0.3s ease;
+        }
+
+        .contact-info-item:hover {
+          background: rgba(37, 99, 235, 0.1);
+          transform: translateX(4px);
         }
 
         /* 图标 */
         .contact-info-icon {
           flex-shrink: 0;
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
-          background: var(--brand-soft);
+          width: 44px;
+          height: 44px;
+          border-radius: 10px;
+          background: var(--brand);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--brand);
-          transition: all 0.3s ease;
-        }
-
-        .contact-info-card:hover .contact-info-icon {
-          background: var(--brand);
           color: #ffffff;
-          transform: scale(1.05);
         }
 
         .contact-info-icon svg {
-          width: 24px;
-          height: 24px;
+          width: 22px;
+          height: 22px;
         }
 
-        /* 内容 */
-        .contact-info-content {
+        /* 文本内容 */
+        .contact-info-text {
           flex: 1;
           min-width: 0;
         }
@@ -239,14 +267,13 @@ export default async function ContactPage() {
           font-size: 13px;
           font-weight: 600;
           color: var(--brand);
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           letter-spacing: 0.03em;
         }
 
         .contact-info-value {
-          margin: 0;
           font-size: 16px;
-          line-height: 1.7;
+          line-height: 1.6;
           color: var(--foreground);
           word-break: break-word;
         }
@@ -269,11 +296,46 @@ export default async function ContactPage() {
           font-size: 15px;
         }
 
+        /* 右侧地图 */
+        .contact-map-side {
+          position: sticky;
+          top: 100px;
+        }
+
+        .contact-map-container {
+          width: 100%;
+          height: 500px;
+          border-radius: 16px;
+          overflow: hidden;
+          border: 1px solid var(--line);
+          background: #f5f5f5;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .contact-map-placeholder {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+          color: var(--text-muted);
+          font-size: 16px;
+        }
+
         /* ========== 响应式适配 ========== */
         @media (max-width: 1024px) {
-          .contact-info-grid {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+          .contact-layout {
+            grid-template-columns: 1fr;
+            gap: 32px;
+          }
+
+          .contact-map-side {
+            position: static;
+          }
+
+          .contact-map-container {
+            height: 400px;
           }
         }
 
@@ -306,37 +368,51 @@ export default async function ContactPage() {
             margin-top: 14px;
           }
 
-          .contact-info-section {
+          .contact-content {
             padding-top: 48px;
             padding-bottom: 48px;
           }
 
-          .contact-info-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
+          .contact-info-side {
+            padding: 24px;
+            min-height: auto;
           }
 
-          .contact-info-card {
-            padding: 20px;
+          .contact-info-title {
+            font-size: 20px;
+            margin-bottom: 24px;
+          }
+
+          .contact-info-list {
+            gap: 20px;
+          }
+
+          .contact-info-item {
+            padding: 16px;
+            gap: 12px;
           }
 
           .contact-info-icon {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
           }
 
           .contact-info-icon svg {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
           }
 
           .contact-info-label {
             font-size: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
           }
 
           .contact-info-value {
             font-size: 15px;
+          }
+
+          .contact-map-container {
+            height: 350px;
           }
         }
 
@@ -351,23 +427,30 @@ export default async function ContactPage() {
             line-height: 1.6;
           }
 
-          .contact-info-card {
-            padding: 18px;
-            gap: 16px;
+          .contact-info-side {
+            padding: 20px;
+          }
+
+          .contact-info-item {
+            padding: 14px;
           }
 
           .contact-info-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
           }
 
           .contact-info-icon svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
           }
 
           .contact-info-value {
             font-size: 14px;
+          }
+
+          .contact-map-container {
+            height: 280px;
           }
         }
       `}} />
