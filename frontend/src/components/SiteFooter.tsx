@@ -5,6 +5,8 @@ import Link from 'next/link';
 interface SiteFooterProps {
   siteName?: string;
   siteLogo?: string;
+  contactPhone?: string;
+  contactEmail?: string;
 }
 
 interface FooterLink {
@@ -41,7 +43,7 @@ const footerSections: FooterSection[] = [
   },
 ];
 
-export function SiteFooter({ siteName, siteLogo }: SiteFooterProps) {
+export function SiteFooter({ siteName, siteLogo, contactPhone, contactEmail }: SiteFooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -68,19 +70,23 @@ export function SiteFooter({ siteName, siteLogo }: SiteFooterProps) {
             专注于为企业提供高品质的产品与解决方案，致力于成为行业领先的合作伙伴。
           </p>
           <div className="footer-contact">
-            <a href="tel:400-888-8888" className="contact-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>400-888-8888</span>
-            </a>
-            <a href="mailto:contact@skysmile.com" className="contact-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-              <span>contact@skysmile.com</span>
-            </a>
+            {contactPhone && (
+              <a href={`tel:${contactPhone}`} className="contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <span>{contactPhone}</span>
+              </a>
+            )}
+            {contactEmail && (
+              <a href={`mailto:${contactEmail}`} className="contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                <span>{contactEmail}</span>
+              </a>
+            )}
           </div>
         </div>
 

@@ -27,10 +27,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   // 获取站点设置
   let siteName = '';
   let siteLogo = '';
+  let contactPhone = '';
+  let contactEmail = '';
   try {
     const settings = await publicService.getHome();
     siteName = settings.settings.find(s => s.settingKey === 'siteName')?.settingValue || '';
     siteLogo = settings.settings.find(s => s.settingKey === 'siteLogo')?.settingValue || '';
+    contactPhone = settings.settings.find(s => s.settingKey === 'contactPhone')?.settingValue || '';
+    contactEmail = settings.settings.find(s => s.settingKey === 'contactEmail')?.settingValue || '';
   } catch (error) {
     console.error('Failed to load site settings:', error);
   }
@@ -40,7 +44,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body style={{ margin: 0, padding: 0 }}>
         <SiteHeader />
         <main style={{ margin: 0, padding: 0 }}>{children}</main>
-        <SiteFooter siteName={siteName} siteLogo={siteLogo} />
+        <SiteFooter siteName={siteName} siteLogo={siteLogo} contactPhone={contactPhone} contactEmail={contactEmail} />
         <BackToTop />
 
         {/* Organization JSON-LD */}
