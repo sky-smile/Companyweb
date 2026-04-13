@@ -43,8 +43,8 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
       const folderList = response.data?.byFolder?.map((item: any) => item.folder) || [];
       // 添加默认文件夹
       const defaultFolders = ['common', 'banners', 'news', 'products', 'announcements'];
-      const allFolders = Array.from(new Set([...defaultFolders, ...folderList]));
-      setFolders(allFolders.sort());
+      const allFolders = Array.from(new Set([...defaultFolders, ...folderList])).sort();
+      setFolders(allFolders);
     } catch (error: any) {
       message.error('加载文件夹列表失败');
     } finally {
@@ -81,8 +81,9 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
         message.warning('文件夹已存在');
         return;
       }
-      // 将新文件夹添加到列表，并立即刷新显示
-      setFolders(prev => [...prev, trimmedName].sort());
+      // 将新文件夹添加到列表，创建新数组并排序，确保触发 React 重新渲染
+      const newFolders = [...folders, trimmedName].sort();
+      setFolders(newFolders);
       setCurrentFolder(trimmedName);
       setNewFolderName('');
       setShowCreateInput(false);
