@@ -81,6 +81,8 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
         message.warning('文件夹已存在');
         return;
       }
+      // 将新文件夹添加到列表，并立即刷新显示
+      setFolders(prev => [...prev, trimmedName].sort());
       setCurrentFolder(trimmedName);
       setNewFolderName('');
       setShowCreateInput(false);
