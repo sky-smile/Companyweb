@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Button,
   Input,
@@ -35,6 +35,9 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
   const [newFolderName, setNewFolderName] = useState('');
   const [showCreateInput, setShowCreateInput] = useState(false);
 
+  // 用 ref 持久化本地创建的文件夹，防止被 API 数据覆盖
+  const localFoldersRef = useRef<Set<string>>(new Set());
+
   // 加载文件夹列表
   const loadFolders = useCallback(async () => {
     setLoading(true);
@@ -43,7 +46,10 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
       const folderList = response.data?.byFolder?.map((item: any) => item.folder) || [];
       // 添加默认文件夹
       const defaultFolders = ['common', 'banners', 'news', 'products', 'announcements'];
-      const allFolders = Array.from(new Set([...defaultFolders, ...folderList])).sort();
+      // 合并 API 数据和本地创建的文件夹
+      const allFolders = Array.from(
+        new Set([...defaultFolders, ...folderList, ...localFoldersRef.current])
+      ).sort();
       setFolders(allFolders);
     } catch (error: any) {
       message.error('加载文件夹列表失败');
@@ -81,7 +87,9 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
         message.warning('文件夹已存在');
         return;
       }
-      // 将新文件夹添加到列表，创建新数组并排序，确保触发 React 重新渲染
+      // 添加到本地持久化 ref
+      localFoldersRef.current.add(trimmedName);
+      // 更新列表显示
       const newFolders = [...folders, trimmedName].sort();
       setFolders(newFolders);
       setCurrentFolder(trimmedName);
