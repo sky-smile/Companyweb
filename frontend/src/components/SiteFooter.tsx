@@ -58,9 +58,6 @@ export function SiteFooter({
 
   return (
     <footer className="site-footer">
-      {/* 顶部装饰线 */}
-      <div className="footer-top-line" />
-
       {/* 主内容区 */}
       <div className="site-shell footer-main">
         {/* 品牌介绍区 */}
@@ -70,10 +67,10 @@ export function SiteFooter({
               <img
                 src={siteLogo}
                 alt={siteName || 'Company Logo'}
-                style={{ maxWidth: 160, maxHeight: 40, height: 'auto', objectFit: 'contain' }}
+                className="footer-logo-img"
               />
             ) : (
-              siteName || 'Sky Smile'
+              <span className="footer-logo-text">{siteName || 'Sky Smile'}</span>
             )}
           </Link>
           <p className="footer-description">
@@ -102,7 +99,7 @@ export function SiteFooter({
         {/* 联系方式区域 */}
         {(contactPhone || contactEmail || contactAddress) && (
           <div className="footer-contact-section">
-            <h4 className="footer-contact-title">联系我们</h4>
+            <h4 className="footer-contact-title">联系方式</h4>
             <div className="footer-contact-list">
               {contactAddress && (
                 <div className="contact-info-item">
@@ -110,7 +107,7 @@ export function SiteFooter({
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span>{contactAddress}</span>
+                  <span className="contact-text">{contactAddress}</span>
                 </div>
               )}
               {contactPhone && (
@@ -118,7 +115,7 @@ export function SiteFooter({
                   <svg className="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                   </svg>
-                  <span>{contactPhone}</span>
+                  <span className="contact-text">{contactPhone}</span>
                 </a>
               )}
               {contactEmail && (
@@ -127,7 +124,7 @@ export function SiteFooter({
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                   </svg>
-                  <span>{contactEmail}</span>
+                  <span className="contact-text">{contactEmail}</span>
                 </a>
               )}
             </div>
@@ -145,31 +142,17 @@ export function SiteFooter({
       {/* 样式 */}
       <style>{`
         .site-footer {
-          background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-          border-top: 1px solid var(--line);
+          background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+          color: #e2e8f0;
           position: relative;
-        }
-
-        .footer-top-line {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(37, 99, 235, 0.2) 15%,
-            rgba(37, 99, 235, 0.4) 50%,
-            rgba(37, 99, 235, 0.2) 85%,
-            transparent 100%
-          );
+          margin-top: auto;
         }
 
         .footer-main {
-          padding: 64px 0 48px;
+          padding: 72px 0 56px;
           display: grid;
-          grid-template-columns: 1.2fr 1.5fr 1.3fr;
-          gap: 48px;
+          grid-template-columns: 1.3fr 1.5fr 1.2fr;
+          gap: 64px;
           align-items: start;
         }
 
@@ -177,59 +160,79 @@ export function SiteFooter({
         .footer-brand {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 20px;
         }
 
         .footer-logo {
-          font-size: 24px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
           text-decoration: none;
-          transition: opacity 0.3s ease;
           display: inline-flex;
           align-items: center;
+          transition: transform 0.3s ease;
         }
 
         .footer-logo:hover {
-          opacity: 0.85;
+          transform: translateY(-2px);
         }
 
-        .footer-logo img {
+        .footer-logo-img {
           max-width: 160px;
+          max-height: 48px;
           height: auto;
+          object-fit: contain;
+          filter: brightness(0) invert(1);
+        }
+
+        .footer-logo-text {
+          font-size: 26px;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         .footer-description {
-          color: rgba(26, 32, 44, 0.65);
-          font-size: 14px;
-          line-height: 1.7;
+          color: #94a3b8;
+          font-size: 15px;
+          line-height: 1.8;
           margin: 0;
-          max-width: 280px;
+          max-width: 320px;
         }
 
-        /* 链接区 */
+        /* 链接区域 */
         .footer-links {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
+          gap: 32px;
         }
 
         .footer-links-column {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 20px;
         }
 
         .footer-links-title {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--foreground);
+          font-size: 15px;
+          font-weight: 700;
+          color: #f1f5f9;
           margin: 0;
           letter-spacing: 0.02em;
+          text-transform: uppercase;
+          position: relative;
+          padding-bottom: 8px;
+        }
+
+        .footer-links-title::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 32px;
+          height: 3px;
+          background: linear-gradient(90deg, #3b82f6, #06b6d4);
+          border-radius: 2px;
         }
 
         .footer-links-list {
@@ -238,78 +241,126 @@ export function SiteFooter({
           padding: 0;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
         }
 
         .footer-link {
-          color: rgba(26, 32, 44, 0.6);
+          color: #94a3b8;
           font-size: 14px;
           text-decoration: none;
-          transition: all 0.2s ease;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           display: inline-block;
+          position: relative;
+          padding-left: 0;
+        }
+
+        .footer-link::before {
+          content: '→';
+          position: absolute;
+          left: -16px;
+          opacity: 0;
+          transform: translateX(-8px);
+          transition: all 0.25s ease;
+          color: #38bdf8;
         }
 
         .footer-link:hover {
-          color: var(--brand);
-          transform: translateX(4px);
+          color: #38bdf8;
+          padding-left: 20px;
+        }
+
+        .footer-link:hover::before {
+          opacity: 1;
+          transform: translateX(0);
         }
 
         /* 联系方式区域 */
         .footer-contact-section {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 20px;
         }
 
         .footer-contact-title {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--foreground);
+          font-size: 15px;
+          font-weight: 700;
+          color: #f1f5f9;
           margin: 0;
           letter-spacing: 0.02em;
+          text-transform: uppercase;
+          position: relative;
+          padding-bottom: 8px;
+        }
+
+        .footer-contact-title::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 32px;
+          height: 3px;
+          background: linear-gradient(90deg, #3b82f6, #06b6d4);
+          border-radius: 2px;
         }
 
         .footer-contact-list {
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 18px;
         }
 
         .contact-info-item {
           display: flex;
           align-items: flex-start;
-          gap: 10px;
-          color: rgba(26, 32, 44, 0.6);
+          gap: 14px;
+          color: #94a3b8;
           font-size: 14px;
-          line-height: 1.5;
+          line-height: 1.6;
           text-decoration: none;
-          transition: all 0.2s ease;
+          transition: all 0.25s ease;
+          padding: 12px 16px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .contact-info-link {
           cursor: pointer;
         }
 
-        .contact-info-link:hover {
-          color: var(--brand);
+        .contact-info-item:hover {
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.08);
+          border-color: rgba(56, 189, 248, 0.2);
+          transform: translateX(4px);
         }
 
         .contact-icon {
-          width: 16px;
-          height: 16px;
+          width: 20px;
+          height: 20px;
           flex-shrink: 0;
-          color: var(--brand);
+          color: #38bdf8;
           margin-top: 2px;
+          transition: transform 0.25s ease;
+        }
+
+        .contact-info-item:hover .contact-icon {
+          transform: scale(1.15) rotate(5deg);
+        }
+
+        .contact-text {
+          flex: 1;
         }
 
         /* 底部版权区 */
         .footer-bottom {
-          border-top: 1px solid var(--line);
-          background: rgba(255, 255, 255, 0.5);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(15, 23, 42, 0.6);
+          backdrop-filter: blur(10px);
         }
 
         .footer-bottom-inner {
-          padding: 20px 0;
+          padding: 24px 0;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -317,16 +368,17 @@ export function SiteFooter({
 
         .copyright {
           font-size: 13px;
-          color: rgba(26, 32, 44, 0.5);
+          color: #64748b;
           margin: 0;
           text-align: center;
+          letter-spacing: 0.02em;
         }
 
         /* 响应式适配 */
         @media (max-width: 1024px) {
           .footer-main {
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 48px;
           }
 
           .footer-brand {
@@ -349,32 +401,44 @@ export function SiteFooter({
             justify-content: center;
             gap: 16px;
           }
+
+          .contact-info-item {
+            flex: 0 1 calc(50% - 8px);
+          }
         }
 
         @media (max-width: 768px) {
           .footer-main {
             grid-template-columns: 1fr;
-            padding: 48px 0 32px;
-            gap: 36px;
+            padding: 56px 0 40px;
+            gap: 40px;
           }
 
           .footer-links {
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 24px;
           }
 
           .footer-links-column {
-            gap: 12px;
+            gap: 16px;
+          }
+
+          .footer-links-title {
+            font-size: 14px;
           }
 
           .footer-contact-list {
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
             gap: 12px;
           }
 
+          .contact-info-item {
+            flex: none;
+          }
+
           .footer-bottom-inner {
-            padding: 18px 0;
+            padding: 20px 0;
           }
 
           .copyright {
@@ -383,18 +447,36 @@ export function SiteFooter({
         }
 
         @media (max-width: 480px) {
+          .footer-main {
+            padding: 48px 0 32px;
+            gap: 32px;
+          }
+
           .footer-links {
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px 16px;
+            gap: 24px 20px;
           }
 
-          .footer-links-column:last-child {
-            grid-column: 1 / -1;
+          .footer-links-title {
+            font-size: 13px;
           }
 
-          .footer-main {
-            padding: 40px 0 28px;
-            gap: 32px;
+          .footer-link {
+            font-size: 13px;
+          }
+
+          .footer-description {
+            font-size: 14px;
+          }
+
+          .contact-info-item {
+            padding: 10px 14px;
+            font-size: 13px;
+          }
+
+          .contact-icon {
+            width: 18px;
+            height: 18px;
           }
         }
       `}</style>
