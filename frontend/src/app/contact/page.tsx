@@ -91,7 +91,7 @@ export default async function ContactPage() {
               {address ? (
                 <iframe
                   className="contact-map-iframe"
-                  src={`https://j.map.baidu.com/search/${encodeURIComponent(address)}`}
+                  src={`https://map.tianditu.gov.cn/search?keyword=${encodeURIComponent(address)}`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
