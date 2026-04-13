@@ -43,24 +43,24 @@ export function BannersPage() {
   }
 
   async function handleSaveBanner() {
-    const values = bannerForm.getFieldsValue();
-    const imageUrl = values.imageUrl as string;
-
-    if (!imageUrl) {
-      message.error('请上传或输入图片地址');
-      return;
-    }
-
-    const payload: CreateBannerPayload & { status?: number } = {
-      title: values.title,
-      subtitle: values.subtitle,
-      imageUrl,
-      linkUrl: values.linkUrl,
-      sort: values.sort ?? 0,
-      status: values.status ?? 1,
-    };
-
     try {
+      const values = await bannerForm.validateFields();
+      const imageUrl = values.imageUrl as string;
+
+      if (!imageUrl) {
+        message.error('请上传或输入图片地址');
+        return;
+      }
+
+      const payload: CreateBannerPayload & { status?: number } = {
+        title: values.title,
+        subtitle: values.subtitle,
+        imageUrl,
+        linkUrl: values.linkUrl,
+        sort: values.sort ?? 0,
+        status: values.status ?? 1,
+      };
+
       if (editingBanner) {
         const updatePayload: UpdateBannerPayload = {
           title: payload.title,
@@ -80,7 +80,11 @@ export function BannersPage() {
       bannerForm.resetFields();
       void loadBanners();
     } catch (error: any) {
-      message.error(error.message || '操作失败');
+      if (error.errorFields) {
+        message.error('请检查表单填写是否正确');
+      } else {
+        message.error(error.message || '操作失败');
+      }
     }
   }
 

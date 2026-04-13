@@ -26,4 +26,10 @@ export class CreateBannerDto {
   @IsInt()
   @Min(0)
   sort = 0;
+
+  @IsOptional()
+  @Transform(({ value }) => Number(value ?? 1))
+  @IsInt()
+  @Min(0)
+  status = 1;
 }
