@@ -30,14 +30,22 @@ export async function fetchApi<T>(
 ): Promise<T> {
   const { revalidate = CACHE_DURATION.SHORT, tags } = options || {};
 
+  const fullUrl = `${apiBaseUrl}${path}`;
+  console.log(`[API] 请求地址:`, fullUrl);
+
   let response: Response;
   try {
-    response = await fetch(`${apiBaseUrl}${path}`, {
+    response = await fetch(fullUrl, {
       next: { revalidate, tags },
     });
   } catch (error) {
     // 网络错误或 fetch 失败
-    console.error(`[API] Fetch failed for ${path}:`, error);
+    console.error(`[API] 请求失败:`, {
+      url: fullUrl,
+      apiBaseUrl,
+      path,
+      error: error instanceof Error ? error.message : error,
+    });
     throw new ApiError(
       `无法连接到 API 服务，请确认后端服务已启动。${error instanceof Error ? error.message : ''}`,
       0,
