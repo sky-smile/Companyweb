@@ -91,7 +91,7 @@ export default async function ContactPage() {
               {address ? (
                 <iframe
                   className="contact-map-iframe"
-                  src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+                  src={`https://www.amap.com/search?query=${encodeURIComponent(address)}&view_mode=2d`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
