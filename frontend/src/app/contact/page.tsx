@@ -16,23 +16,35 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage() {
   const contact = await publicService.getContact();
 
+  // 过滤出核心联系信息
+  const contactFields = [
+    { key: 'siteName', label: '公司名称', icon: 'company' },
+    { key: 'contactAddress', label: '公司地址', icon: 'location' },
+    { key: 'contactEmail', label: '电子邮箱', icon: 'mail' },
+    { key: 'contactPhone', label: '联系电话', icon: 'phone' },
+  ];
+
+  const filteredSettings = contactFields
+    .map(field => {
+      const setting = contact.settings.find(s => s.settingKey === field.key);
+      return setting ? { ...setting, label: field.label, icon: field.icon } : null;
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
+
   return (
     <>
       {/* 页面头部 Hero */}
       <section className="contact-hero">
-        {/* 背景装饰 */}
         <div className="hero-background-decoration" />
         <div className="hero-secondary-decoration" />
 
         <div className="site-shell hero-content">
           <div className="hero-text">
             <div className="hero-eyebrow">Contact</div>
-            <h1 className="hero-title">{contact.page.title || '联系我们'}</h1>
-            <RichContent
-              content={contact.page.content}
-              fallback="请在后台维护公司地址、邮箱、电话与地图嵌入说明。"
-              className="hero-description"
-            />
+            <h1 className="hero-title">联系我们</h1>
+            <p className="hero-description">
+              如有任何问题或合作意向，欢迎通过以下方式与我们联系。
+            </p>
           </div>
         </div>
       </section>
@@ -40,24 +52,31 @@ export default async function ContactPage() {
       {/* 联系信息卡片 */}
       <section className="site-shell contact-info-section">
         <div className="contact-info-grid">
-          {contact.settings.map((item, index) => (
-            <div key={item.settingKey} className="contact-info-card">
-              {/* 卡片图标 */}
-              <div className="contact-info-icon">
-                {getContactIcon(index)}
-              </div>
-              
-              {/* 卡片内容 */}
-              <div className="contact-info-content">
-                <div className="contact-info-label">
-                  {item.description || item.settingKey}
+          {filteredSettings.length > 0 ? (
+            filteredSettings.map((item, index) => (
+              <div key={item.settingKey} className="contact-info-card">
+                <div className="contact-info-icon">
+                  {getContactIcon(item.icon)}
                 </div>
-                <div className="contact-info-value">
-                  {item.settingValue}
+                <div className="contact-info-content">
+                  <div className="contact-info-label">
+                    {item.label}
+                  </div>
+                  <div className="contact-info-value">
+                    {item.settingKey === 'contactEmail' ? (
+                      <a href={`mailto:${item.settingValue}`}>{item.settingValue}</a>
+                    ) : item.settingKey === 'contactPhone' ? (
+                      <a href={`tel:${item.settingValue}`}>{item.settingValue}</a>
+                    ) : (
+                      item.settingValue
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="contact-info-empty">暂无联系信息</div>
+          )}
         </div>
       </section>
 
@@ -243,6 +262,13 @@ export default async function ContactPage() {
           text-decoration: underline;
         }
 
+        .contact-info-empty {
+          text-align: center;
+          padding: 48px 24px;
+          color: var(--text-muted);
+          font-size: 15px;
+        }
+
         /* ========== 响应式适配 ========== */
         @media (max-width: 1024px) {
           .contact-info-grid {
@@ -350,36 +376,34 @@ export default async function ContactPage() {
 }
 
 /**
- * 根据索引返回对应的 SVG 图标
+ * 根据图标类型返回对应的 SVG 图标
  */
-function getContactIcon(index: number) {
-  const icons = [
-    // 地址图标
-    <svg key="location" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>,
-    // 邮箱图标
-    <svg key="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="4" width="20" height="16" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-    </svg>,
-    // 电话图标
-    <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>,
-    // 网站图标
-    <svg key="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M2 12h20" />
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>,
-    // 工作时间图标
-    <svg key="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>,
-  ];
+function getContactIcon(type: string) {
+  const icons: Record<string, React.ReactNode> = {
+    company: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+    location: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+    ),
+    mail: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      </svg>
+    ),
+    phone: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+      </svg>
+    ),
+  };
 
-  return icons[index % icons.length];
+  return icons[type] || icons.company;
 }
