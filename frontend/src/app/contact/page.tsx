@@ -33,6 +33,9 @@ export default async function ContactPage() {
 
   // 获取地址用于地图
   const address = contact.settings.find(s => s.settingKey === 'contactAddress')?.settingValue || '';
+  
+  // 调试日志
+  console.log('[Contact Page] Address:', address);
 
   return (
     <>
@@ -91,7 +94,7 @@ export default async function ContactPage() {
               {address ? (
                 <iframe
                   className="contact-map-iframe"
-                  src={`https://www.openstreetmap.org/export/embed.html?q=${encodeURIComponent(address)}`}
+                  src={`https://www.openstreetmap.org/search?query=${encodeURIComponent(address)}`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
