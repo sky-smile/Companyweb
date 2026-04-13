@@ -1,9 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Image, Input, Space, Table, Typography, message } from 'antd';
-import { PictureOutlined, ReloadOutlined, SaveOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Image, Input, Space, Typography, message, Tabs, InputNumber } from 'antd';
+import {
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined,
+  ClockCircleOutlined,
+  GlobalOutlined,
+  PictureOutlined,
+  ReloadOutlined,
+  SaveOutlined,
+} from '@ant-design/icons';
 import { MediaPicker } from '../components/common';
+import { RichTextEditor } from '../components/common/RichTextEditor';
 import { siteContentService } from '../services/site-content-service';
 import { SiteSettingItem, UpdateSiteSettingsPayload } from '../types/site-content';
+
+const { TextArea } = Input;
 
 export function SiteSettingsPage() {
   const [loading, setLoading] = useState(false);
@@ -66,8 +78,8 @@ export function SiteSettingsPage() {
         newData.push({
           settingKey: key,
           settingValue: value,
-          settingGroup: 'company',
-          description: key === 'siteLogo' ? '网站 Logo 图片' : '网站名称',
+          settingGroup: 'contact',
+          description: key,
         });
       }
       return newData;
@@ -78,39 +90,23 @@ export function SiteSettingsPage() {
     void loadSettings();
   }, []);
 
-  const columns = [
+  const tabItems = [
     {
-      title: '设置项',
-      dataIndex: 'description',
-      key: 'description',
-      width: 200,
-      render: (desc: string, record: SiteSettingItem) => (
-        <div>
-          <div>{desc || record.settingKey}</div>
-          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-            {record.settingKey}
-          </Typography.Text>
-        </div>
-      ),
+      key: 'contact',
+      label: '联系我们',
+      children: <ContactTab editingData={editingData} getSettingValue={getSettingValue} setSettingValue={setSettingValue} handleValueChange={handleValueChange} />,
     },
     {
-      title: '分组',
-      dataIndex: 'settingGroup',
-      key: 'settingGroup',
-      width: 120,
-      render: (group: string) => (
-        <Typography.Text type="secondary">{getGroupTitle(group)}</Typography.Text>
-      ),
-    },
-    {
-      title: '值',
-      dataIndex: 'settingValue',
-      key: 'settingValue',
-      render: (value: string, _record: SiteSettingItem, index: number) => (
-        <Input
-          value={editingData[index]?.settingValue || ''}
-          onChange={(e) => handleValueChange(index, e.target.value)}
-          placeholder="请输入设置值"
+      key: 'site',
+      label: '站点基本信息',
+      children: (
+        <SiteInfoTab
+          editingData={editingData}
+          getSettingValue={getSettingValue}
+          setSettingValue={setSettingValue}
+          loading={loading}
+          saving={saving}
+          handleSave={handleSave}
         />
       ),
     },
@@ -121,101 +117,126 @@ export function SiteSettingsPage() {
       <div>
         <Typography.Title level={2} style={{ marginBottom: 8 }}>站点设置</Typography.Title>
         <Typography.Text type="secondary">
-          配置公司基本信息、联系方式、SEO 设置和社交媒体链接。修改后点击保存按钮生效。
+          配置公司基本信息、联系方式和 SEO 设置。修改后点击保存按钮生效。
         </Typography.Text>
       </div>
 
-      {/* 站点基本信息卡片 */}
-      <Card
-        title="站点基本信息"
-        extra={
-          <Button
-            icon={<SaveOutlined />}
-            type="primary"
-            onClick={handleSave}
-            loading={saving}
-          >
-            保存设置
-          </Button>
-        }
-      >
-        <Space direction="vertical" size={20} style={{ width: '100%' }}>
-          {/* Logo 设置 */}
-          <Space direction="vertical" size={8} style={{ width: '100%' }}>
-            <Typography.Text strong>网站 Logo</Typography.Text>
-            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              显示在首页顶栏左侧，建议使用 SVG 或 PNG 格式，尺寸约 180x40px
-            </Typography.Text>
-            {getSettingValue('siteLogo') && (
-              <Image
-                src={getSettingValue('siteLogo')}
-                alt="当前 Logo"
-                style={{ maxWidth: 200, maxHeight: 60, objectFit: 'contain', border: '1px solid #f0f0f0', borderRadius: 8, padding: 8, background: '#fafafa' }}
-              />
-            )}
-            <MediaPicker
-              value={getSettingValue('siteLogo')}
-              onChange={(url) => setSettingValue('siteLogo', url)}
-              folder="logos"
-            />
-          </Space>
-
-          {/* 公司名称 */}
-          <Space direction="vertical" size={8} style={{ width: '100%' }}>
-            <Typography.Text strong>网站名称</Typography.Text>
-            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              显示在 Logo 右侧，如不设置则仅显示 Logo
-            </Typography.Text>
-            <Input
-              value={getSettingValue('siteName')}
-              onChange={(e) => setSettingValue('siteName', e.target.value)}
-              placeholder="如：伊博化工"
-              style={{ maxWidth: 400 }}
-            />
-          </Space>
-        </Space>
-      </Card>
-
-      {/* 详细设置表格 */}
-      <Card
-        title="详细设置"
-        extra={
-          <Space>
-            <Button icon={<ReloadOutlined />} onClick={() => void loadSettings()} loading={loading}>
-              刷新
-            </Button>
-            <Button
-              icon={<SaveOutlined />}
-              type="primary"
-              onClick={handleSave}
-              loading={saving}
-              disabled={editingData.length === 0}
-            >
-              保存设置
-            </Button>
-          </Space>
-        }
-      >
-        <Table
-          rowKey={(record) => record.settingKey}
-          loading={loading}
-          dataSource={editingData}
-          columns={columns}
-          pagination={false}
-          locale={{ emptyText: '暂无站点设置，请先在后端初始化设置数据。' }}
-        />
-      </Card>
+      <Tabs items={tabItems} defaultActiveKey="contact" size="large" />
     </Space>
   );
 }
 
-function getGroupTitle(group: string): string {
-  const titles: Record<string, string> = {
-    company: '公司信息',
-    contact: '联系方式',
-    seo: 'SEO 设置',
-    social: '社交媒体',
-    other: '其他设置',
-  };
-  return titles[group] || group || '其他设置';
+// ==================== 联系我们 Tab ====================
+
+interface ContactTabProps {
+  editingData: SiteSettingItem[];
+  getSettingValue: (key: string) => string;
+  setSettingValue: (key: string, value: string) => void;
+  handleValueChange: (index: number, value: string) => void;
+}
+
+function ContactTab({ editingData, getSettingValue, setSettingValue }: ContactTabProps) {
+  const contactFields = [
+    { key: 'contactAddress', label: '公司地址', icon: <EnvironmentOutlined />, placeholder: '请输入公司详细地址' },
+    { key: 'contactEmail', label: '电子邮箱', icon: <MailOutlined />, placeholder: 'example@company.com' },
+    { key: 'contactPhone', label: '联系电话', icon: <PhoneOutlined />, placeholder: '400-888-8888' },
+    { key: 'contactWebsite', label: '公司网站', icon: <GlobalOutlined />, placeholder: 'https://www.company.com' },
+    { key: 'contactWorkTime', label: '工作时间', icon: <ClockCircleOutlined />, placeholder: '周一至周五 9:00-18:00' },
+  ];
+
+  return (
+    <Card>
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        {contactFields.map((field, index) => {
+          const currentValue = editingData.find(s => s.settingKey === field.key)?.settingValue || '';
+          const currentIndex = editingData.findIndex(s => s.settingKey === field.key);
+
+          return (
+            <Space key={field.key} direction="vertical" size={8} style={{ width: '100%' }}>
+              <Space>
+                {field.icon}
+                <Typography.Text strong>{field.label}</Typography.Text>
+              </Space>
+              <Input
+                value={currentValue}
+                onChange={(e) => {
+                  if (currentIndex >= 0) {
+                    // 更新现有项
+                    setEditingData(prev => {
+                      const newData = [...prev];
+                      newData[currentIndex] = { ...newData[currentIndex], settingValue: e.target.value };
+                      return newData;
+                    });
+                  } else {
+                    setSettingValue(field.key, e.target.value);
+                  }
+                }}
+                placeholder={field.placeholder}
+                style={{ maxWidth: 500 }}
+              />
+            </Space>
+          );
+        })}
+      </Space>
+    </Card>
+  );
+}
+
+// ==================== 站点基本信息 Tab ====================
+
+interface SiteInfoTabProps {
+  editingData: SiteSettingItem[];
+  getSettingValue: (key: string) => string;
+  setSettingValue: (key: string, value: string) => void;
+  loading: boolean;
+  saving: boolean;
+  handleSave: () => void;
+}
+
+function SiteInfoTab({ editingData, getSettingValue, setSettingValue, loading, saving, handleSave }: SiteInfoTabProps) {
+  return (
+    <Card
+      extra={
+        <Button icon={<SaveOutlined />} type="primary" onClick={handleSave} loading={saving}>
+          保存设置
+        </Button>
+      }
+    >
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        {/* Logo 设置 */}
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Typography.Text strong>网站 Logo</Typography.Text>
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+            显示在首页顶栏左侧，建议使用 SVG 或 PNG 格式，尺寸约 180x40px
+          </Typography.Text>
+          {getSettingValue('siteLogo') && (
+            <Image
+              src={getSettingValue('siteLogo')}
+              alt="当前 Logo"
+              style={{ maxWidth: 200, maxHeight: 60, objectFit: 'contain', border: '1px solid #f0f0f0', borderRadius: 8, padding: 8, background: '#fafafa' }}
+            />
+          )}
+          <MediaPicker
+            value={getSettingValue('siteLogo')}
+            onChange={(url) => setSettingValue('siteLogo', url)}
+            folder="logos"
+          />
+        </Space>
+
+        {/* 公司名称 */}
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Typography.Text strong>网站名称</Typography.Text>
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+            显示在 Logo 右侧，如不设置则仅显示 Logo
+          </Typography.Text>
+          <Input
+            value={getSettingValue('siteName')}
+            onChange={(e) => setSettingValue('siteName', e.target.value)}
+            placeholder="如：伊博化工"
+            style={{ maxWidth: 400 }}
+          />
+        </Space>
+      </Space>
+    </Card>
+  );
 }
