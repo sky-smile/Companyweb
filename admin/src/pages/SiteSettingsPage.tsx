@@ -101,6 +101,8 @@ export function SiteSettingsPage() {
           getSettingValue={getSettingValue}
           setSettingValue={setSettingValue}
           handleValueChange={handleValueChange}
+          handleSave={handleSave}
+          saving={saving}
         />
       ),
     },
@@ -144,7 +146,7 @@ interface ContactTabProps {
   handleValueChange: (index: number, value: string) => void;
 }
 
-function ContactTab({ editingData, setEditingData, getSettingValue, setSettingValue }: ContactTabProps) {
+function ContactTab({ editingData, setEditingData, getSettingValue, setSettingValue, handleSave, saving }: ContactTabProps & { handleSave: () => void; saving: boolean }) {
   const contactFields = [
     { key: 'contactAddress', label: '公司地址', icon: <EnvironmentOutlined />, placeholder: '请输入公司详细地址' },
     { key: 'contactEmail', label: '电子邮箱', icon: <MailOutlined />, placeholder: 'example@company.com' },
@@ -154,7 +156,13 @@ function ContactTab({ editingData, setEditingData, getSettingValue, setSettingVa
   ];
 
   return (
-    <Card>
+    <Card
+      extra={
+        <Button icon={<SaveOutlined />} type="primary" onClick={handleSave} loading={saving}>
+          保存设置
+        </Button>
+      }
+    >
       <Space direction="vertical" size={24} style={{ width: '100%' }}>
         {contactFields.map((field) => {
           const currentValue = getSettingValue(field.key);
