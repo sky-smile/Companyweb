@@ -306,39 +306,38 @@ export function SiteFooter({
         .footer-contact-list {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 12px;
         }
 
         .contact-info-item {
           display: flex;
           align-items: flex-start;
-          gap: 14px;
+          gap: 10px;
           color: #475569;
           font-size: 14px;
           line-height: 1.6;
           text-decoration: none;
-          transition: all 0.25s ease;
         }
 
         .contact-info-link {
           cursor: pointer;
+          transition: color 0.2s ease;
         }
 
-        .contact-info-item:hover {
+        .contact-info-link:hover {
           color: #3b82f6;
         }
 
         .contact-icon {
-          width: 20px;
-          height: 20px;
+          width: 16px;
+          height: 16px;
           flex-shrink: 0;
-          color: #3b82f6;
+          color: #64748b;
           margin-top: 2px;
-          transition: transform 0.25s ease;
         }
 
-        .contact-info-item:hover .contact-icon {
-          transform: scale(1.15) rotate(5deg);
+        .contact-info-link:hover .contact-icon {
+          color: #3b82f6;
         }
 
         .contact-text {
