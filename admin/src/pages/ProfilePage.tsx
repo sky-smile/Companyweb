@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Descriptions, Form, Input, Space, Typography, message } from 'antd';
+import { Button, Card, Descriptions, Form, Input, Space, Typography } from 'antd';
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import { authStore } from '../stores/auth-store';
 import { AuthProfile } from '../types/auth';
+import { useMessage } from '../hooks/useMessage';
 
 export function ProfilePage() {
   const [form] = Form.useForm();
   const [profile, setProfile] = useState<AuthProfile | null>(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const message = useMessage();
 
   useEffect(() => {
     const currentProfile = authStore.getProfile();

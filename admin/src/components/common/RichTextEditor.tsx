@@ -2,7 +2,8 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
 import { Editor, Toolbar } from '@wangeditor/editor-for-react';
 import '@wangeditor/editor/dist/css/style.css';
-import { Space, Button, message, Tooltip } from 'antd';
+import { Space, Button, Tooltip } from 'antd';
+import { App } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
 
@@ -71,6 +72,7 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const [editor, setEditor] = useState<IDomEditor | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const message = App.useApp().message;
 
   useEffect(() => {
     return () => {

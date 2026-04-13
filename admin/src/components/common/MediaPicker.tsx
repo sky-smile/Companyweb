@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Button, Image, Input, Modal, Space, Table, Typography, message } from 'antd';
+import { Button, Image, Input, Modal, Space, Table, Typography } from 'antd';
 import { PictureOutlined, SearchOutlined } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
 import type { MediaFile } from '../../types/upload';
+import { useMessage } from '../../hooks/useMessage';
 
 interface MediaPickerProps {
   value?: string;
@@ -15,6 +16,7 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const message = useMessage();
 
   // 当外部 value 变化时同步到内部输入框
   const [inputValue, setInputValue] = useState(value || '');

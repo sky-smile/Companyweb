@@ -11,7 +11,8 @@ import { Placeholder } from '@tiptap/extension-placeholder';
 import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { CharacterCount } from '@tiptap/extension-character-count';
-import { Space, Button, Tooltip, message, Popover, Input, Dropdown } from 'antd';
+import { Space, Button, Tooltip, Popover, Input, Dropdown } from 'antd';
+import { App } from 'antd';
 import {
   BoldOutlined,
   ItalicOutlined,
@@ -112,6 +113,7 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const uploadingFileRef = useRef(false);
   const isUpdatingFromPropRef = useRef(false);
+  const message = App.useApp().message;
 
   const editor = useEditor({
     extensions: [

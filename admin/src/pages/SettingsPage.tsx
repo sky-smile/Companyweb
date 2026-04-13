@@ -1,8 +1,9 @@
-import { Form, Input, Button, Card, Space, Typography, message } from 'antd';
+import { Form, Input, Button, Card, Space, Typography } from 'antd';
 import { LockOutlined, SaveOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { authStore } from '../stores/auth-store';
 import { adminUserService } from '../services/admin-user-service';
+import { useMessage } from '../hooks/useMessage';
 
 interface ChangePasswordPayload {
   oldPassword: string;
@@ -13,6 +14,7 @@ interface ChangePasswordPayload {
 export function SettingsPage() {
   const [form] = Form.useForm<ChangePasswordPayload>();
   const [loading, setLoading] = useState(false);
+  const message = useMessage();
 
   async function handleChangePassword(values: ChangePasswordPayload) {
     if (values.newPassword !== values.confirmPassword) {

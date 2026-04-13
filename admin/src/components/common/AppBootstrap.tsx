@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Result, Spin } from 'antd';
 import { authService } from '../../services/auth-service';
 import { authStore } from '../../stores/auth-store';
+import { useMessage } from '../../hooks/useMessage';
 
 interface AppBootstrapProps {
   children: React.ReactNode;
@@ -10,6 +11,8 @@ interface AppBootstrapProps {
 export function AppBootstrap({ children }: AppBootstrapProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // 初始化全局 message API
+  useMessage();
 
   useEffect(() => {
     async function bootstrap() {

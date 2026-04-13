@@ -1,5 +1,7 @@
 # QWEN.md - CompanyWeb 项目上下文
 
+> 本文档为 AI 助手提供项目核心信息，详细内容请参考 [CODEBUDDY.md](./CODEBUDDY.md)。
+
 ## 项目概述
 
 **CompanyWeb** 是一个现代化企业官网系统 Monorepo 项目，包含三个独立但相互关联的子项目：
@@ -10,7 +12,7 @@
 | **admin** | React 19 + Vite + Ant Design 6 | 3100 | 内容管理后台 |
 | **server** | NestJS 10 + TypeORM + MariaDB | 3000 | RESTful API 服务 |
 
-**数据库**: MariaDB（通过 Scoop 安装，端口 3306，库名 `company_web`）
+**数据库**: MariaDB（端口 3306，库名 `company_web`）
 
 ## 项目结构
 
@@ -22,7 +24,8 @@ CompanyWeb/
 ├── scripts/               # 便捷启动脚本
 │   ├── start-all.bat      # 一键启动所有服务
 │   ├── start-database.bat # 启动数据库
-│   └── stop-all.bat       # 停止所有服务
+│   ├── stop-all.bat       # 停止所有服务
+│   └── migrate-and-seed.bat # 数据库迁移和种子
 └── docs/                  # 项目文档
 ```
 
@@ -93,20 +96,20 @@ scripts\stop-all.bat
 ## 后台管理关键信息
 
 ### 页面清单
-- `AdminUsersPage.tsx` - 账号管理（CRUD、重置密码）
+- `AdminUsersPage.tsx` - 账号管理（CRUD、重置密码、角色分配）
 - `RolesPage.tsx` - 角色管理（权限分组选择）
 - `NewsPage.tsx` - 新闻管理（搜索/分页/富文本）
-- `AnnouncementsPage.tsx` - 公告管理
-- `ProductsPage.tsx` - 产品管理
+- `AnnouncementsPage.tsx` - 公告管理（搜索/分页/富文本）
+- `ProductsPage.tsx` - 产品管理（搜索/分页/富文本）
 - `BannersPage.tsx` - Banner 管理
-- `SiteContentPage.tsx` - 页面内容
+- `SiteContentPage.tsx` - 页面内容（富文本编辑）
 - `SiteSettingsPage.tsx` - 站点设置
-- `DashboardPage.tsx` - 仪表盘
+- `DashboardPage.tsx` - 仪表盘（数据统计）
 - `ProfilePage.tsx` - 个人资料
 - `SettingsPage.tsx` - 账号设置（修改密码）
 
 ### 通用组件 (admin/src/components/common/)
-- `EnhancedUploadField` - 增强上传（预览/删除/拖拽）
+- `EnhancedUploadField` - 增强上传（预览/删除/拖拽/文件大小验证）
 - `RichTextEditor` - 富文本编辑器 (wangEditor)
 - `StatusSwitch` - 状态开关
 - `PublishStatus` - 发布状态下拉选择
@@ -125,3 +128,9 @@ scripts\stop-all.bat
 - 权限种子: `server/src/database/seeds/auth.seed.ts`
 - 布局组件: `admin/src/layouts/AdminLayout.tsx`
 - 路由配置: `admin/src/router/index.tsx`
+- TypeORM 数据源: `server/src/database/data-source.ts`
+
+## Git 操作偏好
+- 只执行 `git add` 和 `git commit`
+- **不自动执行** `git push`
+- 需要 push 时由用户手动指示

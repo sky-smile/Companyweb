@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Switch, Table, Tag, Typography, message } from 'antd';
+import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Switch, Table, Tag, Typography } from 'antd';
 import { KeyOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { adminUserService } from '../services/admin-user-service';
 import { roleService } from '../services/role-service';
 import { AdminUserItem, CreateAdminUserPayload, UpdateAdminUserPayload } from '../types/admin-user';
 import { RoleItem } from '../types/role';
+import { useMessage } from '../hooks/useMessage';
 
 export function AdminUsersPage() {
   const [createForm] = Form.useForm<CreateAdminUserPayload>();
@@ -20,6 +21,7 @@ export function AdminUsersPage() {
   const [roles, setRoles] = useState<RoleItem[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterRole, setFilterRole] = useState<string | undefined>(undefined);
+  const message = useMessage();
 
   const columns = useMemo(
     () => [

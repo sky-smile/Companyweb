@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Button, Input, Space, message } from 'antd';
+import { Button, Input, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
+import { useMessage } from '../../hooks/useMessage';
 
 interface UploadFieldProps {
   value?: string;
@@ -13,6 +14,7 @@ interface UploadFieldProps {
 
 export function UploadField({ value, onChange, folder, accept, buttonText = '上传文件' }: UploadFieldProps) {
   const [uploading, setUploading] = useState(false);
+  const message = useMessage();
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];

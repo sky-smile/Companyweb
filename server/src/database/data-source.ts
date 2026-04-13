@@ -31,4 +31,5 @@ export const AppDataSource = new DataSource({
   logging: config.database.logging,
 });
 
+// 便捷导出供 CLI 使用
 export default AppDataSource;

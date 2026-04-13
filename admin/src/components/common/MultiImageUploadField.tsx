@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Button, Image, Input, message, Space, Upload } from 'antd';
+import { Button, Image, Input, Space, Upload } from 'antd';
 import { DeleteOutlined, EyeOutlined, InboxOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { uploadService } from '../../services/upload-service';
+import { useMessage } from '../../hooks/useMessage';
 
 interface MultiImageUploadFieldProps {
   value?: string; // JSON string of image URLs array
@@ -25,6 +26,7 @@ export function MultiImageUploadField({
 }: MultiImageUploadFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const message = useMessage();
 
   // Parse JSON value to array
   useEffect(() => {

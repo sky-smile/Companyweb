@@ -1,5 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
-import { ConfigProvider, theme } from 'antd';
+import { App as AntApp, ConfigProvider, theme } from 'antd';
 import { AppBootstrap } from './components/common/AppBootstrap';
 import { AppRouter } from './router';
 
@@ -15,11 +15,13 @@ export function App() {
         },
       }}
     >
-      <BrowserRouter>
-        <AppBootstrap>
-          <AppRouter />
-        </AppBootstrap>
-      </BrowserRouter>
+      <AntApp>
+        <BrowserRouter>
+          <AppBootstrap>
+            <AppRouter />
+          </AppBootstrap>
+        </BrowserRouter>
+      </AntApp>
     </ConfigProvider>
   );
 }

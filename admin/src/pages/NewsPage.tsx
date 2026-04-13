@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography, message } from 'antd';
+import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, MediaPicker, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
 import { newsService } from '../services/news-service';
@@ -10,6 +10,7 @@ import {
   NewsItem,
   UpdateNewsCategoryPayload,
 } from '../types/news';
+import { useMessage } from '../hooks/useMessage';
 
 export function NewsPage() {
   const [categoryForm] = Form.useForm<CreateNewsCategoryPayload>();
@@ -23,6 +24,7 @@ export function NewsPage() {
   const [categories, setCategories] = useState<NewsCategoryItem[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterCategory, setFilterCategory] = useState<string | undefined>(undefined);
+  const message = useMessage();
 
   const newsColumns = useMemo(
     () => [

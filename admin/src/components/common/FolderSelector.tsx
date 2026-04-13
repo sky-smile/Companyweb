@@ -8,7 +8,6 @@ import {
   Tag,
   Tooltip,
   Typography,
-  message,
 } from 'antd';
 import {
   FolderOutlined,
@@ -17,6 +16,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
+import { useMessage } from '../../hooks/useMessage';
 
 const { Text } = Typography;
 
@@ -34,6 +34,7 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
   const [searchKeyword, setSearchKeyword] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
   const [showCreateInput, setShowCreateInput] = useState(false);
+  const message = useMessage();
 
   // 用 ref 持久化本地创建的文件夹，防止被 API 数据覆盖
   const localFoldersRef = useRef<Set<string>>(new Set());

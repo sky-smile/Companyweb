@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Checkbox, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography, message } from 'antd';
+import { Button, Card, Checkbox, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, TeamOutlined } from '@ant-design/icons';
 import { StatusSwitch } from '../components/common';
 import { roleService } from '../services/role-service';
 import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
 import { PERMISSION_GROUPS, getPermissionName } from '../config/permissions';
+import { useMessage } from '../hooks/useMessage';
 
 export function RolesPage() {
   const [form] = Form.useForm<CreateRolePayload & UpdateRolePayload>();
@@ -15,6 +16,7 @@ export function RolesPage() {
   const [permissions, setPermissions] = useState<PermissionItem[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
+  const message = useMessage();
 
   const columns = useMemo(
     () => [

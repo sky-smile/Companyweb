@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography, message } from 'antd';
+import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, MediaPicker, MultiImageUploadField, PublishStatus, RichTextEditor, SortInput, StatusSwitch } from '../components/common';
 import { productService } from '../services/product-service';
@@ -10,6 +10,7 @@ import {
   ProductItem,
   UpdateProductCategoryPayload,
 } from '../types/product';
+import { useMessage } from '../hooks/useMessage';
 
 export function ProductsPage() {
   const [categoryForm] = Form.useForm<CreateProductCategoryPayload>();
@@ -23,6 +24,7 @@ export function ProductsPage() {
   const [categories, setCategories] = useState<ProductCategoryItem[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterCategory, setFilterCategory] = useState<string | undefined>(undefined);
+  const message = useMessage();
 
   const productColumns = useMemo(
     () => [

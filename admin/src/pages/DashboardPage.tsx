@@ -150,7 +150,7 @@ export function DashboardPage() {
               title="新闻总数"
               value={stats.newsCount}
               prefix={<FileTextOutlined />}
-              valueStyle={{ color: '#52c41a' }}
+              styles={{ content: { color: '#52c41a' } }}
             />
           </Card>
         </Col>
@@ -160,7 +160,7 @@ export function DashboardPage() {
               title="公告总数"
               value={stats.announcementCount}
               prefix={<BellOutlined />}
-              valueStyle={{ color: '#faad14' }}
+              styles={{ content: { color: '#faad14' } }}
             />
           </Card>
         </Col>
@@ -170,7 +170,7 @@ export function DashboardPage() {
               title="产品总数"
               value={stats.productCount}
               prefix={<AppstoreOutlined />}
-              valueStyle={{ color: '#722ed1' }}
+              styles={{ content: { color: '#722ed1' } }}
             />
           </Card>
         </Col>
@@ -180,7 +180,7 @@ export function DashboardPage() {
               title="管理员数"
               value={stats.adminCount}
               prefix={<TeamOutlined />}
-              valueStyle={{ color: '#1890ff' }}
+              styles={{ content: { color: '#1890ff' } }}
             />
           </Card>
         </Col>

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Button, Card, Checkbox, Form, Input, Space, Typography, message } from 'antd';
+import { Button, Card, Checkbox, Form, Input, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined, SafetyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth-service';
 import { authStore } from '../stores/auth-store';
 import { LoginPayload } from '../types/auth';
+import { useMessage } from '../hooks/useMessage';
 
 const { Title, Text, Link } = Typography;
 
@@ -16,6 +17,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const message = useMessage();
 
   // 页面加载时恢复记住的用户名
   useEffect(() => {

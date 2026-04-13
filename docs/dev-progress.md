@@ -1,180 +1,72 @@
-# Development Progress
+# 开发进度
 
-## Current Status
+## 当前状态
 
-This project has completed **all phase-1 development**: backend API, admin console, and public frontend website. The project is ready for testing, content population, and deployment.
+本项目已完成**一期所有开发**：后端 API、管理后台和官网前端。项目已准备好进行测试、内容填充和部署。
 
-## Frontend Website Completed ✅
+## ✅ 一期已完成
 
-### Foundation
+### 后端 API 服务
 
-- Next.js 16 + React 19 + Tailwind CSS 4
-- Server-side rendering and static generation
-- SEO metadata and structured data
-- Responsive layout system
-- Error and loading boundaries
+- [x] NestJS 服务器基础设施
+- [x] MariaDB 集成和 TypeORM 配置
+- [x] 统一响应拦截器和全局异常过滤器
+- [x] JWT 认证和 RBAC 权限守卫
+- [x] 数据库迁移和种子脚本
+- [x] 所有管理端 API（认证、用户、角色、新闻、公告、产品、站点内容、上传）
+- [x] 所有公开 API（首页、关于、联系、新闻、公告、产品）
 
-### Pages Implemented
+### 后台管理系统
 
-- **Homepage** (`/`) - Hero banners, company intro, featured products, latest news and announcements
-- **About** (`/about`) - Company introduction and static content display
-- **Products** (`/products`) - Product listing with category filtering
-- **Products Detail** (`/products/[id]`) - Product details with specifications and images
-- **News** (`/news`) - News listing with pagination and category filtering
-- **News Detail** (`/news/[id]`) - News article detail with rich content
-- **Announcements** (`/announcements`) - Announcement listing with pinned items
-- **Announcements Detail** (`/announcements/[id]`) - Announcement detail display
-- **Contact** (`/contact`) - Contact information, address, phone, email
+- [x] Vite + React + Ant Design 架构
+- [x] 认证和权限状态管理
+- [x] 响应式布局（侧边栏分组、可折叠、面包屑）
+- [x] 所有管理页面（仪表盘、账号、角色、新闻、公告、产品、站点内容、媒体中心）
+- [x] 通用组件库（富文本、增强上传、状态开关等）
+- [x] 列表页统一功能（搜索、筛选、分页）
 
-### Components
+### 官网前端
 
-- `SiteHeader` - Responsive navigation header with menu links
-- `SiteFooter` - Site footer with company info and links
-- `HeroBanner` - Homepage hero banner with image carousel
-- `SectionHeading` - Reusable section heading component
-- `StatusCard` - Status display card for empty/error states
+- [x] Next.js 16 App Router 架构
+- [x] SSR 渲染和 SEO 优化
+- [x] 响应式布局
+- [x] 所有页面（首页、关于、产品、新闻、公告、联系）
+- [x] 动态 Metadata 和 JSON-LD 结构化数据
+- [x] 动态 Sitemap 生成
 
-### Integration
+## 🚀 快速启动
 
-- Connected to all public APIs
-- Server-side data fetching for SEO optimization
-- Dynamic page metadata generation
-- Content rendering from admin-managed data
+```bash
+# 一键启动所有服务
+scripts\start-all.bat
 
-### Build Verification
+# 或手动启动
+scripts\start-database.bat
+cd server && pnpm run start:dev
+cd admin && pnpm run dev
+cd frontend && pnpm run dev
+```
 
-- Build passes with no TypeScript errors
-- All routes compiled successfully
-- Ready for production deployment
+访问地址：
+- 官网前端: http://localhost:3001
+- 后台管理: http://localhost:3100
+- 后端 API: http://localhost:3000/api
 
-## Backend Completed
+默认账号：`admin` / `Admin123`
 
-### Infrastructure
+## 📋 二期规划
 
-- NestJS server bootstrap
-- MariaDB integration
-- TypeORM data source and migrations
-- unified response interceptor
-- global exception filter
-- env validation
-- JWT auth foundation
-- RBAC permission guard
+- [ ] 下载中心
+- [ ] 多语言支持 (中英文)
+- [ ] SEO 增强 (sitemap, robots.txt, 结构化数据)
+- [ ] 图片压缩与 CDN 集成
+- [ ] 内容审核流程
+- [ ] 操作日志与审计
 
-### Database and Seed
+## 📚 相关文档
 
-- auth and RBAC tables
-- news tables
-- announcement tables
-- site content tables
-- product tables
-- seed data for super admin and permissions
-
-### Admin APIs Completed
-
-- auth
-- admin users
-- roles
-- news and news categories
-- announcements
-- products and product categories
-- site pages
-- site settings
-- banners
-- upload image and file endpoints
-
-### Public APIs Completed
-
-- home
-- about
-- contact
-- public news list/detail
-- public announcements list/detail
-- public products list/detail
-
-## Admin Frontend Completed
-
-### Foundation
-
-- Vite + React + TypeScript app scaffold
-- Ant Design layout and routing
-- auth bootstrap from stored token
-- permission-aware menu filtering
-- axios request layer
-
-### Real Pages Connected
-
-- login page
-- dashboard page
-- admin users page
-- roles page
-- news full CRUD page
-- announcements full CRUD page
-- products full CRUD page
-- site content page
-- media center page
-
-### Media Integration
-
-- upload helper component
-- media center upload and copy link flow
-- banner image URL backfill
-- news cover image backfill
-- product image URL backfill
-
-## Current Local Runtime Notes
-
-- **Public Website**: `http://localhost:3001` ✅ Running
-- **Admin Console**: `http://localhost:3100` ✅ Running  
-- **Server API URL**: `http://localhost:3000/api` ✅ Running
-- **MariaDB**: `127.0.0.1:3306` ✅ Running
-- **Database**: `company_web` (with seed data)
-- **Current admin login**:
-  - username: `admin`
-  - password: `Admin1234567`
-
-### Quick Start Scripts
-
-- `scripts\start-database.bat` - Start MariaDB only
-- `scripts\start-all.bat` - Start all services (database + backend + admin + frontend)
-- `scripts\stop-all.bat` - Stop all services
-
-## Recent Commits
-
-- `d3d4703` add full admin news CRUD page
-- `b4e90c6` add full admin announcement CRUD page
-- `ccceb43` add full admin product CRUD page
-- `540e38b` add admin media center and upload backfill
-- `fa06402` add admin site content management page
-
-## Recommended Next Steps
-
-### Option A: Testing & Deployment (Recommended)
-
-- End-to-end testing of all user flows
-- Performance optimization and Lighthouse audit
-- Production environment setup
-- Database initialization with real content
-- Deployment to production servers
-- Domain and SSL configuration
-- CDN setup for static assets
-
-### Option B: Admin Polish
-
-Continue improving admin usability:
-
-- banner edit/delete actions
-- richer page editor for site content
-- upload callback directly into active form fields
-- better number/select/switch controls instead of plain numeric inputs
-
-### Option C: Backend Refinement
-
-- add media file database table persistence
-- add richer validation and DTO shaping
-- add public product/news filtering and detail enhancements
-
-## Resume Instruction
-
-When reopening OpenCode next time, continue from:
-
-`All phase-1 development is complete. Focus on testing, deployment, and content population, or proceed with phase-2 features if ready.`
+- [项目主 README](../README.md)
+- [完整技术架构](../CODEBUDDY.md)
+- [后台管理优化记录](./admin-changelog.md)
+- [API 接口文档](./api-overview.md)
+- [数据库设计](./db-design.md)

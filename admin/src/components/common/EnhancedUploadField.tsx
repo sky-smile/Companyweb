@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Button, Image, Input, message, Space, Upload } from 'antd';
+import { Button, Image, Input, Space, Upload } from 'antd';
 import { DeleteOutlined, EyeOutlined, InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { uploadService } from '../../services/upload-service';
+import { useMessage } from '../../hooks/useMessage';
 
 interface EnhancedUploadFieldProps {
   value?: string;
@@ -25,6 +26,7 @@ export function EnhancedUploadField({
 }: EnhancedUploadFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const message = useMessage();
 
   useEffect(() => {
     if (value) {

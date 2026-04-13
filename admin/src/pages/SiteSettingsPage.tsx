@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Image, Input, Space, Typography, message, Tabs, InputNumber } from 'antd';
+import { Button, Card, Form, Image, Input, Space, Typography, Tabs, InputNumber } from 'antd';
 import {
   MailOutlined,
   PhoneOutlined,
@@ -14,6 +14,7 @@ import { MediaPicker } from '../components/common';
 import { RichTextEditor } from '../components/common/RichTextEditor';
 import { siteContentService } from '../services/site-content-service';
 import { SiteSettingItem, UpdateSiteSettingsPayload } from '../types/site-content';
+import { useMessage } from '../hooks/useMessage';
 
 const { TextArea } = Input;
 
@@ -22,6 +23,7 @@ export function SiteSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<SiteSettingItem[]>([]);
   const [editingData, setEditingData] = useState<SiteSettingItem[]>([]);
+  const message = useMessage();
 
   async function loadSettings() {
     setLoading(true);

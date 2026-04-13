@@ -18,7 +18,6 @@ import {
   Table,
   Tag,
   Typography,
-  message,
   Upload,
 } from 'antd';
 import {
@@ -35,6 +34,7 @@ import {
 import type { UploadFile } from 'antd';
 import { uploadService } from '../services/upload-service';
 import { FolderSelector } from '../components/common/FolderSelector';
+import { useMessage } from '../hooks/useMessage';
 
 const { Dragger } = Upload;
 
@@ -78,6 +78,7 @@ export function MediaCenterPage() {
   const [previewImage, setPreviewImage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadFolder, setUploadFolder] = useState('common');
+  const message = useMessage();
 
   useEffect(() => {
     loadFiles();
@@ -294,7 +295,7 @@ export function MediaCenterPage() {
                 title="文件总数"
                 value={statistics.total}
                 prefix={<FileOutlined />}
-                valueStyle={{ color: '#1890ff' }}
+                styles={{ content: { color: '#1890ff' } }}
               />
             </Card>
           </Col>
@@ -304,7 +305,7 @@ export function MediaCenterPage() {
                 title="图片"
                 value={statistics.images}
                 prefix={<PictureOutlined />}
-                valueStyle={{ color: '#52c41a' }}
+                styles={{ content: { color: '#52c41a' } }}
               />
             </Card>
           </Col>
@@ -314,7 +315,7 @@ export function MediaCenterPage() {
                 title="文档"
                 value={statistics.documents}
                 prefix={<FileImageOutlined />}
-                valueStyle={{ color: '#faad14' }}
+                styles={{ content: { color: '#faad14' } }}
               />
             </Card>
           </Col>
@@ -323,7 +324,7 @@ export function MediaCenterPage() {
               <Statistic
                 title="其他"
                 value={statistics.others}
-                valueStyle={{ color: '#722ed1' }}
+                styles={{ content: { color: '#722ed1' } }}
               />
             </Card>
           </Col>

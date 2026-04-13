@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from 'axios';
-import { message } from 'antd';
+import { getMessageApi } from '../lib/message-holder';
 import { authStore } from '../stores/auth-store';
 import { ApiResponse } from '../types/api';
 
@@ -24,7 +24,10 @@ http.interceptors.response.use(
   (response) => response,
   (error) => {
     const messageText = error.response?.data?.message ?? error.message ?? 'Request failed';
-    message.error(messageText);
+    const msgApi = getMessageApi();
+    if (msgApi) {
+      msgApi.error(messageText);
+    }
 
     if (error.response?.status === 401) {
       authStore.clearSession();

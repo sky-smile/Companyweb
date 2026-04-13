@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography, message } from 'antd';
+import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
 import { announcementService } from '../services/announcement-service';
 import { AnnouncementItem, CreateAnnouncementPayload } from '../types/announcement';
+import { useMessage } from '../hooks/useMessage';
 
 export function AnnouncementsPage() {
   const [form] = Form.useForm<CreateAnnouncementPayload>();
@@ -13,6 +14,7 @@ export function AnnouncementsPage() {
   const [items, setItems] = useState<AnnouncementItem[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
+  const message = useMessage();
 
   const columns = useMemo(
     () => [

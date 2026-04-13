@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Input, Space, Tabs, Typography, message } from 'antd';
+import { Button, Card, Form, Input, Space, Tabs, Typography } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { RichTextEditor, StatusSwitch } from '../components/common';
 import { siteContentService } from '../services/site-content-service';
 import { SitePageItem, UpdateSiteSettingsPayload } from '../types/site-content';
+import { useMessage } from '../hooks/useMessage';
 
 export function SiteContentPage() {
   const [pageForm] = Form.useForm<SitePageItem>();
   const [loading, setLoading] = useState(false);
   const [currentPageKey, setCurrentPageKey] = useState('home');
+  const message = useMessage();
 
   async function loadPage(pageKey: string) {
     const page = await siteContentService.getSitePage(pageKey);

@@ -2,71 +2,22 @@
 
 现代化企业官网解决方案，包含面向公众的品牌官网、功能完备的内容管理后台和 RESTful API 服务。
 
-## ✨ 项目简介
+## ✨ 核心特性
 
-本项目是一个完整的企业官网系统，旨在帮助企业快速搭建对外展示平台。系统采用前后端分离架构，支持内容动态管理，满足企业品牌展示、产品推广、新闻发布等核心业务需求。
-
-### 核心特性
-
-- 🌐 **品牌官网** - 响应式设计，支持首页、关于我们、产品中心、新闻公告、联系我们等核心页面
-- 📝 **内容管理** - 功能强大的后台管理系统，支持新闻、公告、产品、页面内容可视化编辑
-- 🔐 **权限管理** - 基于 RBAC 模型的细粒度权限控制，保障系统安全
-- 🚀 **高性能** - Next.js SSR 渲染，SEO 友好，加载速度快
-- 📱 **移动适配** - 全站响应式布局，完美支持 PC 和移动端访问
+- 🌐 **品牌官网** - Next.js SSR 渲染，响应式设计，SEO 友好
+- 📝 **内容管理** - 新闻、公告、产品、页面内容可视化编辑
+- 🔐 **权限管理** - 基于 RBAC 模型的细粒度权限控制
+- 🚀 **高性能** - 静态生成 + ISR 缓存，加载速度快
+- 📱 **移动适配** - 全站响应式布局，支持 PC 和移动端
 - 🎨 **现代 UI** - Tailwind CSS + Ant Design，界面美观易用
 
-## 🏗️ 技术架构
-
-### 技术栈
+## 🏗️ 技术栈
 
 | 模块 | 技术栈 | 端口 | 说明 |
 |------|--------|------|------|
 | **官网前端** | Next.js 16 + React 19 + Tailwind CSS 4 | 3001 | 面向公众的品牌官网 |
-| **后台管理** | React 19 + TypeScript + Ant Design 6 | 3100 | 内容管理系统后台 |
+| **后台管理** | React 19 + Vite + Ant Design 6 | 3100 | 内容管理系统后台 |
 | **后端 API** | NestJS 10 + TypeORM + MariaDB | 3000 | RESTful API 服务 |
-
-### 项目结构
-
-```text
-CompanyWeb/
-├── frontend/           # 官网前端 (Next.js)
-│   ├── src/
-│   │   ├── app/       # 页面路由 (首页、关于、产品、新闻等)
-│   │   ├── components/# 公共组件 (Header、Footer、Banner等)
-│   │   ├── services/  # API 服务层
-│   │   ├── lib/       # 工具库 (SEO、请求封装等)
-│   │   └── types/     # TypeScript 类型定义
-│   └── ...
-├── admin/             # 后台管理 (React + Vite)
-│   ├── src/
-│   │   ├── pages/     # 页面组件 (登录、仪表盘、CRUD页面)
-│   │   ├── components/# UI 组件
-│   │   ├── services/  # API 服务层
-│   │   ├── stores/    # 状态管理
-│   │   └── router/    # 路由配置
-│   └── ...
-├── server/            # 后端服务 (NestJS)
-│   └── src/
-│       ├── modules/   # 业务模块
-│       │   ├── auth/           # 认证授权
-│       │   ├── admin-user/     # 管理员管理
-│       │   ├── role/           # 角色管理
-│       │   ├── news/           # 新闻模块
-│       │   ├── announcement/   # 公告模块
-│       │   ├── product/        # 产品模块
-│       │   ├── site-content/   # 站点内容
-│       │   └── upload/         # 文件上传
-│       └── database/  # 数据库配置和迁移
-├── scripts/           # 便捷启动脚本
-├── docs/              # 项目文档
-│   ├── api-overview.md       # API 接口文档
-│   ├── db-design.md          # 数据库设计
-│   ├── requirements-phase1.md # 需求文档
-│   ├── site-map.md           # 站点地图
-│   ├── deployment.md         # 部署文档
-│   └── dev-progress.md       # 开发进度
-└── README.md          # 本文件
-```
 
 ## 🚀 快速开始
 
@@ -83,7 +34,7 @@ CompanyWeb/
 git clone <repository-url>
 cd CompanyWeb
 
-# 2. 安装依赖 (各项目目录)
+# 2. 安装依赖
 cd frontend && pnpm install
 cd ../admin && pnpm install
 cd ../server && pnpm install
@@ -91,29 +42,25 @@ cd ../server && pnpm install
 
 ### 配置环境变量
 
-每个子项目都提供了 `.env.example` 配置文件，复制并根据实际情况修改：
-
 ```bash
 # 后端配置
 cp server/.env.example server/.env
 # 编辑 server/.env 填入数据库配置
 
-# 前端配置 (如有需要)
+# 前端配置（如有需要）
 cp frontend/.env.example frontend/.env
 cp admin/.env.example admin/.env
 ```
 
-**后端环境变量关键配置：**
+**后端关键配置：**
 
 ```env
-# 数据库配置
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=company_web
 DB_USER=root
-DB_PASSWORD=your_password
+DB_PASSWORD=
 
-# JWT 配置
 JWT_ACCESS_SECRET=your_access_secret
 JWT_REFRESH_SECRET=your_refresh_secret
 ```
@@ -121,61 +68,47 @@ JWT_REFRESH_SECRET=your_refresh_secret
 ### 数据库初始化
 
 ```bash
-# 1. 启动 MariaDB 数据库
+# 1. 启动数据库
 scripts\start-database.bat
 
-# 2. 运行数据库迁移 (server 目录)
-cd server
-pnpm run migration:run
+# 2. 创建数据库（首次）
+mysql -u root -p
+CREATE DATABASE company_web CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-# 3. 导入初始数据 (可选)
-mysql -u root -p company_web < seed-demo-data.sql
+# 3. 运行迁移和种子（一键完成）
+scripts\migrate-and-seed.bat
 ```
+
+> 💡 更多数据库管理命令请查看 [docs/DATABASE_MIGRATION.md](./docs/DATABASE_MIGRATION.md)
 
 ### 启动开发环境
 
-#### 方式一：一键启动（推荐）
+**一键启动（推荐）：**
 
 ```bash
-# Windows 系统使用批处理脚本
 scripts\start-all.bat
-
-# 该脚本会自动：
-# 1. 启动 MariaDB 数据库
-# 2. 启动后端 API 服务 (端口 3000)
-# 3. 启动后台管理系统 (端口 3100)
-# 4. 启动官网前端 (端口 3001)
 ```
 
-#### 方式二：手动启动
-
-在不同终端分别启动各个服务：
+**手动启动：**
 
 ```bash
-# 终端 1: 启动数据库
-scripts\start-database.bat
-
-# 终端 2: 启动后端服务
+# 终端 1: 后端服务
 cd server && pnpm run start:dev
 
-# 终端 3: 启动后台管理
+# 终端 2: 后台管理
 cd admin && pnpm run dev
 
-# 终端 4: 启动官网前端
+# 终端 3: 官网前端
 cd frontend && pnpm run dev
 ```
 
 ### 访问地址
 
-服务启动成功后，可通过以下地址访问：
-
 - 🌐 **官网前端**: http://localhost:3001
 - 📊 **后台管理**: http://localhost:3100
-- 🔌 **API 文档**: http://localhost:3000/api
+- 🔌 **后端 API**: http://localhost:3000/api
 
 ### 默认账号
-
-后台管理系统默认登录信息：
 
 - 用户名：`admin`
 - 密码：`Admin123`
@@ -185,11 +118,7 @@ cd frontend && pnpm run dev
 ### 停止服务
 
 ```bash
-# 停止所有服务
 scripts\stop-all.bat
-
-# 或手动停止数据库
-taskkill /F /IM mysqld.exe
 ```
 
 ## 📖 功能模块
@@ -221,37 +150,13 @@ taskkill /F /IM mysqld.exe
 | 站点内容 | 首页 Banner、关于我们、联系我们、企业优势等静态内容管理 |
 | 媒体中心 | 图片上传、文件管理、链接复制与回填 |
 
-### 后端 API
-
-| 模块 | 接口前缀 | 说明 |
-|------|----------|------|
-| 认证授权 | `/api/auth` | 登录、登出、刷新 Token、修改密码 |
-| 管理员 | `/api/admin-users` | 管理员 CRUD、状态管理、角色分配 |
-| 角色 | `/api/roles` | 角色 CRUD、权限管理 |
-| 新闻 | `/api/news` | 新闻 CRUD、分类管理 |
-| 公告 | `/api/announcements` | 公告 CRUD |
-| 产品 | `/api/products` | 产品 CRUD、分类管理 |
-| 站点内容 | `/api/site-pages`, `/api/site-settings` | 静态页面和站点设置 |
-| 文件上传 | `/api/upload` | 图片/文件上传 |
-| 公开接口 | `/api/public/*` | 首页、关于、联系、新闻、公告、产品 |
-
 ## 📐 开发规范
 
 ### 代码规范
 
 - 语言：TypeScript
 - 代码风格：ESLint + Prettier
-- 提交规范：使用语义化提交信息
-
-### 分支管理
-
-```
-main              # 主分支 (生产环境)
-├── feature/xxx   # 功能分支
-├── fix/xxx       # 修复分支
-├── chore/xxx     # 维护分支
-└── docs/xxx      # 文档分支
-```
+- 提交规范：使用语义化提交信息 (feat/fix/docs/chore)
 
 ### API 响应格式
 
@@ -261,24 +166,11 @@ main              # 主分支 (生产环境)
 {
   "code": 0,
   "message": "ok",
-  "data": {
-    // 业务数据
-  }
+  "data": {}
 }
 ```
 
-**失败响应：**
-
-```json
-{
-  "code": 10001,
-  "message": "Validation failed",
-  "data": null,
-  "requestId": "trace-id"
-}
-```
-
-### 错误码规范
+**错误码规范：**
 
 | 范围 | 说明 |
 |------|------|
@@ -309,7 +201,16 @@ main              # 主分支 (生产环境)
 - [ ] 内容审核流程
 - [ ] 操作日志与审计
 
-详细规划请查看 [AGENTS.md](./AGENTS.md) 和 [docs/requirements-phase1.md](./docs/requirements-phase1.md)
+## 📚 文档导航
+
+| 文档 | 说明 |
+|------|------|
+| [数据库迁移指南](./docs/DATABASE_MIGRATION.md) | 数据库迁移、种子脚本、常见问题 |
+| [API 接口文档](./docs/api-overview.md) | 所有后端 API 接口说明 |
+| [数据库设计](./docs/db-design.md) | 表结构和字段定义 |
+| [站点地图](./docs/site-map.md) | 官网页面路由结构 |
+| [部署指南](./docs/deployment.md) | 生产环境部署文档 |
+| [后台管理优化记录](./docs/admin-changelog.md) | 后台管理系统优化历史 |
 
 ## 🚢 部署指南
 
@@ -339,7 +240,6 @@ main              # 主分支 (生产环境)
 
 - 提交 Issue
 - 查看文档: [docs/](./docs/)
-- 查看开发进度: [docs/dev-progress.md](./docs/dev-progress.md)
 
 ---
 

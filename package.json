@@ -5,5 +5,12 @@
     "admin",
     "frontend",
     "server"
-  ]
+  ],
+  "scripts": {
+    "db:migrate": "cd server && pnpm run migration:run",
+    "db:revert": "cd server && pnpm run migration:revert",
+    "db:seed": "cd server && pnpm run seed:auth",
+    "db:migrate-and-seed": "cd server && pnpm run db:migrate-and-seed",
+    "db:reset": "cd server && pnpm run db:reset"
+  }
 }

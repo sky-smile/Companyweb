@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Image, Input, Modal, Popconfirm, Space, Switch, Table, Tag, Typography, message } from 'antd';
+import { Button, Card, Form, Image, Input, Modal, Popconfirm, Space, Switch, Table, Tag, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SaveOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, MediaPicker, StatusSwitch } from '../components/common';
 import { siteContentService } from '../services/site-content-service';
 import { BannerItem, CreateBannerPayload, UpdateBannerPayload } from '../types/site-content';
+import { useMessage } from '../hooks/useMessage';
 
 export function BannersPage() {
   const [bannerForm] = Form.useForm<BannerItem>();
@@ -11,6 +12,7 @@ export function BannersPage() {
   const [bannerModalOpen, setBannerModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<BannerItem | null>(null);
   const [banners, setBanners] = useState<BannerItem[]>([]);
+  const message = useMessage();
 
   async function loadBanners() {
     setLoading(true);
