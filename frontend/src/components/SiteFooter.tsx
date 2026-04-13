@@ -1,6 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+
+interface SiteFooterProps {
+  siteName?: string;
+  siteLogo?: string;
+}
 
 interface FooterLink {
   label: string;
@@ -36,7 +42,7 @@ const footerSections: FooterSection[] = [
   },
 ];
 
-export function SiteFooter() {
+export function SiteFooter({ siteName, siteLogo }: SiteFooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -49,7 +55,18 @@ export function SiteFooter() {
         {/* 品牌介绍区 */}
         <div className="footer-brand">
           <Link href="/" className="footer-logo">
-            Sky Smile
+            {siteLogo ? (
+              <Image
+                src={siteLogo}
+                alt={siteName || 'Company Logo'}
+                width={180}
+                height={40}
+                style={{ objectFit: 'contain' }}
+                priority
+              />
+            ) : (
+              siteName || 'Sky Smile'
+            )}
           </Link>
           <p className="footer-description">
             专注于为企业提供高品质的产品与解决方案，致力于成为行业领先的合作伙伴。
@@ -94,7 +111,7 @@ export function SiteFooter() {
       <div className="footer-bottom">
         <div className="site-shell footer-bottom-inner">
           <p className="copyright">
-            © {currentYear} Sky Smile. All rights reserved.
+            © {currentYear} {siteName || 'Sky Smile'}. All rights reserved.
           </p>
         </div>
       </div>
@@ -147,11 +164,17 @@ export function SiteFooter() {
           background-clip: text;
           text-decoration: none;
           transition: opacity 0.3s ease;
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
         }
 
         .footer-logo:hover {
           opacity: 0.8;
+        }
+
+        .footer-logo img {
+          max-width: 180px;
+          height: auto;
         }
 
         .footer-description {

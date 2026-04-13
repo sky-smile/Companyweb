@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { BackToTop } from '@/components/BackToTop';
 import { buildMetadata } from '@/lib/seo';
 import { OrganizationJsonLd } from '@/components/JsonLd';
+import { publicService } from '@/services/public-service';
 
 // 加载 Inter 字体
 const inter = Inter({
@@ -22,18 +23,29 @@ export const metadata: Metadata = buildMetadata({
   path: '/',
 });
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // 获取站点设置
+  let siteName = '';
+  let siteLogo = '';
+  try {
+    const settings = await publicService.getHome();
+    siteName = settings.settings.find(s => s.settingKey === 'siteName')?.settingValue || '';
+    siteLogo = settings.settings.find(s => s.settingKey === 'siteLogo')?.settingValue || '';
+  } catch (error) {
+    console.error('Failed to load site settings:', error);
+  }
+
   return (
     <html lang="zh-CN" className={inter.variable}>
       <body style={{ margin: 0, padding: 0 }}>
         <SiteHeader />
         <main style={{ margin: 0, padding: 0 }}>{children}</main>
-        <SiteFooter />
+        <SiteFooter siteName={siteName} siteLogo={siteLogo} />
         <BackToTop />
 
         {/* Organization JSON-LD */}
         <OrganizationJsonLd
-          name="Sky Smile"
+          name={siteName || 'Sky Smile'}
           url="http://127.0.0.1:3001"
           description="企业官网、产品展示、新闻公告与联系方式统一对外展示平台。"
         />
