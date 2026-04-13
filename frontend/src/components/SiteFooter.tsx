@@ -58,7 +58,7 @@ export function SiteFooter({ siteName, siteLogo }: SiteFooterProps) {
               <img
                 src={siteLogo}
                 alt={siteName || 'Company Logo'}
-                style={{ maxWidth: 140, maxHeight: 36, height: 'auto', objectFit: 'contain' }}
+                style={{ maxWidth: 160, maxHeight: 40, height: 'auto', objectFit: 'contain' }}
               />
             ) : (
               siteName || 'Sky Smile'
