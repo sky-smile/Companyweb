@@ -9,6 +9,9 @@
   /* 主色 - 纯白 */
   --background: #ffffff;
   --foreground: #1a202c;
+  --text: #1a202c;
+  --text-muted: #64748b;
+  --text-secondary: #4a5568;
   
   /* 导航栏高度 */
   --header-height: 76px;

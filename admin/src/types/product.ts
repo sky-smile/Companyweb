@@ -32,6 +32,7 @@ export interface CreateProductCategoryPayload {
   name: string;
   slug: string;
   sort?: number;
+  status?: number;
 }
 
 export interface UpdateProductCategoryPayload {

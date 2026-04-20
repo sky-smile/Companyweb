@@ -21,6 +21,7 @@
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d dist/database/data-source.js",
     "db:migrate-and-seed": "ts-node -r tsconfig-paths/register src/database/migrate-and-seed.ts",
     "seed:auth": "ts-node -r tsconfig-paths/register src/database/seeds/auth.seed.ts",
+    "seed:content": "ts-node -r tsconfig-paths/register src/database/seeds/content-seed.ts",
     "db:reset": "ts-node -r tsconfig-paths/register src/database/reset-database.ts",
     "fix-filenames": "ts-node -r tsconfig-paths/register src/fix-filenames.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

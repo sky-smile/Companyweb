@@ -21,36 +21,36 @@ export default async function AboutPage() {
   return (
     <>
       {/* 页面头部 Hero */}
-      <section className={styles.aboutHero}>
-        {/* 装饰背景 */}
-        <div className={styles.heroBackgroundDecoration} />
-        <div className={styles.heroSecondaryDecoration} />
+      <section className={styles.hero}>
+        <div className={`${styles.heroDeco} ${styles.heroDecoPrimary}`} />
+        <div className={`${styles.heroDeco} ${styles.heroDecoSecondary}`} />
+        <div className={`${styles.heroDeco} ${styles.heroDecoTertiary}`} />
 
         <div className={`site-shell ${styles.heroContent}`}>
-          <div className={styles.heroText}>
-            <div className={styles.heroEyebrow}>About Us</div>
-            <h1 className={styles.heroTitle}>{about.title || '关于我们'}</h1>
-            <RichContent
-              content={about.content}
-              fallback="我们致力于以创新技术和卓越品质，为客户创造可持续的价值，成为行业值得信赖的合作伙伴。"
-              className={styles.heroDescription}
-            />
+          <div className={styles.heroBadge}>
+            <span className={styles.heroBadgeText}>About Us</span>
           </div>
+          <h1 className={styles.heroTitle}>{about.title || '关于我们'}</h1>
+          <RichContent
+            content={about.content}
+            fallback="我们致力于以创新技术和卓越品质，为客户创造可持续的价值，成为行业值得信赖的合作伙伴。"
+            className={styles.heroDescription}
+          />
         </div>
       </section>
 
       {/* 使命 · 愿景 · 价值观 */}
-      <section className={styles.aboutPillarsSection}>
+      <section className={styles.pillarsSection}>
         <div className="site-shell">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionEyebrow}>Our Core</div>
             <h2 className={styles.sectionTitle}>使命 · 愿景 · 价值观</h2>
           </div>
 
-          <div className={styles.aboutPillars}>
+          <div className={styles.pillars}>
             {/* 使命 */}
-            <div className={`${styles.aboutPillar} ${styles.aboutPillarBlue}`}>
-              <div className={styles.pillarIconWrapper}>
+            <div className={`${styles.pillar} ${styles.pillarBlue}`}>
+              <div className={styles.pillarIcon}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 16v-4" />
@@ -64,8 +64,8 @@ export default async function AboutPage() {
             </div>
 
             {/* 愿景 */}
-            <div className={`${styles.aboutPillar} ${styles.aboutPillarGreen}`}>
-              <div className={`${styles.pillarIconWrapper} ${styles.pillarIconGreen}`}>
+            <div className={`${styles.pillar} ${styles.pillarGreen}`}>
+              <div className={`${styles.pillarIcon} ${styles.pillarIconGreen}`}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                   <circle cx="12" cy="12" r="3" />
@@ -78,8 +78,8 @@ export default async function AboutPage() {
             </div>
 
             {/* 价值观 */}
-            <div className={`${styles.aboutPillar} ${styles.aboutPillarRed}`}>
-              <div className={`${styles.pillarIconWrapper} ${styles.pillarIconRed}`}>
+            <div className={`${styles.pillar} ${styles.pillarRed}`}>
+              <div className={`${styles.pillarIcon} ${styles.pillarIconRed}`}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
@@ -94,14 +94,14 @@ export default async function AboutPage() {
       </section>
 
       {/* 发展历程 */}
-      <section className={styles.aboutTimelineSection}>
+      <section className={styles.timelineSection}>
         <div className="site-shell">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionEyebrow}>Milestones</div>
             <h2 className={styles.sectionTitle}>发展历程</h2>
           </div>
 
-          <div className={styles.aboutTimeline}>
+          <div className={styles.timeline}>
             {/* 时间线竖线 */}
             <div className={styles.timelineLine} />
 
@@ -111,17 +111,17 @@ export default async function AboutPage() {
               { year: '2017', title: '规模扩张', desc: '业务拓展至多个地区，团队规模突破百人，服务体系全面升级。' },
               { year: '2021', title: '数字化转型', desc: '启动数字化战略，引入智能制造与数据驱动决策，运营效率大幅提升。' },
               { year: '2024', title: '品牌焕新', desc: '全新品牌形象上线，持续深耕核心领域，向更广阔的市场迈进。' },
-            ].map((item, i) => (
-              <div key={item.year} className={styles.aboutTimelineItem}>
+            ].map((item) => (
+              <div key={item.year} className={styles.timelineItem}>
                 {/* 节点圆点 */}
                 <div className={styles.timelineDot}>
                   <div className={styles.timelineDotInner} />
                 </div>
 
-                <div className={styles.aboutTimelineCard}>
+                <div className={styles.timelineCard}>
                   <div className={styles.timelineYear}>{item.year}</div>
-                  <h4 className={styles.timelineTitle}>{item.title}</h4>
-                  <p className={styles.timelineDescription}>{item.desc}</p>
+                  <h4 className={styles.timelineItemTitle}>{item.title}</h4>
+                  <p className={styles.timelineDesc}>{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -130,21 +130,21 @@ export default async function AboutPage() {
       </section>
 
       {/* 企业数据 */}
-      <section className={styles.aboutStatsSection}>
+      <section className={styles.statsSection}>
         <div className="site-shell">
-          <div className={`${styles.sectionHeader} ${styles.sectionHeaderCenter}`}>
+          <div className={styles.sectionHeader}>
             <div className={styles.sectionEyebrow}>By the Numbers</div>
             <h2 className={styles.sectionTitle}>实力见证</h2>
           </div>
 
-          <div className={styles.aboutStats}>
+          <div className={styles.stats}>
             {[
               { value: '5+', label: '年行业深耕', sub: '持续稳定发展' },
               { value: '200+', label: '服务客户', sub: '遍布全球各地' },
               { value: '100+', label: '技术团队', sub: '专业研发力量' },
               { value: '99%', label: '客户满意度', sub: '口碑铸就品牌' },
             ].map((stat) => (
-              <div key={stat.label} className={styles.aboutStatCard}>
+              <div key={stat.label} className={styles.statCard}>
                 <div className={styles.statValue}>{stat.value}</div>
                 <div className={styles.statLabel}>{stat.label}</div>
                 <div className={styles.statSub}>{stat.sub}</div>
@@ -155,21 +155,20 @@ export default async function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className={styles.aboutCta}>
+      <section className={styles.ctaSection}>
         <div className="site-shell">
           <div className={styles.ctaContent}>
             <h2 className={styles.ctaTitle}>期待与您携手共创未来</h2>
-            <p className={styles.ctaDescription}>
+            <p className={styles.ctaDesc}>
               无论您有任何合作意向或咨询需求，我们都乐意为您提供专业的解决方案。
             </p>
-            <Link href="/contact" className={styles.aboutCtaBtn}>
+            <Link href="/contact" className={styles.ctaButton}>
               联系我们
-              <span>→</span>
+              <span className={styles.ctaButtonArrow}>→</span>
             </Link>
           </div>
         </div>
       </section>
-
     </>
   );
 }

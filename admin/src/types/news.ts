@@ -31,6 +31,7 @@ export interface CreateNewsCategoryPayload {
   name: string;
   slug: string;
   sort?: number;
+  status?: number;
 }
 
 export interface UpdateNewsCategoryPayload {

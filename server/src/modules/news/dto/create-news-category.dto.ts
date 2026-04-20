@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateNewsCategoryDto {
@@ -15,4 +15,11 @@ export class CreateNewsCategoryDto {
   @IsInt()
   @Min(0)
   sort = 0;
+
+  @IsOptional()
+  @Transform(({ value }) => Number(value ?? 1))
+  @IsInt()
+  @Min(0)
+  @Max(1)
+  status = 1;
 }
