@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Docker standalone 模式
+  output: 'standalone',
+
   typedRoutes: false,
   images: {
     remotePatterns: [

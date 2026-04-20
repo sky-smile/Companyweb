@@ -1,0 +1,144 @@
+# =============================================
+# CompanyWeb Docker Compose - 生产部署配置
+# =============================================
+
+services:
+  # ── 数据库 ──────────────────────────────────
+  mariadb:
+    image: mariadb:11
+    container_name: companyweb-mariadb
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-company_web_secure_pass}
+      MARIADB_DATABASE: company_web
+      MARIADB_COLLATION: utf8mb4_unicode_ci
+      MARIADB_CHARACTER_SET: utf8mb4
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./docker/mariadb/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+    networks:
+      - companyweb
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── 后端 API ────────────────────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: companyweb-server
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Shanghai
+      SERVER_PORT: 3000
+      SERVER_GLOBAL_PREFIX: api
+      DB_TYPE: mariadb
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: company_web
+      DB_USER: root
+      DB_PASSWORD: ${DB_ROOT_PASSWORD:-company_web_secure_pass}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_key_16chars}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change_me_refresh_secret_key_16chars}
+      JWT_ACCESS_EXPIRES_IN: 2h
+      JWT_REFRESH_EXPIRES_IN: 7d
+      UPLOAD_DIR: uploads
+      UPLOAD_BASE_URL: http://localhost:3000/uploads
+    volumes:
+      - server_uploads:/app/uploads
+    networks:
+      - companyweb
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── 管理后台 ────────────────────────────────
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: companyweb-admin
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000/api
+      VITE_APP_TITLE: Company Web Admin
+    networks:
+      - companyweb
+    depends_on:
+      - server
+
+  # ── 官网前端 ────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: companyweb-frontend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3000/api
+      NEXT_PUBLIC_SITE_URL: http://localhost:3001
+    networks:
+      - companyweb
+    depends_on:
+      - server
+
+  # ── Nginx 反向代理 ──────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: companyweb-nginx
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/docker-compose.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+    networks:
+      - companyweb
+    depends_on:
+      - server
+      - admin
+      - frontend
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ── 网络 ───────────────────────────────────
+networks:
+  companyweb:
+    driver: bridge
+
+# ── 卷 ────────────────────────────────────
+volumes:
+  mariadb_data:
+    driver: local
+  server_uploads:
+    driver: local
+  nginx_logs:
+    driver: local
