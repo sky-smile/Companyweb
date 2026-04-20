@@ -79,13 +79,6 @@ export function ProductListClient() {
               {paginatedProducts.map((item) => (
                 <Link key={item.id} href={`/products/${item.id}`} className={styles.card}>
                   <div className={styles.cardAccent} />
-                  <div className={styles.cardImage}>
-                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                      <rect x="8" y="12" width="32" height="24" rx="3" stroke="currentColor" strokeWidth="2" fill="none"/>
-                      <path d="M16 12V8a2 2 0 012-2h12a2 2 0 012 2v4" stroke="currentColor" strokeWidth="2"/>
-                      <circle cx="24" cy="24" r="4" fill="currentColor" opacity="0.2"/>
-                    </svg>
-                  </div>
                   <div className={styles.cardContent}>
                     <div className={styles.cardCategory}>{item.categoryName || '产品'}</div>
                     <h2 className={styles.cardTitle}>{item.name}</h2>
