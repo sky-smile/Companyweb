@@ -80,7 +80,7 @@ export function AnnouncementListClient() {
               {paginatedAnnouncements.map((item) => (
                 <Link key={item.id} href={`/announcements/${item.id}`} className={styles.item}>
                   <div className={styles.itemMeta}>
-                    {item.isTop && (
+                    {!!item.isTop && (
                       <span className={styles.pinBadge}>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                           <path d="M6 1l1.5 3.5L11 5l-2.5 2.5L9 11 6 9 3 11l.5-3.5L1 5l3.5-.5L6 1z" fill="currentColor"/>

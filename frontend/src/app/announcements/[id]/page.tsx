@@ -100,7 +100,7 @@ export default function AnnouncementDetailPage() {
             {/* 元信息 */}
             <div className={styles.detailMeta}>
               {/* 置顶标记 */}
-              {item.isTop && (
+              {!!item.isTop && (
                 <span className={`${styles.detailBadge} ${styles.detailBadgeDanger}`}>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path d="M6 1l1.5 3.5L11 5l-2.5 2.5L9 11 6 9 3 11l.5-3.5L1 5l3.5-.5L6 1z" fill="currentColor"/>
@@ -135,7 +135,7 @@ export default function AnnouncementDetailPage() {
               <div className={styles.detailTags}>
                 <span className={styles.detailTagLabel}>类型：</span>
                 <span className={`${styles.detailTag} ${styles.detailTagDanger}`}>
-                  {item.isTop ? '置顶公告' : '公告'}
+                  {!!item.isTop ? '置顶公告' : '公告'}
                 </span>
               </div>
             </div>
