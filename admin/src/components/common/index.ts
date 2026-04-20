@@ -5,3 +5,4 @@ export { MediaPicker } from './MediaPicker';
 export { RichTextEditor } from './TiptapEditor';
 export { PublishStatus, SortInput, StatusSwitch } from './FormControls';
 export { AppBootstrap } from './AppBootstrap';
+export { ProductParametersEditor, parseParametersJson, stringifyParametersJson } from './ProductParametersEditor';

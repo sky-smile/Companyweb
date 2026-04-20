@@ -119,6 +119,9 @@ export function RichTextEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4] },
+        // 排除可能重复的扩展，由单独导入的版本提供
+        link: false,
+        underline: false,
       }),
       Underline,
       Image.configure({

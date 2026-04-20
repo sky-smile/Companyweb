@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, MediaPicker, MultiImageUploadField, PublishStatus, RichTextEditor, SortInput, StatusSwitch } from '../components/common';
@@ -13,12 +14,10 @@ import {
 import { useMessage } from '../hooks/useMessage';
 
 export function ProductsPage() {
+  const navigate = useNavigate();
   const [categoryForm] = Form.useForm<CreateProductCategoryPayload>();
-  const [productForm] = Form.useForm<CreateProductPayload>();
   const [loading, setLoading] = useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
-  const [productModalOpen, setProductModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [editingCategory, setEditingCategory] = useState<ProductCategoryItem | null>(null);
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [categories, setCategories] = useState<ProductCategoryItem[]>([]);
@@ -52,12 +51,7 @@ export function ProductsPage() {
             <Button
               icon={<EditOutlined />}
               size="small"
-              onClick={async () => {
-                const detail = await productService.detail(record.id);
-                setEditingProduct(detail);
-                productForm.setFieldsValue(detail);
-                setProductModalOpen(true);
-              }}
+              onClick={() => navigate(`/content/products/${record.id}/edit`)}
             >
               编辑
             </Button>
@@ -161,21 +155,6 @@ export function ProductsPage() {
     void loadData();
   }
 
-  async function handleSaveProduct(values: CreateProductPayload) {
-    if (editingProduct === null) {
-      await productService.create(values);
-      message.success('产品已创建');
-    } else {
-      await productService.update(editingProduct.id, values);
-      message.success('产品已更新');
-    }
-
-    setProductModalOpen(false);
-    setEditingProduct(null);
-    productForm.resetFields();
-    void loadData();
-  }
-
   useEffect(() => {
     void loadData();
   }, []);
@@ -219,12 +198,7 @@ export function ProductsPage() {
                       <Button
                         type="primary"
                         icon={<PlusOutlined />}
-                        onClick={() => {
-                          setEditingProduct(null);
-                          productForm.resetFields();
-                          productForm.setFieldsValue({ status: 0, sort: 0 });
-                          setProductModalOpen(true);
-                        }}
+                        onClick={() => navigate('/content/products/new')}
                       >
                         新增产品
                       </Button>
@@ -296,56 +270,6 @@ export function ProductsPage() {
             <StatusSwitch />
           </Form.Item>
           <Button type="primary" htmlType="submit" block>保存分类</Button>
-        </Form>
-      </Modal>
-
-      <Modal
-        title={editingProduct === null ? '新增产品' : '编辑产品'}
-        open={productModalOpen}
-        onCancel={() => {
-          setProductModalOpen(false);
-          setEditingProduct(null);
-        }}
-        footer={null}
-        destroyOnHidden
-        width={800}
-      >
-        <Form layout="vertical" form={productForm} onFinish={handleSaveProduct} initialValues={{ status: 0, sort: 0 }}>
-          <Form.Item label="产品名称" name="name" rules={[{ required: true, message: '请输入产品名称' }]}>
-            <Input placeholder="产品名称" />
-          </Form.Item>
-          <Form.Item label="分类" name="categoryId" rules={[{ required: true, message: '请选择分类' }]}>
-            <Select
-              placeholder="选择产品分类"
-              options={categories.map((item) => ({ label: item.name, value: item.id }))}
-            />
-          </Form.Item>
-          <Form.Item label="Slug" name="slug" rules={[{ required: true, message: '请输入 slug' }]}>
-            <Input placeholder="如：product-a12" />
-          </Form.Item>
-          <Form.Item label="摘要" name="summary">
-            <Input.TextArea rows={3} placeholder="产品简要摘要" />
-          </Form.Item>
-          <Form.Item label="产品图片" name="imagesJson">
-            <MultiImageUploadField folder="products" accept="image/*" maxCount={5} />
-          </Form.Item>
-          <Form.Item label="参数 JSON" name="parametersJson">
-            <Input.TextArea rows={4} placeholder='如：{"纯度": "99%", "包装": "25kg/桶"}' />
-          </Form.Item>
-          <Form.Item label="详细描述" name="content">
-            <RichTextEditor height={350} placeholder="请输入产品详细描述..." />
-          </Form.Item>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
-              <PublishStatus />
-            </Form.Item>
-            <Form.Item label="排序" name="sort">
-              <SortInput />
-            </Form.Item>
-          </Space>
-          <Button type="primary" htmlType="submit" block>
-            {editingProduct === null ? '创建产品' : '更新产品'}
-          </Button>
         </Form>
       </Modal>
     </Space>

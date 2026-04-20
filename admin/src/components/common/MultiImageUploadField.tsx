@@ -101,7 +101,7 @@ export function MultiImageUploadField({
   };
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       {/* Image Previews */}
       {imageUrls.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>

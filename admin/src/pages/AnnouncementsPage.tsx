@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
@@ -7,10 +8,8 @@ import { AnnouncementItem, CreateAnnouncementPayload } from '../types/announceme
 import { useMessage } from '../hooks/useMessage';
 
 export function AnnouncementsPage() {
-  const [form] = Form.useForm<CreateAnnouncementPayload>();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<AnnouncementItem | null>(null);
   const [items, setItems] = useState<AnnouncementItem[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
@@ -58,12 +57,7 @@ export function AnnouncementsPage() {
             <Button
               icon={<EditOutlined />}
               size="small"
-              onClick={async () => {
-                const detail = await announcementService.detail(record.id);
-                setEditingItem(detail);
-                form.setFieldsValue(detail);
-                setModalOpen(true);
-              }}
+              onClick={() => navigate(`/content/announcements/${record.id}/edit`)}
             >
               编辑
             </Button>
@@ -103,21 +97,6 @@ export function AnnouncementsPage() {
     } finally {
       setLoading(false);
     }
-  }
-
-  async function handleSave(values: CreateAnnouncementPayload) {
-    if (editingItem === null) {
-      await announcementService.create(values);
-      message.success('公告已创建');
-    } else {
-      await announcementService.update(editingItem.id, values);
-      message.success('公告已更新');
-    }
-
-    setModalOpen(false);
-    setEditingItem(null);
-    form.resetFields();
-    void loadData();
   }
 
   useEffect(() => {
@@ -160,12 +139,7 @@ export function AnnouncementsPage() {
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
-                onClick={() => {
-                  setEditingItem(null);
-                  form.resetFields();
-                  form.setFieldsValue({ status: 0, isTop: 0 });
-                  setModalOpen(true);
-                }}
+                onClick={() => navigate('/content/announcements/new')}
               >
                 新增公告
               </Button>
@@ -181,41 +155,6 @@ export function AnnouncementsPage() {
           />
         </Space>
       </Card>
-
-      <Modal
-        title={editingItem === null ? '新增公告' : '编辑公告'}
-        open={modalOpen}
-        onCancel={() => {
-          setModalOpen(false);
-          setEditingItem(null);
-        }}
-        footer={null}
-        destroyOnHidden
-        width={800}
-      >
-        <Form layout="vertical" form={form} onFinish={handleSave} initialValues={{ status: 0, isTop: 0 }}>
-          <Form.Item label="标题" name="title" rules={[{ required: true, message: '请输入标题' }]}>
-            <Input placeholder="公告标题" />
-          </Form.Item>
-          <Form.Item label="摘要" name="summary">
-            <Input.TextArea rows={3} placeholder="公告简要摘要" />
-          </Form.Item>
-          <Form.Item label="正文" name="content" rules={[{ required: true, message: '请输入正文内容' }]}>
-            <RichTextEditor height={400} placeholder="请输入公告正文..." />
-          </Form.Item>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
-              <PublishStatus />
-            </Form.Item>
-            <Form.Item label="置顶" name="isTop" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
-              <StatusSwitch checkedLabel="置顶" uncheckedLabel="普通" />
-            </Form.Item>
-          </Space>
-          <Button type="primary" htmlType="submit" block>
-            {editingItem === null ? '创建公告' : '更新公告'}
-          </Button>
-        </Form>
-      </Modal>
     </Space>
   );
 }

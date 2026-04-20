@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Tabs, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { EnhancedUploadField, MediaPicker, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
@@ -13,12 +14,10 @@ import {
 import { useMessage } from '../hooks/useMessage';
 
 export function NewsPage() {
+  const navigate = useNavigate();
   const [categoryForm] = Form.useForm<CreateNewsCategoryPayload>();
-  const [newsForm] = Form.useForm<CreateNewsPayload>();
   const [loading, setLoading] = useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
-  const [newsModalOpen, setNewsModalOpen] = useState(false);
-  const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [editingCategory, setEditingCategory] = useState<NewsCategoryItem | null>(null);
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [categories, setCategories] = useState<NewsCategoryItem[]>([]);
@@ -69,12 +68,7 @@ export function NewsPage() {
             <Button
               icon={<EditOutlined />}
               size="small"
-              onClick={async () => {
-                const detail = await newsService.detail(record.id);
-                setEditingNews(detail);
-                newsForm.setFieldsValue(detail);
-                setNewsModalOpen(true);
-              }}
+              onClick={() => navigate(`/content/news/${record.id}/edit`)}
             >
               编辑
             </Button>
@@ -178,21 +172,6 @@ export function NewsPage() {
     void loadData();
   }
 
-  async function handleSaveNews(values: CreateNewsPayload) {
-    if (editingNews === null) {
-      await newsService.create(values);
-      message.success('新闻已创建');
-    } else {
-      await newsService.update(editingNews.id, values);
-      message.success('新闻已更新');
-    }
-
-    setNewsModalOpen(false);
-    setEditingNews(null);
-    newsForm.resetFields();
-    void loadData();
-  }
-
   useEffect(() => {
     void loadData();
   }, []);
@@ -233,7 +212,7 @@ export function NewsPage() {
                     </Space>
                     <Space>
                       <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
-                      <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditingNews(null); newsForm.resetFields(); newsForm.setFieldsValue({ status: 0, isTop: 0 }); setNewsModalOpen(true); }}>
+                      <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/content/news/new')}>
                         新增新闻
                       </Button>
                     </Space>
@@ -296,64 +275,6 @@ export function NewsPage() {
             <StatusSwitch />
           </Form.Item>
           <Button type="primary" htmlType="submit" block>保存分类</Button>
-        </Form>
-      </Modal>
-
-      <Modal
-        title={editingNews === null ? '新增新闻' : '编辑新闻'}
-        open={newsModalOpen}
-        onCancel={() => {
-          setNewsModalOpen(false);
-          setEditingNews(null);
-        }}
-        footer={null}
-        destroyOnHidden
-        width={800}
-      >
-        <Form layout="vertical" form={newsForm} onFinish={handleSaveNews} initialValues={{ status: 0, isTop: 0 }}>
-          <Form.Item label="标题" name="title" rules={[{ required: true, message: '请输入标题' }]}>
-            <Input placeholder="新闻标题" />
-          </Form.Item>
-          <Form.Item label="分类" name="categoryId" rules={[{ required: true, message: '请选择分类' }]}>
-            <Select
-              placeholder="选择分类"
-              options={categories.map((item) => ({ label: item.name, value: item.id }))}
-            />
-          </Form.Item>
-          <Form.Item label="Slug" name="slug" rules={[{ required: true, message: '请输入 slug' }]}>
-            <Input placeholder="如：news-2024-01-01" />
-          </Form.Item>
-          <Form.Item label="摘要" name="summary">
-            <Input.TextArea rows={3} placeholder="新闻简要摘要" />
-          </Form.Item>
-          <Form.Item
-            label="封面图"
-            name="coverImage"
-            rules={[{ required: false }]}
-          >
-            <MediaPicker folder="news" />
-          </Form.Item>
-          <Form.Item label="上传新图片">
-            <EnhancedUploadField
-              folder="news"
-              accept="image/*"
-              onChange={(url) => newsForm.setFieldValue('coverImage', url)}
-            />
-          </Form.Item>
-          <Form.Item label="正文" name="content" rules={[{ required: true, message: '请输入正文内容' }]}>
-            <RichTextEditor height={400} placeholder="请输入新闻正文..." />
-          </Form.Item>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Form.Item label="状态" name="status" valuePropName="value" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
-              <PublishStatus />
-            </Form.Item>
-            <Form.Item label="置顶" name="isTop" getValueFromEvent={(checked: boolean) => (checked ? 1 : 0)}>
-              <StatusSwitch checkedLabel="置顶" uncheckedLabel="普通" />
-            </Form.Item>
-          </Space>
-          <Button type="primary" htmlType="submit" block>
-            {editingNews === null ? '创建新闻' : '更新新闻'}
-          </Button>
         </Form>
       </Modal>
     </Space>

@@ -3,13 +3,16 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { authStore } from '../stores/auth-store';
 import { AdminUsersPage } from '../pages/AdminUsersPage';
+import { AnnouncementEditPage } from '../pages/AnnouncementEditPage';
 import { AnnouncementsPage } from '../pages/AnnouncementsPage';
 import { BannersPage } from '../pages/BannersPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { LoginPage } from '../pages/LoginPage';
 import { MediaCenterPage } from '../pages/MediaCenterPage';
+import { NewsEditPage } from '../pages/NewsEditPage';
 import { NewsPage } from '../pages/NewsPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
+import { ProductEditPage } from '../pages/ProductEditPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { ProfilePage } from '../pages/ProfilePage';
 import { RolesPage } from '../pages/RolesPage';
@@ -45,8 +48,14 @@ export function AppRouter() {
         <Route path="account/profile" element={<ProfilePage />} />
         <Route path="account/settings" element={<SettingsPage />} />
         <Route path="content/news" element={<NewsPage />} />
+        <Route path="content/news/new" element={<NewsEditPage />} />
+        <Route path="content/news/:id/edit" element={<NewsEditPage />} />
         <Route path="content/announcements" element={<AnnouncementsPage />} />
+        <Route path="content/announcements/new" element={<AnnouncementEditPage />} />
+        <Route path="content/announcements/:id/edit" element={<AnnouncementEditPage />} />
         <Route path="content/products" element={<ProductsPage />} />
+        <Route path="content/products/new" element={<ProductEditPage />} />
+        <Route path="content/products/:id/edit" element={<ProductEditPage />} />
         <Route path="site/pages" element={<SiteContentPage />} />
         <Route path="site/banners" element={<BannersPage />} />
         <Route path="site/settings" element={<SiteSettingsPage />} />
