@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { buildMetadata, pickDescription } from '@/lib/seo';
-import { RichContent } from '@/components/RichContent';
 import { publicService } from '@/services/public-service';
-import { ContactMap } from '@/components/ContactMap';
 
 export async function generateMetadata(): Promise<Metadata> {
   const contact = await publicService.getContact();
@@ -17,7 +15,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage() {
   const contact = await publicService.getContact();
 
-  // 过滤出核心联系信息
   const contactFields = [
     { key: 'siteName', label: '公司名称', icon: 'company' },
     { key: 'contactAddress', label: '公司地址', icon: 'location' },
@@ -31,34 +28,6 @@ export default async function ContactPage() {
       return setting ? { ...setting, label: field.label, icon: field.icon } : null;
     })
     .filter((item): item is NonNullable<typeof item> => item !== null);
-
-  // 获取地址用于地图
-  const address = contact.settings.find(s => s.settingKey === 'contactAddress')?.settingValue || '';
-  
-  // 使用 Nominatim 地理编码服务将地址转换为经纬度
-  let latitude = 0;
-  let longitude = 0;
-  
-  if (address) {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
-        {
-          headers: {
-            'User-Agent': 'CompanyWeb/1.0',
-          },
-        }
-      );
-      const data = await response.json();
-      
-      if (data && data.length > 0) {
-        latitude = parseFloat(data[0].lat);
-        longitude = parseFloat(data[0].lon);
-      }
-    } catch (error) {
-      console.error('[Contact Page] Geocoding failed:', error);
-    }
-  }
 
   return (
     <>
@@ -78,49 +47,35 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      {/* 联系信息和地图 */}
+      {/* 联系信息 */}
       <section className="site-shell contact-content">
-        <div className="contact-layout">
-          {/* 左侧联系信息列表 */}
-          <div className="contact-info-side">
-            <h2 className="contact-info-title">联系信息</h2>
-            {filteredSettings.length > 0 ? (
-              <ul className="contact-info-list">
-                {filteredSettings.map((item) => (
-                  <li key={item.settingKey} className="contact-info-item">
-                    <div className="contact-info-icon">
-                      {getContactIcon(item.icon)}
+        <div className="contact-info-card">
+          <h2 className="contact-info-title">联系信息</h2>
+          {filteredSettings.length > 0 ? (
+            <ul className="contact-info-list">
+              {filteredSettings.map((item) => (
+                <li key={item.settingKey} className="contact-info-item">
+                  <div className="contact-info-icon">
+                    {getContactIcon(item.icon)}
+                  </div>
+                  <div className="contact-info-text">
+                    <div className="contact-info-label">{item.label}</div>
+                    <div className="contact-info-value">
+                      {item.settingKey === 'contactEmail' ? (
+                        <a href={`mailto:${item.settingValue}`}>{item.settingValue}</a>
+                      ) : item.settingKey === 'contactPhone' ? (
+                        <a href={`tel:${item.settingValue}`}>{item.settingValue}</a>
+                      ) : (
+                        item.settingValue
+                      )}
                     </div>
-                    <div className="contact-info-text">
-                      <div className="contact-info-label">{item.label}</div>
-                      <div className="contact-info-value">
-                        {item.settingKey === 'contactEmail' ? (
-                          <a href={`mailto:${item.settingValue}`}>{item.settingValue}</a>
-                        ) : item.settingKey === 'contactPhone' ? (
-                          <a href={`tel:${item.settingValue}`}>{item.settingValue}</a>
-                        ) : (
-                          item.settingValue
-                        )}
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="contact-info-empty">暂无联系信息</div>
-            )}
-          </div>
-
-          {/* 右侧地图 */}
-          <div className="contact-map-side">
-            <div className="contact-map-container">
-              <ContactMap 
-                address={address}
-                latitude={latitude}
-                longitude={longitude}
-              />
-            </div>
-          </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="contact-info-empty">暂无联系信息</div>
+          )}
         </div>
       </section>
 
@@ -205,20 +160,13 @@ export default async function ContactPage() {
           padding-bottom: 72px;
         }
 
-        .contact-layout {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 48px;
-          align-items: start;
-        }
-
-        /* 左侧联系信息 */
-        .contact-info-side {
+        .contact-info-card {
+          max-width: 700px;
+          margin: 0 auto;
           padding: 32px;
           background: #ffffff;
           border-radius: 16px;
           border: 1px solid var(--line);
-          min-height: 400px;
         }
 
         .contact-info-title {
@@ -227,6 +175,7 @@ export default async function ContactPage() {
           font-weight: 700;
           color: var(--foreground);
           letter-spacing: -0.02em;
+          text-align: center;
         }
 
         .contact-info-list {
@@ -235,7 +184,7 @@ export default async function ContactPage() {
           padding: 0;
           display: flex;
           flex-direction: column;
-          gap: 28px;
+          gap: 20px;
         }
 
         .contact-info-item {
@@ -253,7 +202,6 @@ export default async function ContactPage() {
           transform: translateX(4px);
         }
 
-        /* 图标 */
         .contact-info-icon {
           flex-shrink: 0;
           width: 44px;
@@ -271,7 +219,6 @@ export default async function ContactPage() {
           height: 22px;
         }
 
-        /* 文本内容 */
         .contact-info-text {
           flex: 1;
           min-width: 0;
@@ -310,49 +257,7 @@ export default async function ContactPage() {
           font-size: 15px;
         }
 
-        /* 右侧地图 */
-        .contact-map-side {
-          position: sticky;
-          top: 100px;
-        }
-
-        .contact-map-container {
-          width: 100%;
-          height: 500px;
-          border-radius: 16px;
-          overflow: hidden;
-          border: 1px solid var(--line);
-          background: #f5f5f5;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .contact-map-placeholder {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-          color: var(--text-muted);
-          font-size: 16px;
-        }
-
         /* ========== 响应式适配 ========== */
-        @media (max-width: 1024px) {
-          .contact-layout {
-            grid-template-columns: 1fr;
-            gap: 32px;
-          }
-
-          .contact-map-side {
-            position: static;
-          }
-
-          .contact-map-container {
-            height: 400px;
-          }
-        }
-
         @media (max-width: 768px) {
           .contact-hero {
             padding-top: var(--page-top, 96px);
@@ -387,9 +292,8 @@ export default async function ContactPage() {
             padding-bottom: 48px;
           }
 
-          .contact-info-side {
+          .contact-info-card {
             padding: 24px;
-            min-height: auto;
           }
 
           .contact-info-title {
@@ -398,7 +302,7 @@ export default async function ContactPage() {
           }
 
           .contact-info-list {
-            gap: 20px;
+            gap: 16px;
           }
 
           .contact-info-item {
@@ -424,10 +328,6 @@ export default async function ContactPage() {
           .contact-info-value {
             font-size: 15px;
           }
-
-          .contact-map-container {
-            height: 350px;
-          }
         }
 
         @media (max-width: 480px) {
@@ -441,7 +341,7 @@ export default async function ContactPage() {
             line-height: 1.6;
           }
 
-          .contact-info-side {
+          .contact-info-card {
             padding: 20px;
           }
 
@@ -461,10 +361,6 @@ export default async function ContactPage() {
 
           .contact-info-value {
             font-size: 14px;
-          }
-
-          .contact-map-container {
-            height: 280px;
           }
         }
       `}} />

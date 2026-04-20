@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Image, Input, Space, Typography, Tabs, InputNumber } from 'antd';
+import { Button, Card, Image, Input, Space, Typography, Tabs } from 'antd';
 import {
   MailOutlined,
   PhoneOutlined,
   EnvironmentOutlined,
   ClockCircleOutlined,
   GlobalOutlined,
-  PictureOutlined,
-  ReloadOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
 import { MediaPicker } from '../components/common';
-import { RichTextEditor } from '../components/common/RichTextEditor';
 import { siteContentService } from '../services/site-content-service';
 import { SiteSettingItem, UpdateSiteSettingsPayload } from '../types/site-content';
 import { useMessage } from '../hooks/useMessage';
