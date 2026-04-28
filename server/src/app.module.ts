@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminUserModule } from './modules/admin-user/admin-user.module';
 import { AnnouncementModule } from './modules/announcement/announcement.module';
@@ -22,6 +24,10 @@ import { getTypeOrmConfig } from './database/typeorm.config';
       load: [appConfig],
       validationSchema: envValidationSchema,
     }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 60,
+    }]),
     TypeOrmModule.forRootAsync({
       useFactory: getTypeOrmConfig,
     }),
@@ -34,6 +40,12 @@ import { getTypeOrmConfig } from './database/typeorm.config';
     RoleModule,
     SiteContentModule,
     UploadModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

@@ -6,6 +6,7 @@ export interface AuthenticatedAdminUser {
   isSuperAdmin: boolean;
   roles: string[];
   permissions: string[];
+  tokenVersion: number;
 }
 
 export interface AuthenticatedRequest extends Request {

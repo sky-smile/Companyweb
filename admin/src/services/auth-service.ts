@@ -11,6 +11,6 @@ export const authService = {
   },
 
   logout() {
-    return Promise.resolve();
+    return unwrapResponse<void>(http.post('/auth/logout'));
   },
 };

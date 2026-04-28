@@ -11,7 +11,7 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-company_web_secure_pass}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
       MARIADB_DATABASE: company_web
       MARIADB_COLLATION: utf8mb4_unicode_ci
       MARIADB_CHARACTER_SET: utf8mb4
@@ -47,9 +47,9 @@ services:
       DB_PORT: 3306
       DB_NAME: company_web
       DB_USER: root
-      DB_PASSWORD: ${DB_ROOT_PASSWORD:-company_web_secure_pass}
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_key_16chars}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change_me_refresh_secret_key_16chars}
+      DB_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}
       JWT_ACCESS_EXPIRES_IN: 2h
       JWT_REFRESH_EXPIRES_IN: 7d
       UPLOAD_DIR: uploads

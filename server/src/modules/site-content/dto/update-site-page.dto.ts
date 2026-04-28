@@ -9,10 +9,12 @@ export class UpdateSitePageDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100000)
   content?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(10000)
   extraJson?: string;
 
   @IsOptional()

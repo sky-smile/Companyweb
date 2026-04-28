@@ -1,12 +1,16 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from '@/common/interceptors/response.interceptor';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
+  // helmet is ESM-only — use dynamic import for CJS compatibility
+  const helmet = await import('helmet');
+
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
@@ -28,6 +32,8 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, Accept',
   });
+  app.use(helmet.default());
+  app.use(cookieParser());
   app.use('/uploads', express.static(uploadDir));
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());

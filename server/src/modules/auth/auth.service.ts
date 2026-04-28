@@ -55,6 +55,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
+    if (admin.tokenVersion !== payload.tokenVersion) {
+      throw new UnauthorizedException('Refresh token has been revoked');
+    }
+
     return this.generateTokens(admin);
   }
 
@@ -66,6 +70,11 @@ export class AuthService {
     }
 
     return this.toProfile(admin);
+  }
+
+  async logout(userId: string) {
+    await this.adminUserRepository.incrementTokenVersion(userId);
+    return { success: true, message: 'Logged out successfully' };
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto) {
@@ -100,6 +109,7 @@ export class AuthService {
       isSuperAdmin: admin.isSuperAdmin,
       roles: admin.roles,
       permissions: admin.permissions,
+      tokenVersion: admin.tokenVersion,
     };
 
     return {

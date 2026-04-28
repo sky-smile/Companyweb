@@ -20,6 +20,7 @@ import { Avatar, Breadcrumb, Button, Dropdown, Layout, Menu, Space, Tooltip, Typ
 import type { BreadcrumbProps, MenuProps } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { authStore } from '../stores/auth-store';
+import { authService } from '../services/auth-service';
 
 const { Header, Sider, Content } = Layout;
 
@@ -169,9 +170,9 @@ export function AdminLayout() {
       icon: <LogoutOutlined />,
       label: '退出登录',
       danger: true,
-      onClick: () => {
+      onClick: async () => {
+        await authService.logout().catch(() => undefined);
         authStore.clearSession();
-        void fetch('/').catch(() => undefined);
         navigate('/login');
       },
     },

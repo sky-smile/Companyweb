@@ -28,6 +28,7 @@ export class UpdateNewsDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100000)
   content?: string;
 
   @IsOptional()

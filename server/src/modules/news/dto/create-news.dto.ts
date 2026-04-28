@@ -24,6 +24,7 @@ export class CreateNewsDto {
   coverImage?: string;
 
   @IsString()
+  @MaxLength(100000)
   content!: string;
 
   @IsOptional()

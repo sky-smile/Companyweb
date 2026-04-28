@@ -12,6 +12,7 @@ export class CreateAnnouncementDto {
   summary?: string;
 
   @IsString()
+  @MaxLength(100000)
   content!: string;
 
   @IsOptional()

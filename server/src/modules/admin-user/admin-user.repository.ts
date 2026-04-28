@@ -150,7 +150,12 @@ export class AdminUserRepository {
     }
 
     adminUser.passwordHash = await hashPassword(newPassword);
+    adminUser.tokenVersion += 1; // revoke all existing sessions
     await this.adminUserRepository.save(adminUser);
+  }
+
+  async incrementTokenVersion(id: string): Promise<void> {
+    await this.adminUserRepository.increment({ id }, 'tokenVersion', 1);
   }
 
   private async replaceRoles(adminUserId: string, roleIds: string[]): Promise<void> {

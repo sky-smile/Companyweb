@@ -8,6 +8,7 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:3000/a
 export const http = axios.create({
   baseURL: apiBaseUrl,
   timeout: 15000,
+  withCredentials: true, // send httpOnly cookies for same-origin requests
 });
 
 http.interceptors.request.use((config) => {

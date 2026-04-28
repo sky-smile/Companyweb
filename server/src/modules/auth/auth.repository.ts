@@ -69,6 +69,7 @@ export class AuthRepository {
       status: adminUser.status,
       roles,
       permissions: Array.from(new Set(permissions)),
+      tokenVersion: adminUser.tokenVersion,
     };
   }
 }

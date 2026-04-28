@@ -20,14 +20,17 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100000)
   content?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(10000)
   imagesJson?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(50000)
   parametersJson?: string;
 
   @IsOptional()

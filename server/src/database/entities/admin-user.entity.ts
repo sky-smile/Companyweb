@@ -40,6 +40,9 @@ export class AdminUserEntity {
   @Column({ name: 'last_login_ip', type: 'varchar', length: 64, nullable: true })
   lastLoginIp!: string | null;
 
+  @Column({ name: 'token_version', type: 'int', default: 0 })
+  tokenVersion!: number;
+
   @OneToMany(() => AdminUserRoleEntity, (adminUserRole) => adminUserRole.adminUser)
   adminUserRoles!: AdminUserRoleEntity[];
 

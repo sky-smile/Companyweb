@@ -7,4 +7,5 @@ export interface AuthenticatedAdmin {
   status: number;
   roles: string[];
   permissions: string[];
+  tokenVersion: number;
 }

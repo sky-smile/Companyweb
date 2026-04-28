@@ -14,6 +14,7 @@ export class UpdateAnnouncementDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100000)
   content?: string;
 
   @IsOptional()

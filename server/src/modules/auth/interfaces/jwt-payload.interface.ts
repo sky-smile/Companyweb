@@ -4,4 +4,5 @@ export interface JwtPayload {
   isSuperAdmin: boolean;
   roles: string[];
   permissions: string[];
+  tokenVersion: number;
 }
