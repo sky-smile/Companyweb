@@ -5,8 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  DataSource,
-  EntityMetadataNotFoundError,
   Repository,
 } from 'typeorm';
 import { PermissionEntity } from '@/database/entities/permission.entity';
@@ -25,14 +23,9 @@ export class RoleRepository {
     private readonly permissionRepository: Repository<PermissionEntity>,
     @InjectRepository(RolePermissionEntity)
     private readonly rolePermissionRepository: Repository<RolePermissionEntity>,
-    private readonly dataSource: DataSource,
   ) {}
 
   async list(): Promise<RoleView[]> {
-    if (!this.isDatabaseReady()) {
-      return [this.getFallbackRole()];
-    }
-
     const roles = await this.roleRepository.find({
       relations: {
         rolePermissions: {
@@ -48,14 +41,6 @@ export class RoleRepository {
   }
 
   async findById(id: string): Promise<RoleView> {
-    if (!this.isDatabaseReady()) {
-      if (id === '1') {
-        return this.getFallbackRole();
-      }
-
-      throw new NotFoundException('Role not found');
-    }
-
     const role = await this.roleRepository.findOne({
       where: { id },
       relations: {
@@ -73,17 +58,6 @@ export class RoleRepository {
   }
 
   async create(dto: CreateRoleDto): Promise<RoleView> {
-    if (!this.isDatabaseReady()) {
-      return {
-        id: '2',
-        name: dto.name,
-        code: dto.code,
-        description: dto.description ?? '',
-        status: 1,
-        permissions: dto.permissionIds ?? [],
-      };
-    }
-
     const existingRole = await this.roleRepository.findOne({ where: { code: dto.code } });
 
     if (existingRole !== null) {
@@ -105,21 +79,6 @@ export class RoleRepository {
   }
 
   async update(id: string, dto: UpdateRoleDto): Promise<RoleView> {
-    if (!this.isDatabaseReady()) {
-      const role = this.getFallbackRole();
-
-      if (id !== role.id) {
-        throw new NotFoundException('Role not found');
-      }
-
-      return {
-        ...role,
-        name: dto.name ?? role.name,
-        description: dto.description ?? role.description,
-        permissions: dto.permissionIds ?? role.permissions,
-      };
-    }
-
     const role = await this.roleRepository.findOne({ where: { id } });
 
     if (role === null) {
@@ -139,19 +98,6 @@ export class RoleRepository {
   }
 
   async updateStatus(id: string, status: number): Promise<RoleView> {
-    if (!this.isDatabaseReady()) {
-      const role = this.getFallbackRole();
-
-      if (id !== role.id) {
-        throw new NotFoundException('Role not found');
-      }
-
-      return {
-        ...role,
-        status,
-      };
-    }
-
     const role = await this.roleRepository.findOne({ where: { id } });
 
     if (role === null) {
@@ -165,16 +111,6 @@ export class RoleRepository {
   }
 
   async listPermissions(): Promise<Array<{ id: string; name: string; code: string }>> {
-    if (!this.isDatabaseReady()) {
-      return [
-        {
-          id: '1',
-          name: 'All permissions',
-          code: '*:*',
-        },
-      ];
-    }
-
     const permissions = await this.permissionRepository.find({
       order: {
         id: 'ASC',
@@ -217,29 +153,6 @@ export class RoleRepository {
       description: role.description,
       status: role.status,
       permissions: (role.rolePermissions ?? []).map((item) => item.permission.code),
-    };
-  }
-
-  private isDatabaseReady(): boolean {
-    if (!this.dataSource.isInitialized) {
-      return false;
-    }
-
-    try {
-      return this.dataSource.hasMetadata(RoleEntity);
-    } catch (error) {
-      return !(error instanceof EntityMetadataNotFoundError);
-    }
-  }
-
-  private getFallbackRole(): RoleView {
-    return {
-      id: '1',
-      name: 'Super Admin',
-      code: 'super-admin',
-      description: 'Full access role for system bootstrapping',
-      status: 1,
-      permissions: ['*:*'],
     };
   }
 }

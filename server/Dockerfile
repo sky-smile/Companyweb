@@ -34,8 +34,8 @@ COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable && pnpm install --frozen-lockfile --prod
 
 # 复制构建产物
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
+COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
 
 # 创建上传目录
 RUN mkdir -p uploads && chown -R nestjs:nodejs uploads

@@ -38,6 +38,7 @@ services:
       - no-new-privileges:true
     environment:
       NODE_ENV: production
+      SERVER_NODE_ENV: production
       TZ: Asia/Shanghai
       SERVER_PORT: 3000
       SERVER_GLOBAL_PREFIX: api

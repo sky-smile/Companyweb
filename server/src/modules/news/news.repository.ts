@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityMetadataNotFoundError, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { NewsCategoryEntity } from '@/database/entities/news-category.entity';
 import { NewsEntity } from '@/database/entities/news.entity';
 import { CreateNewsCategoryDto } from './dto/create-news-category.dto';
@@ -20,14 +20,9 @@ export class NewsRepository {
     private readonly newsRepository: Repository<NewsEntity>,
     @InjectRepository(NewsCategoryEntity)
     private readonly newsCategoryRepository: Repository<NewsCategoryEntity>,
-    private readonly dataSource: DataSource,
   ) {}
 
   async listCategories(): Promise<NewsCategoryEntity[]> {
-    if (!this.isDatabaseReady()) {
-      return [];
-    }
-
     return this.newsCategoryRepository.find({
       order: {
         sort: 'ASC',
@@ -37,19 +32,6 @@ export class NewsRepository {
   }
 
   async createCategory(dto: CreateNewsCategoryDto): Promise<NewsCategoryEntity> {
-    if (!this.isDatabaseReady()) {
-      return {
-        id: '1',
-        name: dto.name,
-        slug: dto.slug,
-        sort: dto.sort,
-        status: 1,
-        newsList: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-    }
-
     const existingCategory = await this.newsCategoryRepository.findOne({ where: { slug: dto.slug } });
 
     if (existingCategory !== null) {
@@ -104,10 +86,6 @@ export class NewsRepository {
   }
 
   async listNews(): Promise<NewsView[]> {
-    if (!this.isDatabaseReady()) {
-      return [];
-    }
-
     const newsList = await this.newsRepository.find({
       relations: {
         category: true,
@@ -121,10 +99,6 @@ export class NewsRepository {
   }
 
   async findNewsById(id: string): Promise<NewsView> {
-    if (!this.isDatabaseReady()) {
-      throw new NotFoundException('News not found');
-    }
-
     const news = await this.newsRepository.findOne({
       where: { id },
       relations: {
@@ -140,22 +114,6 @@ export class NewsRepository {
   }
 
   async createNews(dto: CreateNewsDto, userId: string): Promise<NewsView> {
-    if (!this.isDatabaseReady()) {
-      return {
-        id: '1',
-        title: dto.title,
-        slug: dto.slug,
-        summary: dto.summary ?? '',
-        content: dto.content,
-        coverImage: dto.coverImage ?? '',
-        status: dto.status,
-        isTop: dto.isTop,
-        publishedAt: dto.status === 1 ? new Date() : null,
-        categoryId: dto.categoryId,
-        categoryName: 'Fallback Category',
-      };
-    }
-
     await this.ensureCategoryExists(dto.categoryId);
     await this.ensureNewsSlugAvailable(dto.slug);
 
@@ -181,10 +139,6 @@ export class NewsRepository {
   }
 
   async updateNews(id: string, dto: UpdateNewsDto, userId: string): Promise<NewsView> {
-    if (!this.isDatabaseReady()) {
-      throw new NotFoundException('News not found');
-    }
-
     const news = await this.newsRepository.findOne({ where: { id } });
 
     if (news === null) {
@@ -289,17 +243,5 @@ export class NewsRepository {
       categoryId: news.categoryId,
       categoryName: news.category?.name ?? '',
     };
-  }
-
-  private isDatabaseReady(): boolean {
-    if (!this.dataSource.isInitialized) {
-      return false;
-    }
-
-    try {
-      return this.dataSource.hasMetadata(NewsEntity) && this.dataSource.hasMetadata(NewsCategoryEntity);
-    } catch (error) {
-      return !(error instanceof EntityMetadataNotFoundError);
-    }
   }
 }
