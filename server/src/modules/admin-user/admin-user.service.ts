@@ -19,28 +19,16 @@ export class AdminUserService {
   async list(query: AdminUserListQueryDto) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
-    const adminUsers = await this.adminUserRepository.list();
 
-    const filtered = adminUsers.filter((item) => {
-      if (query.keyword === undefined || query.keyword.trim() === '') {
-        return true;
-      }
-
-      return [item.username, item.nickname, item.email].some((value) =>
-        value.toLowerCase().includes(query.keyword!.toLowerCase()),
-      );
-    });
-
-    const start = (page - 1) * pageSize;
-    const list = filtered.slice(start, start + pageSize);
+    const { items, total } = await this.adminUserRepository.listPaginated(
+      page,
+      pageSize,
+      query.keyword,
+    );
 
     return {
-      list,
-      pagination: {
-        page,
-        pageSize,
-        total: filtered.length,
-      },
+      list: items,
+      pagination: { page, pageSize, total },
     };
   }
 

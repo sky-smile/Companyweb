@@ -31,26 +31,17 @@ export class ProductService {
   async list(query: ProductListQueryDto, publicOnly = false) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
-    const list = await this.productRepository.listProducts(publicOnly);
-    const filtered = list.filter((item) => {
-      if (query.keyword === undefined || query.keyword.trim() === '') {
-        return true;
-      }
 
-      return [item.name, item.summary, item.slug].some((value) =>
-        value.toLowerCase().includes(query.keyword!.toLowerCase()),
-      );
-    });
-
-    const start = (page - 1) * pageSize;
+    const { items, total } = await this.productRepository.listProductsPaginated(
+      page,
+      pageSize,
+      query.keyword,
+      publicOnly,
+    );
 
     return {
-      list: filtered.slice(start, start + pageSize),
-      pagination: {
-        page,
-        pageSize,
-        total: filtered.length,
-      },
+      list: items,
+      pagination: { page, pageSize, total },
     };
   }
 

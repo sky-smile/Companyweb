@@ -27,6 +27,30 @@ export class AnnouncementRepository {
     return items.map((item) => this.toView(item));
   }
 
+  async listPaginated(
+    page: number,
+    pageSize: number,
+    keyword?: string,
+  ): Promise<{ items: AnnouncementView[]; total: number }> {
+    const qb = this.announcementRepository
+      .createQueryBuilder('announcement')
+      .orderBy('announcement.isTop', 'DESC')
+      .addOrderBy('announcement.createdAt', 'DESC');
+
+    if (keyword && keyword.trim() !== '') {
+      qb.andWhere(
+        '(announcement.title LIKE :kw OR announcement.summary LIKE :kw)',
+        { kw: `%${keyword}%` },
+      );
+    }
+
+    qb.skip((page - 1) * pageSize).take(pageSize);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items: items.map((item) => this.toView(item)), total };
+  }
+
   async detail(id: string): Promise<AnnouncementView> {
     const item = await this.announcementRepository.findOne({ where: { id } });
 
@@ -95,6 +119,32 @@ export class AnnouncementRepository {
     });
 
     return items.map((item) => this.toView(item));
+  }
+
+  async listPublicPaginated(
+    page: number,
+    pageSize: number,
+    keyword?: string,
+  ): Promise<{ items: AnnouncementView[]; total: number }> {
+    const qb = this.announcementRepository
+      .createQueryBuilder('announcement')
+      .where('announcement.status = :status', { status: 1 })
+      .orderBy('announcement.isTop', 'DESC')
+      .addOrderBy('announcement.publishedAt', 'DESC')
+      .addOrderBy('announcement.id', 'DESC');
+
+    if (keyword && keyword.trim() !== '') {
+      qb.andWhere(
+        '(announcement.title LIKE :kw OR announcement.summary LIKE :kw)',
+        { kw: `%${keyword}%` },
+      );
+    }
+
+    qb.skip((page - 1) * pageSize).take(pageSize);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items: items.map((item) => this.toView(item)), total };
   }
 
   async detailPublic(id: string): Promise<AnnouncementView> {

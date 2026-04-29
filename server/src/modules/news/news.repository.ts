@@ -98,6 +98,30 @@ export class NewsRepository {
     return newsList.map((item) => this.toView(item));
   }
 
+  async listNewsPaginated(
+    page: number,
+    pageSize: number,
+    keyword?: string,
+  ): Promise<{ items: NewsView[]; total: number }> {
+    const qb = this.newsRepository
+      .createQueryBuilder('news')
+      .leftJoinAndSelect('news.category', 'category')
+      .orderBy('news.createdAt', 'DESC');
+
+    if (keyword && keyword.trim() !== '') {
+      qb.andWhere(
+        '(news.title LIKE :kw OR news.summary LIKE :kw OR news.slug LIKE :kw)',
+        { kw: `%${keyword}%` },
+      );
+    }
+
+    qb.skip((page - 1) * pageSize).take(pageSize);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items: items.map((item) => this.toView(item)), total };
+  }
+
   async findNewsById(id: string): Promise<NewsView> {
     const news = await this.newsRepository.findOne({
       where: { id },
@@ -193,6 +217,33 @@ export class NewsRepository {
     });
 
     return newsList.map((item) => this.toView(item));
+  }
+
+  async listPublicNewsPaginated(
+    page: number,
+    pageSize: number,
+    keyword?: string,
+  ): Promise<{ items: NewsView[]; total: number }> {
+    const qb = this.newsRepository
+      .createQueryBuilder('news')
+      .leftJoinAndSelect('news.category', 'category')
+      .where('news.status = :status', { status: 1 })
+      .orderBy('news.isTop', 'DESC')
+      .addOrderBy('news.publishedAt', 'DESC')
+      .addOrderBy('news.id', 'DESC');
+
+    if (keyword && keyword.trim() !== '') {
+      qb.andWhere(
+        '(news.title LIKE :kw OR news.summary LIKE :kw OR news.slug LIKE :kw)',
+        { kw: `%${keyword}%` },
+      );
+    }
+
+    qb.skip((page - 1) * pageSize).take(pageSize);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items: items.map((item) => this.toView(item)), total };
   }
 
   async findPublicNewsById(id: string): Promise<NewsView> {

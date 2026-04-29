@@ -31,27 +31,16 @@ export class NewsService {
   async listNews(query: NewsListQueryDto) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
-    const newsList = await this.newsRepository.listNews();
 
-    const filtered = newsList.filter((item) => {
-      if (query.keyword === undefined || query.keyword.trim() === '') {
-        return true;
-      }
-
-      return [item.title, item.summary, item.slug].some((value) =>
-        value.toLowerCase().includes(query.keyword!.toLowerCase()),
-      );
-    });
-
-    const start = (page - 1) * pageSize;
+    const { items, total } = await this.newsRepository.listNewsPaginated(
+      page,
+      pageSize,
+      query.keyword,
+    );
 
     return {
-      list: filtered.slice(start, start + pageSize),
-      pagination: {
-        page,
-        pageSize,
-        total: filtered.length,
-      },
+      list: items,
+      pagination: { page, pageSize, total },
     };
   }
 
@@ -76,27 +65,16 @@ export class NewsService {
   async listPublicNews(query: NewsListQueryDto) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
-    const newsList = await this.newsRepository.listPublicNews();
 
-    const filtered = newsList.filter((item) => {
-      if (query.keyword === undefined || query.keyword.trim() === '') {
-        return true;
-      }
-
-      return [item.title, item.summary, item.slug].some((value) =>
-        value.toLowerCase().includes(query.keyword!.toLowerCase()),
-      );
-    });
-
-    const start = (page - 1) * pageSize;
+    const { items, total } = await this.newsRepository.listPublicNewsPaginated(
+      page,
+      pageSize,
+      query.keyword,
+    );
 
     return {
-      list: filtered.slice(start, start + pageSize),
-      pagination: {
-        page,
-        pageSize,
-        total: filtered.length,
-      },
+      list: items,
+      pagination: { page, pageSize, total },
     };
   }
 

@@ -13,26 +13,16 @@ export class AnnouncementService {
   async list(query: AnnouncementListQueryDto) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
-    const list = await this.announcementRepository.list();
-    const filtered = list.filter((item) => {
-      if (query.keyword === undefined || query.keyword.trim() === '') {
-        return true;
-      }
 
-      return [item.title, item.summary].some((value) =>
-        value.toLowerCase().includes(query.keyword!.toLowerCase()),
-      );
-    });
-
-    const start = (page - 1) * pageSize;
+    const { items, total } = await this.announcementRepository.listPaginated(
+      page,
+      pageSize,
+      query.keyword,
+    );
 
     return {
-      list: filtered.slice(start, start + pageSize),
-      pagination: {
-        page,
-        pageSize,
-        total: filtered.length,
-      },
+      list: items,
+      pagination: { page, pageSize, total },
     };
   }
 
@@ -57,26 +47,16 @@ export class AnnouncementService {
   async listPublic(query: AnnouncementListQueryDto) {
     const page = Number(query.page ?? 1) || 1;
     const pageSize = Number(query.pageSize ?? 10) || 10;
-    const list = await this.announcementRepository.listPublic();
-    const filtered = list.filter((item) => {
-      if (query.keyword === undefined || query.keyword.trim() === '') {
-        return true;
-      }
 
-      return [item.title, item.summary].some((value) =>
-        value.toLowerCase().includes(query.keyword!.toLowerCase()),
-      );
-    });
-
-    const start = (page - 1) * pageSize;
+    const { items, total } = await this.announcementRepository.listPublicPaginated(
+      page,
+      pageSize,
+      query.keyword,
+    );
 
     return {
-      list: filtered.slice(start, start + pageSize),
-      pagination: {
-        page,
-        pageSize,
-        total: filtered.length,
-      },
+      list: items,
+      pagination: { page, pageSize, total },
     };
   }
 

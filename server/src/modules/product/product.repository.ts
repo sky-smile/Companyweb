@@ -96,6 +96,36 @@ export class ProductRepository {
     return products.map((item) => this.toView(item));
   }
 
+  async listProductsPaginated(
+    page: number,
+    pageSize: number,
+    keyword?: string,
+    publicOnly = false,
+  ): Promise<{ items: ProductView[]; total: number }> {
+    const qb = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .orderBy('product.sort', 'ASC')
+      .addOrderBy('product.id', 'DESC');
+
+    if (publicOnly) {
+      qb.where('product.status = :status', { status: 1 });
+    }
+
+    if (keyword && keyword.trim() !== '') {
+      qb.andWhere(
+        '(product.name LIKE :kw OR product.summary LIKE :kw OR product.slug LIKE :kw)',
+        { kw: `%${keyword}%` },
+      );
+    }
+
+    qb.skip((page - 1) * pageSize).take(pageSize);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items: items.map((item) => this.toView(item)), total };
+  }
+
   async detail(id: string, publicOnly = false): Promise<ProductView> {
     const product = await this.productRepository.findOne({
       where: publicOnly ? { id, status: 1 } : { id },

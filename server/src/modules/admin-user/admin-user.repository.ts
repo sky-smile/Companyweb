@@ -41,6 +41,31 @@ export class AdminUserRepository {
     return adminUsers.map((item) => this.toView(item));
   }
 
+  async listPaginated(
+    page: number,
+    pageSize: number,
+    keyword?: string,
+  ): Promise<{ items: AdminUserView[]; total: number }> {
+    const qb = this.adminUserRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.adminUserRoles', 'aur')
+      .leftJoinAndSelect('aur.role', 'role')
+      .orderBy('user.id', 'ASC');
+
+    if (keyword && keyword.trim() !== '') {
+      qb.andWhere(
+        '(user.username LIKE :kw OR user.nickname LIKE :kw OR user.email LIKE :kw)',
+        { kw: `%${keyword}%` },
+      );
+    }
+
+    qb.skip((page - 1) * pageSize).take(pageSize);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items: items.map((item) => this.toView(item)), total };
+  }
+
   async findById(id: string): Promise<AdminUserView> {
     const adminUser = await this.adminUserRepository.findOne({
       where: { id },
