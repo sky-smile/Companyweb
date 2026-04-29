@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { BannerEntity } from '@/database/entities/banner.entity';
 import { SitePageEntity } from '@/database/entities/site-page.entity';
 import { SiteSettingEntity } from '@/database/entities/site-setting.entity';
@@ -21,6 +21,7 @@ export class SiteContentRepository {
     private readonly siteSettingRepository: Repository<SiteSettingEntity>,
     @InjectRepository(BannerEntity)
     private readonly bannerRepository: Repository<BannerEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async getSitePage(pageKey: string): Promise<SitePageView> {
@@ -72,28 +73,32 @@ export class SiteContentRepository {
   }
 
   async updateSiteSettings(dto: UpdateSiteSettingsDto, userId: string): Promise<SiteSettingView[]> {
-    for (const item of dto.items) {
-      const existing = await this.siteSettingRepository.findOne({ where: { settingKey: item.settingKey } });
+    await this.dataSource.transaction(async (manager) => {
+      const settingRepo = manager.getRepository(SiteSettingEntity);
 
-      if (existing === null) {
-        await this.siteSettingRepository.save(
-          this.siteSettingRepository.create({
-            settingKey: item.settingKey,
-            settingValue: item.settingValue,
-            settingGroup: item.settingGroup,
-            description: item.description,
-            updatedBy: userId,
-          }),
-        );
-        continue;
+      for (const item of dto.items) {
+        const existing = await settingRepo.findOne({ where: { settingKey: item.settingKey } });
+
+        if (existing === null) {
+          await settingRepo.save(
+            settingRepo.create({
+              settingKey: item.settingKey,
+              settingValue: item.settingValue,
+              settingGroup: item.settingGroup,
+              description: item.description,
+              updatedBy: userId,
+            }),
+          );
+          continue;
+        }
+
+        existing.settingValue = item.settingValue;
+        existing.settingGroup = item.settingGroup;
+        existing.description = item.description;
+        existing.updatedBy = userId;
+        await settingRepo.save(existing);
       }
-
-      existing.settingValue = item.settingValue;
-      existing.settingGroup = item.settingGroup;
-      existing.description = item.description;
-      existing.updatedBy = userId;
-      await this.siteSettingRepository.save(existing);
-    }
+    });
 
     return this.listSiteSettings();
   }

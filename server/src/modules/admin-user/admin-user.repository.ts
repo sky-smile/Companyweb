@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  DataSource,
+  EntityManager,
   Repository,
 } from 'typeorm';
 import { hashPassword, verifyPassword } from '@/common/utils/password.util';
@@ -24,6 +26,7 @@ export class AdminUserRepository {
     private readonly roleRepository: Repository<RoleEntity>,
     @InjectRepository(AdminUserRoleEntity)
     private readonly adminUserRoleRepository: Repository<AdminUserRoleEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async list(): Promise<AdminUserView[]> {
@@ -88,23 +91,30 @@ export class AdminUserRepository {
     await this.ensureRoleIdsExist(dto.roleIds ?? []);
 
     const passwordHash = await hashPassword(dto.password);
-    const adminUser = await this.adminUserRepository.save(
-      this.adminUserRepository.create({
-        username: dto.username,
-        passwordHash,
-        nickname: dto.nickname,
-        email: dto.email ?? '',
-        phone: dto.phone ?? '',
-        status: 1,
-        isSuperAdmin: 0,
-        lastLoginAt: null,
-        lastLoginIp: null,
-      }),
-    );
+    const roleIds = dto.roleIds ?? [];
 
-    await this.replaceRoles(adminUser.id, dto.roleIds ?? []);
+    const adminUserId = await this.dataSource.transaction(async (manager) => {
+      const userRepo = manager.getRepository(AdminUserEntity);
+      const adminUser = await userRepo.save(
+        userRepo.create({
+          username: dto.username,
+          passwordHash,
+          nickname: dto.nickname,
+          email: dto.email ?? '',
+          phone: dto.phone ?? '',
+          status: 1,
+          isSuperAdmin: 0,
+          lastLoginAt: null,
+          lastLoginIp: null,
+        }),
+      );
 
-    return this.findById(adminUser.id);
+      await this.replaceRolesInTransaction(manager, adminUser.id, roleIds);
+
+      return adminUser.id;
+    });
+
+    return this.findById(adminUserId);
   }
 
   async update(id: string, dto: UpdateAdminUserDto): Promise<AdminUserView> {
@@ -122,11 +132,13 @@ export class AdminUserRepository {
     adminUser.email = dto.email ?? adminUser.email;
     adminUser.phone = dto.phone ?? adminUser.phone;
 
-    await this.adminUserRepository.save(adminUser);
+    await this.dataSource.transaction(async (manager) => {
+      await manager.getRepository(AdminUserEntity).save(adminUser);
 
-    if (dto.roleIds !== undefined) {
-      await this.replaceRoles(id, dto.roleIds);
-    }
+      if (dto.roleIds !== undefined) {
+        await this.replaceRolesInTransaction(manager, id, dto.roleIds);
+      }
+    });
 
     return this.findById(id);
   }
@@ -183,18 +195,25 @@ export class AdminUserRepository {
     await this.adminUserRepository.increment({ id }, 'tokenVersion', 1);
   }
 
-  private async replaceRoles(adminUserId: string, roleIds: string[]): Promise<void> {
-    await this.adminUserRoleRepository.delete({ adminUserId });
+  private async replaceRolesInTransaction(
+    manager: EntityManager,
+    adminUserId: string,
+    roleIds: string[],
+  ): Promise<void> {
+    const aurRepo = manager.getRepository(AdminUserRoleEntity);
+
+    await aurRepo.delete({ adminUserId });
 
     if (roleIds.length === 0) {
       return;
     }
 
-    const roles = await this.roleRepository.findBy(roleIds.map((id) => ({ id })));
+    const roleRepo = manager.getRepository(RoleEntity);
+    const roles = await roleRepo.findBy(roleIds.map((id) => ({ id })));
 
     for (const role of roles) {
-      await this.adminUserRoleRepository.save(
-        this.adminUserRoleRepository.create({
+      await aurRepo.save(
+        aurRepo.create({
           adminUserId,
           roleId: role.id,
         }),

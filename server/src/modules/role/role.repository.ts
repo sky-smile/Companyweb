@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  DataSource,
+  EntityManager,
   Repository,
 } from 'typeorm';
 import { PermissionEntity } from '@/database/entities/permission.entity';
@@ -23,6 +25,7 @@ export class RoleRepository {
     private readonly permissionRepository: Repository<PermissionEntity>,
     @InjectRepository(RolePermissionEntity)
     private readonly rolePermissionRepository: Repository<RolePermissionEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async list(): Promise<RoleView[]> {
@@ -64,18 +67,25 @@ export class RoleRepository {
       throw new BadRequestException('Role code already exists');
     }
 
-    const role = await this.roleRepository.save(
-      this.roleRepository.create({
-        name: dto.name,
-        code: dto.code,
-        description: dto.description ?? '',
-        status: 1,
-      }),
-    );
+    const permissionIds = dto.permissionIds ?? [];
 
-    await this.replacePermissions(role.id, dto.permissionIds ?? []);
+    const roleId = await this.dataSource.transaction(async (manager) => {
+      const roleRepo = manager.getRepository(RoleEntity);
+      const role = await roleRepo.save(
+        roleRepo.create({
+          name: dto.name,
+          code: dto.code,
+          description: dto.description ?? '',
+          status: 1,
+        }),
+      );
 
-    return this.findById(role.id);
+      await this.replacePermissionsInTransaction(manager, role.id, permissionIds);
+
+      return role.id;
+    });
+
+    return this.findById(roleId);
   }
 
   async update(id: string, dto: UpdateRoleDto): Promise<RoleView> {
@@ -88,11 +98,13 @@ export class RoleRepository {
     role.name = dto.name ?? role.name;
     role.description = dto.description ?? role.description;
 
-    await this.roleRepository.save(role);
+    await this.dataSource.transaction(async (manager) => {
+      await manager.getRepository(RoleEntity).save(role);
 
-    if (dto.permissionIds !== undefined) {
-      await this.replacePermissions(id, dto.permissionIds);
-    }
+      if (dto.permissionIds !== undefined) {
+        await this.replacePermissionsInTransaction(manager, id, dto.permissionIds);
+      }
+    });
 
     return this.findById(id);
   }
@@ -124,20 +136,27 @@ export class RoleRepository {
     }));
   }
 
-  private async replacePermissions(roleId: string, permissionIds: string[]): Promise<void> {
-    await this.rolePermissionRepository.delete({ roleId });
+  private async replacePermissionsInTransaction(
+    manager: EntityManager,
+    roleId: string,
+    permissionIds: string[],
+  ): Promise<void> {
+    const rpRepo = manager.getRepository(RolePermissionEntity);
+
+    await rpRepo.delete({ roleId });
 
     if (permissionIds.length === 0) {
       return;
     }
 
-    const permissions = await this.permissionRepository.findBy(
+    const permRepo = manager.getRepository(PermissionEntity);
+    const permissions = await permRepo.findBy(
       permissionIds.map((id) => ({ id })),
     );
 
     for (const permission of permissions) {
-      await this.rolePermissionRepository.save(
-        this.rolePermissionRepository.create({
+      await rpRepo.save(
+        rpRepo.create({
           roleId,
           permissionId: permission.id,
         }),
