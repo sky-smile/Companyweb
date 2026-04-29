@@ -1,87 +1,49 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ApiError } from '@/lib/api';
+import type { Metadata } from 'next';
 import { formatPublicDate, parseProductParameters, parseStringArray } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
 import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
 import { ProductJsonLd } from '@/components/JsonLd';
-import { ListSkeleton } from '@/components/Skeleton';
-import { EmptyState } from '@/components/EmptyState';
 import styles from '@/app/list.module.css';
 
-export default function ProductDetailPage() {
-  const params = useParams();
-  const id = params?.id as string;
-
-  const [item, setItem] = useState<any>(null);
-  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await publicService.getProductDetail(id);
-        setItem(data);
-
-        // 获取相关产品
-        const allProducts = await publicService.getProducts();
-        const related = allProducts.list
-          .filter((p: any) => p.id !== data.id && p.categoryId === data.categoryId)
-          .slice(0, 3);
-        setRelatedProducts(related);
-      } catch (err) {
-        if (err instanceof ApiError && err.status === 404) {
-          setError('产品不存在或尚未发布。');
-        } else {
-          setError('加载失败，请稍后重试。');
-        }
-        console.error('Failed to fetch product:', err);
-      } finally {
-        setLoading(false);
-      }
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const item = await publicService.getProductDetail(id);
+    return {
+      title: item.name,
+      description: item.summary || undefined,
     };
+  } catch {
+    return { title: '产品详情' };
+  }
+}
 
-    if (id) {
-      fetchProduct();
-    }
-  }, [id]);
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
-  if (loading) {
-    return (
-      <section className={`site-shell page-detail page-content-end-compact ${styles.detailPage}`} style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
-        <div className="site-card" style={{ padding: 36 }}>
-          <ListSkeleton count={1} />
-        </div>
-      </section>
-    );
+  let item;
+  try {
+    item = await publicService.getProductDetail(id);
+  } catch {
+    notFound();
   }
 
-  if (error || !item) {
-    return (
-      <section className={`site-shell page-detail page-content-end-compact ${styles.detailPage}`} style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
-        <EmptyState
-          title={error || '加载失败'}
-          description="当前产品可能已下线或尚未发布。"
-          actionHref="/products"
-          actionLabel="查看产品列表"
-        />
-      </section>
-    );
-  }
+  const [allProducts] = await Promise.all([
+    publicService.getProducts(),
+  ]);
+
+  const relatedProducts = allProducts.list
+    .filter((p) => p.id !== item.id && p.categoryId === item.categoryId)
+    .slice(0, 3);
 
   const images = parseStringArray(item.imagesJson);
   const parameters = parseProductParameters(item.parametersJson);
 
   return (
     <>
-      {/* 顶部面包屑导航 */}
       <div className={styles.detailBreadcrumb}>
         <div className={`site-shell ${styles.detailBreadcrumbInner}`}>
           <Link href="/" className={styles.detailBreadcrumbLink}>
@@ -102,9 +64,8 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      <section className={`site-shell page-detail page-content-end-compact ${styles.detailPage}`} style={{ paddingTop: 'var(--page-top-detail, 100px)' }}>
+      <section className={`site-shell page-detail page-content-end-compact ${styles.detailPage}`}>
         <article className={styles.detailArticle}>
-          {/* 产品图片 */}
           {images.length > 0 && (
             <div className={styles.productImages}>
               <div className={styles.productImagesGrid}>
@@ -123,33 +84,26 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* 内容区域 */}
           <div className={styles.detailContent}>
-            {/* 分类和日期 */}
             <div className={styles.detailMeta}>
               <span className={`${styles.detailBadge} ${styles.detailBadgeAccent}`}>{item.categoryName || '产品'}</span>
               <span className={styles.detailSeparator}>·</span>
               <time className={styles.detailDate}>{formatPublicDate(item.publishedAt)}</time>
             </div>
 
-            {/* 标题 */}
             <h1 className={styles.detailTitle}>{item.name}</h1>
 
-            {/* 摘要 */}
             {item.summary && (
               <p className={`${styles.detailSummary} ${styles.detailSummaryAccent}`}>{item.summary}</p>
             )}
 
-            {/* 分隔线 */}
             <div className={styles.detailDivider} />
 
-            {/* 产品内容 */}
             <RichContent
               content={item.content}
               fallback="产品正文待补充。"
             />
 
-            {/* 产品参数 */}
             {parameters.length > 0 && (
               <section className={styles.detailParams}>
                 <h2 className={styles.detailParamsTitle}>产品参数</h2>
@@ -169,7 +123,6 @@ export default function ProductDetailPage() {
           </div>
         </article>
 
-        {/* 相关产品推荐 */}
         {relatedProducts.length > 0 && (
           <section className={styles.relatedSection}>
             <h2 className={styles.relatedTitle}>相关产品</h2>
@@ -199,7 +152,6 @@ export default function ProductDetailPage() {
           </section>
         )}
 
-        {/* JSON-LD 结构化数据 */}
         <ProductJsonLd
           name={item.name}
           description={item.summary || item.content?.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200)}
