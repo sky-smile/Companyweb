@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SiteFooterProps {
   siteName?: string;
@@ -64,9 +65,11 @@ export function SiteFooter({
         <div className="footer-brand">
           <Link href="/" className="footer-logo">
             {siteLogo ? (
-              <img
+              <Image
                 src={siteLogo}
                 alt={siteName || 'Company Logo'}
+                width={160}
+                height={48}
                 className="footer-logo-img"
               />
             ) : (

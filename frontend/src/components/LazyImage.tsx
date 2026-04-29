@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 interface LazyImageProps {
   src: string;
@@ -66,7 +67,6 @@ export function LazyImage({
         ...style,
       }}
     >
-      {/* 加载占位符 */}
       {!isLoaded && (
         <div
           className="lazy-image-shimmer"
@@ -79,7 +79,6 @@ export function LazyImage({
         />
       )}
 
-      {/* 错误占位符 */}
       {hasError && (
         <div
           style={{
@@ -97,17 +96,15 @@ export function LazyImage({
         </div>
       )}
 
-      {/* 实际图片 */}
-      {isInView && (
-        <img
+      {isInView && !hasError && (
+        <Image
           src={src}
           alt={alt}
-          loading="lazy"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           onLoad={handleLoad}
           onError={handleError}
           style={{
-            width: '100%',
-            height: '100%',
             objectFit: 'cover',
             opacity: isLoaded ? 1 : 0,
             transition: 'opacity 0.3s ease',

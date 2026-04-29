@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { LazyImage } from './LazyImage';
 
 interface NewsCardImageProps {
@@ -10,24 +11,22 @@ interface NewsCardImageProps {
 }
 
 export function NewsCardImage({ src, alt, loading = 'lazy' }: NewsCardImageProps) {
-  // Use native img for eager loading, LazyImage for lazy loading
   if (loading === 'eager') {
     return (
-      <img
-        src={src}
-        alt={alt}
-        className="news-image"
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-        }}
-        onError={(e) => {
-          const target = e.currentTarget;
-          target.style.display = 'none';
-          target.parentElement?.classList.add('news-image-error');
-        }}
-      />
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          style={{ objectFit: 'cover' }}
+          onError={(e) => {
+            const target = e.currentTarget as HTMLImageElement;
+            target.style.display = 'none';
+            target.parentElement?.classList.add('news-image-error');
+          }}
+        />
+      </div>
     );
   }
 

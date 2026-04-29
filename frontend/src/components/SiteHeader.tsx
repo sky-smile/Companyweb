@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MobileMenu } from './MobileMenu';
 
 const navItems = [
@@ -61,10 +62,13 @@ export function SiteHeader() {
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 'var(--header-height, 76px)' }}>
         <Link href="/" className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {logo ? (
-            <img
+            <Image
               src={logo}
               alt={name || 'Logo'}
+              width={160}
+              height={40}
               style={{ maxHeight: 40, width: 'auto', objectFit: 'contain' }}
+              priority
             />
           ) : null}
           {name && (
