@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MobileMenu } from './MobileMenu';
+import dynamic from 'next/dynamic';
+
+const MobileMenu = dynamic(() => import('./MobileMenu').then((mod) => ({ default: mod.MobileMenu })), {
+  ssr: false,
+});
 
 const navItems = [
   { href: '/', label: '首页' },

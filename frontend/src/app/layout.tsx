@@ -1,12 +1,16 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import './globals.css';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
-import { BackToTop } from '@/components/BackToTop';
 import { buildMetadata } from '@/lib/seo';
 import { OrganizationJsonLd } from '@/components/JsonLd';
 import { publicService } from '@/services/public-service';
+
+const BackToTop = dynamic(() => import('@/components/BackToTop').then((mod) => ({ default: mod.BackToTop })), {
+  ssr: false,
+});
 
 // 加载 Inter 字体
 const inter = Inter({
