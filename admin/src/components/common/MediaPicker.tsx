@@ -4,6 +4,7 @@ import { PictureOutlined, SearchOutlined } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
 import type { MediaFile } from '../../types/upload';
 import { useMessage } from '../../hooks/useMessage';
+import { getErrorMessage } from '../../lib/error-utils';
 
 interface MediaPickerProps {
   value?: string;
@@ -27,14 +28,14 @@ export function MediaPicker({ value, onChange, folder }: MediaPickerProps) {
   async function loadFiles() {
     setLoading(true);
     try {
-      const response: any = await uploadService.getFiles(1, 50, {
+      const response = await uploadService.getFiles(1, 50, {
         type: 'image',
         folder: folder || undefined,
         keyword: keyword || undefined,
       });
       setFiles(response.items || []);
-    } catch (error: any) {
-      message.error(error.message || '加载文件失败');
+    } catch (error) {
+      message.error(getErrorMessage(error, '加载文件失败'));
     } finally {
       setLoading(false);
     }

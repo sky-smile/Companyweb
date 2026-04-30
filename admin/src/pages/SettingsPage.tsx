@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { authStore } from '../stores/auth-store';
 import { adminUserService } from '../services/admin-user-service';
 import { useMessage } from '../hooks/useMessage';
+import { getErrorMessage } from '../lib/error-utils';
 
 interface ChangePasswordPayload {
   oldPassword: string;
@@ -30,9 +31,8 @@ export function SettingsPage() {
       setTimeout(() => {
         window.location.href = '/login';
       }, 1500);
-    } catch (error: any) {
-      message.error(error.response?.data?.message || '修改密码失败，请重试');
-      console.error('Change password error:', error);
+    } catch (error) {
+      message.error(getErrorMessage(error, '修改密码失败，请重试'));
     } finally {
       setLoading(false);
     }

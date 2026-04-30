@@ -33,6 +33,7 @@ import {
   MinusOutlined,
 } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
+import { getErrorMessage } from '../../lib/error-utils';
 
 // ─── Props 接口（与旧 RichTextEditor 完全一致） ─────────────────────────
 
@@ -209,9 +210,8 @@ export function RichTextEditor({
         const result = await uploadService.uploadImage(file, folder);
         editor.chain().focus().setImage({ src: result.publicUrl, alt: file.name }).run();
         message.success('图片上传成功');
-      } catch (error: any) {
-        console.error('[TiptapEditor] Image upload error:', error);
-        message.error(error?.message || '图片上传失败');
+      } catch (error) {
+        message.error(getErrorMessage(error, '图片上传失败'));
       }
     },
     [editor, disabled, folder],
@@ -256,9 +256,8 @@ export function RichTextEditor({
           )
           .run();
         message.success(`附件 "${fileName}" 已插入`);
-      } catch (error: any) {
-        console.error('[TiptapEditor] Attachment upload error:', error);
-        message.error(error?.message || '附件上传失败');
+      } catch (error) {
+        message.error(getErrorMessage(error, '附件上传失败'));
       } finally {
         uploadingFileRef.current = false;
       }

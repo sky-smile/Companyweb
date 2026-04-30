@@ -5,6 +5,7 @@ import { EnhancedUploadField, MediaPicker, StatusSwitch } from '../components/co
 import { siteContentService } from '../services/site-content-service';
 import { BannerItem, CreateBannerPayload, UpdateBannerPayload } from '../types/site-content';
 import { useMessage } from '../hooks/useMessage';
+import { getErrorMessage, isFormValidationError } from '../lib/error-utils';
 
 export function BannersPage() {
   const [bannerForm] = Form.useForm<BannerItem>();
@@ -81,11 +82,11 @@ export function BannersPage() {
       setBannerModalOpen(false);
       bannerForm.resetFields();
       void loadBanners();
-    } catch (error: any) {
-      if (error.errorFields) {
+    } catch (error) {
+      if (isFormValidationError(error)) {
         message.error('请检查表单填写是否正确');
       } else {
-        message.error(error.message || '操作失败');
+        message.error(getErrorMessage(error, '操作失败'));
       }
     }
   }

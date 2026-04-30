@@ -223,7 +223,7 @@ export class UploadService {
     });
 
     const savedMediaFile = await this.mediaFileRepository.findOne({
-      where: { id: insertResult.generatedMaps[0] as any },
+      where: { id: insertResult.identifiers[0].id },
     }) as MediaFileEntity;
 
     return {

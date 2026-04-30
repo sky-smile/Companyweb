@@ -6,6 +6,7 @@ import { authService } from '../services/auth-service';
 import { authStore } from '../stores/auth-store';
 import { LoginPayload } from '../types/auth';
 import { useMessage } from '../hooks/useMessage';
+import { getErrorMessage } from '../lib/error-utils';
 
 const { Title, Text, Link } = Typography;
 
@@ -46,8 +47,8 @@ export function LoginPage() {
       authStore.setSession(result);
       message.success(`欢迎回来，${result.profile.nickname || result.profile.username}`);
       navigate('/');
-    } catch (error: any) {
-      message.error(error.message || '登录失败，请检查用户名和密码');
+    } catch (error) {
+      message.error(getErrorMessage(error, '登录失败，请检查用户名和密码'));
     } finally {
       setLoading(false);
     }

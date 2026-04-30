@@ -35,6 +35,7 @@ import type { UploadFile } from 'antd';
 import { uploadService } from '../services/upload-service';
 import { FolderSelector } from '../components/common/FolderSelector';
 import { useMessage } from '../hooks/useMessage';
+import { getErrorMessage } from '../lib/error-utils';
 
 const { Dragger } = Upload;
 
@@ -89,7 +90,7 @@ export function MediaCenterPage() {
     setLoading(true);
     try {
       const typeParam = filterType === 'all' ? undefined : filterType === 'image' ? 'image' : undefined;
-      const response: any = await uploadService.getFiles(page, limit, {
+      const response = await uploadService.getFiles(page, limit, {
         folder: filterFolder || undefined,
         type: typeParam,
         keyword: keyword || undefined,
@@ -97,8 +98,8 @@ export function MediaCenterPage() {
 
       setFiles(response.items || []);
       setTotal(response.total || 0);
-    } catch (error: any) {
-      message.error(error.message || '加载文件列表失败');
+    } catch (error) {
+      message.error(getErrorMessage(error, '加载文件列表失败'));
     } finally {
       setLoading(false);
     }
@@ -106,7 +107,7 @@ export function MediaCenterPage() {
 
   async function loadStatistics() {
     try {
-      const response: any = await uploadService.getStatistics();
+      const response = await uploadService.getStatistics();
       setStatistics(response.data || null);
     } catch (error) {
       console.error('Failed to load statistics:', error);
@@ -119,8 +120,8 @@ export function MediaCenterPage() {
       message.success('删除成功');
       loadFiles();
       loadStatistics();
-    } catch (error: any) {
-      message.error(error.message || '删除失败');
+    } catch (error) {
+      message.error(getErrorMessage(error, '删除失败'));
     }
   }
 
@@ -152,11 +153,11 @@ export function MediaCenterPage() {
   const uploadProps = {
     name: 'file',
     multiple: true,
-    customRequest: async ({ file, onSuccess, onError }: any) => {
+    customRequest: async ({ file, onSuccess, onError }: { file: unknown; onSuccess?: (body: unknown) => void; onError?: (err: unknown) => void }) => {
       setUploading(true);
       try {
         const isImage = (file as File).type.startsWith('image/');
-        const response: any = await (isImage
+        const response = await (isImage
           ? uploadService.uploadImage(file as File, uploadFolder)
           : uploadService.uploadFile(file as File, uploadFolder));
 
@@ -164,8 +165,8 @@ export function MediaCenterPage() {
         onSuccess?.(response);
         loadFiles();
         loadStatistics();
-      } catch (error: any) {
-        message.error(`${(file as File).name} 上传失败: ${error.message}`);
+      } catch (error) {
+        message.error(`${(file as File).name} 上传失败: ${getErrorMessage(error)}`);
         onError?.(error);
       } finally {
         setUploading(false);
@@ -231,7 +232,7 @@ export function MediaCenterPage() {
       title: '尺寸',
       key: 'dimensions',
       width: 120,
-      render: (_: any, record: MediaFile) => {
+      render: (_: unknown, record: MediaFile) => {
         if (record.width && record.height) {
           return `${record.width} × ${record.height}`;
         }
@@ -249,7 +250,7 @@ export function MediaCenterPage() {
       title: '操作',
       key: 'action',
       width: 200,
-      render: (_: any, record: MediaFile) => (
+      render: (_: unknown, record: MediaFile) => (
         <Space>
           <Button
             type="link"

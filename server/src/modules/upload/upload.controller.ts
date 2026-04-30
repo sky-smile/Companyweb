@@ -17,6 +17,7 @@ import type { Request } from 'express';
 import { Permissions } from '@/common/decorators/permissions.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
+import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { UploadQueryDto } from './dto/upload-query.dto';
 import { UploadService } from './upload.service';
 
@@ -40,7 +41,7 @@ export class UploadController {
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
     @Query() query: UploadQueryDto,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     const uploadedBy = req.user?.userId;
     if (!uploadedBy) {
@@ -68,7 +69,7 @@ export class UploadController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Query() query: UploadQueryDto,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     const uploadedBy = req.user?.userId;
     if (!uploadedBy) {

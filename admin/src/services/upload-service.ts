@@ -5,9 +5,6 @@ async function upload(endpoint: '/admin/upload/image' | '/admin/upload/file', fi
   const formData = new FormData();
 
   // 确保文件名正确编码，处理中文等特殊字符
-  // 使用 file.name 作为原始文件名，浏览器会自动进行 UTF-8 编码
-  console.log('[Upload] Original filename:', file.name);
-  console.log('[Upload] File name bytes:', new TextEncoder().encode(file.name));
   formData.append('file', file, file.name);
 
   return unwrapResponse<UploadedFileItem>(

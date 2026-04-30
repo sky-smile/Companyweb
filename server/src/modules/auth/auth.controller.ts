@@ -33,10 +33,11 @@ export class AuthController {
   @Post('refresh')
   async refresh(
     @Body() dto: RefreshTokenDto,
+    @Req() request: AuthenticatedRequest,
     @Res({ passthrough: true }) response: Response,
   ) {
     // Try body refreshToken first, then cookie
-    const token = dto.refreshToken || (response.req as any).cookies?.refresh_token;
+    const token = dto.refreshToken || request.cookies?.refresh_token;
     const result = await this.authService.refreshToken(token);
     this.setAuthCookies(response, result.accessToken, result.refreshToken);
     return result;

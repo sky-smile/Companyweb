@@ -6,6 +6,7 @@ import { Space, Button, Tooltip } from 'antd';
 import { App } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
+import { getErrorMessage } from '../../lib/error-utils';
 
 interface RichTextEditorProps {
   value?: string;
@@ -123,27 +124,22 @@ export function RichTextEditor({
           Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
         // 自定义响应解析 - wangEditor 要求使用 insertFn 插入图片
-        customInsert(res: any, insertFn: (url: string, alt: string, href: string) => void) {
-          console.log('[Editor] Upload response:', res);
+        customInsert(res: { code: number; data?: { url: string }; message?: string }, insertFn: (url: string, alt: string, href: string) => void) {
           // 后端返回 { code:0, data:{ url } }
           if (res.code === 0 && res.data?.url) {
             insertFn(res.data.url, '', res.data.url);
           } else {
-            console.error('[Editor] Upload failed:', res);
             message.error(res.message || '图片上传失败');
           }
         },
         // 错误处理
-        onError(file: File, err: any, res: any) {
-          console.error('[Editor] Image upload error - file:', file.name);
-          console.error('[Editor] Image upload error - err:', err);
-          console.error('[Editor] Image upload error - res:', res);
-          const msg = res?.message || err?.message || err?.toString() || '图片上传失败';
+        onError(file: File, err: Error, res: unknown) {
+          const msg = getErrorMessage(err) || getErrorMessage(res);
           message.error(`上传失败: ${msg}`);
         },
         // 成功回调（可选）
-        onSuccess(file: File, res: any) {
-          console.log('[Editor] Image upload success:', file.name, res);
+        onSuccess(_file: File, _res: unknown) {
+          // 上传成功，无需额外处理
         },
         // 超时设置
         timeout: 30 * 1000,
@@ -197,9 +193,8 @@ export function RichTextEditor({
           `<span>📎</span>${fileName}</a></p>`
         );
         message.success(`附件 "${fileName}" 已插入`);
-      } catch (error: any) {
-        console.error('Attachment upload error:', error);
-        message.error(error?.message || '附件上传失败');
+      } catch (error) {
+        message.error(getErrorMessage(error, '附件上传失败'));
       } finally {
         setUploadingFile(false);
       }

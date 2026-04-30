@@ -17,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
 import { useMessage } from '../../hooks/useMessage';
+import { getErrorMessage } from '../../lib/error-utils';
 
 const { Text } = Typography;
 
@@ -43,8 +44,8 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
   const loadFolders = useCallback(async () => {
     setLoading(true);
     try {
-      const response: any = await uploadService.getStatistics();
-      const folderList = response.data?.byFolder?.map((item: any) => item.folder) || [];
+      const response = await uploadService.getStatistics();
+      const folderList = response.data?.byFolder?.map((item: { folder: string }) => item.folder) || [];
       // 添加默认文件夹
       const defaultFolders = ['common', 'banners', 'news', 'products', 'announcements'];
       // 合并 API 数据和本地创建的文件夹
@@ -52,8 +53,8 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
         new Set([...defaultFolders, ...folderList, ...localFoldersRef.current])
       ).sort();
       setFolders(allFolders);
-    } catch (error: any) {
-      message.error('加载文件夹列表失败');
+    } catch (error) {
+      message.error(getErrorMessage(error, '加载文件夹列表失败'));
     } finally {
       setLoading(false);
     }
