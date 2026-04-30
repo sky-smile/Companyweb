@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
 import { sanitizeHtmlContent } from '@/common/utils/html-sanitizer';
+import { formatPaginatedResult } from '@/common/utils/paginate';
 import { CreateNewsCategoryDto } from './dto/create-news-category.dto';
 import { CreateNewsDto } from './dto/create-news.dto';
-import { NewsListQueryDto } from './dto/news-list-query.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { UpdateNewsCategoryDto } from './dto/update-news-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { NewsRepository } from './news.repository';
@@ -28,20 +29,10 @@ export class NewsService {
     return this.newsRepository.deleteCategory(id);
   }
 
-  async listNews(query: NewsListQueryDto) {
-    const page = Number(query.page ?? 1) || 1;
-    const pageSize = Number(query.pageSize ?? 10) || 10;
-
-    const { items, total } = await this.newsRepository.listNewsPaginated(
-      page,
-      pageSize,
-      query.keyword,
-    );
-
-    return {
-      list: items,
-      pagination: { page, pageSize, total },
-    };
+  async listNews(query: ListQueryDto) {
+    const { page, pageSize, keyword } = query;
+    const { items, total } = await this.newsRepository.listNewsPaginated(page, pageSize, keyword);
+    return formatPaginatedResult(items, total, page, pageSize);
   }
 
   getNewsDetail(id: string) {
@@ -62,20 +53,10 @@ export class NewsService {
     return this.newsRepository.deleteNews(id);
   }
 
-  async listPublicNews(query: NewsListQueryDto) {
-    const page = Number(query.page ?? 1) || 1;
-    const pageSize = Number(query.pageSize ?? 10) || 10;
-
-    const { items, total } = await this.newsRepository.listPublicNewsPaginated(
-      page,
-      pageSize,
-      query.keyword,
-    );
-
-    return {
-      list: items,
-      pagination: { page, pageSize, total },
-    };
+  async listPublicNews(query: ListQueryDto) {
+    const { page, pageSize, keyword } = query;
+    const { items, total } = await this.newsRepository.listPublicNewsPaginated(page, pageSize, keyword);
+    return formatPaginatedResult(items, total, page, pageSize);
   }
 
   getPublicNewsDetail(id: string) {

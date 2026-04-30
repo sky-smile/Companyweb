@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
 import { sanitizeHtmlContent } from '@/common/utils/html-sanitizer';
+import { formatPaginatedResult } from '@/common/utils/paginate';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ProductListQueryDto } from './dto/product-list-query.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from './product.repository';
@@ -28,21 +29,10 @@ export class ProductService {
     return this.productRepository.deleteCategory(id);
   }
 
-  async list(query: ProductListQueryDto, publicOnly = false) {
-    const page = Number(query.page ?? 1) || 1;
-    const pageSize = Number(query.pageSize ?? 10) || 10;
-
-    const { items, total } = await this.productRepository.listProductsPaginated(
-      page,
-      pageSize,
-      query.keyword,
-      publicOnly,
-    );
-
-    return {
-      list: items,
-      pagination: { page, pageSize, total },
-    };
+  async list(query: ListQueryDto, publicOnly = false) {
+    const { page, pageSize, keyword } = query;
+    const { items, total } = await this.productRepository.listProductsPaginated(page, pageSize, keyword, publicOnly);
+    return formatPaginatedResult(items, total, page, pageSize);
   }
 
   detail(id: string, publicOnly = false) {

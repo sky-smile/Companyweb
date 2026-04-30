@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { EnhancedUploadField, PublishStatus, RichTextEditor, StatusSwitch } from '../components/common';
+import { Button, Popconfirm, Space, Tag } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { StatusSwitch } from '../components/common';
+import { CrudPage } from '../components/CrudPage';
 import { announcementService } from '../services/announcement-service';
-import { AnnouncementItem, CreateAnnouncementPayload } from '../types/announcement';
+import { AnnouncementItem } from '../types/announcement';
 import { useMessage } from '../hooks/useMessage';
 
 export function AnnouncementsPage() {
@@ -17,12 +18,7 @@ export function AnnouncementsPage() {
 
   const columns = useMemo(
     () => [
-      {
-        title: '标题',
-        dataIndex: 'title',
-        key: 'title',
-        ellipsis: true,
-      },
+      { title: '标题', dataIndex: 'title', key: 'title', ellipsis: true },
       {
         title: '状态',
         dataIndex: 'status',
@@ -104,57 +100,24 @@ export function AnnouncementsPage() {
   }, []);
 
   return (
-    <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
-      <div>
-        <Typography.Title level={2} style={{ marginBottom: 8 }}>公告管理</Typography.Title>
-        <Typography.Text type="secondary">管理公司公告和通知，支持富文本编辑和置顶功能。</Typography.Text>
-      </div>
-
-      <Card>
-        <Space orientation="vertical" size={16} style={{ display: 'flex' }}>
-          <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-            <Space>
-              <Input
-                placeholder="搜索标题或摘要"
-                prefix={<SearchOutlined />}
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                style={{ width: 240 }}
-                allowClear
-              />
-              <Select
-                placeholder="筛选状态"
-                value={filterStatus}
-                onChange={(val) => setFilterStatus(val)}
-                style={{ width: 140 }}
-                allowClear
-                options={[
-                  { label: '已发布', value: 1 },
-                  { label: '草稿', value: 0 },
-                ]}
-              />
-            </Space>
-            <Space>
-              <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => navigate('/content/announcements/new')}
-              >
-                新增公告
-              </Button>
-            </Space>
-          </Space>
-
-          <Table
-            rowKey="id"
-            loading={loading}
-            columns={columns}
-            dataSource={filteredItems}
-            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
-          />
-        </Space>
-      </Card>
-    </Space>
+    <CrudPage
+      title="公告管理"
+      description="管理公司公告和通知，支持富文本编辑和置顶功能。"
+      columns={columns}
+      dataSource={filteredItems}
+      loading={loading}
+      search={{ placeholder: '搜索标题或摘要', value: searchText, onChange: setSearchText }}
+      filter={{
+        placeholder: '筛选状态',
+        value: filterStatus,
+        onChange: (val) => setFilterStatus(val as number | undefined),
+        options: [
+          { label: '已发布', value: 1 },
+          { label: '草稿', value: 0 },
+        ],
+      }}
+      onRefresh={() => void loadData()}
+      onCreate={{ label: '新增公告', onClick: () => navigate('/content/announcements/new') }}
+    />
   );
 }

@@ -16,7 +16,7 @@ import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ProductListQueryDto } from './dto/product-list-query.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
@@ -52,7 +52,7 @@ export class ProductController {
 
   @Get('products')
   @Permissions('product:view')
-  list(@Query() query: ProductListQueryDto) {
+  list(@Query() query: ListQueryDto) {
     return this.productService.list(query, false);
   }
 

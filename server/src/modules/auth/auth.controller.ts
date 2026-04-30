@@ -4,7 +4,7 @@ import { Throttle } from '@nestjs/throttler';
 import { type Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { ChangePasswordDto } from './dto/change-password.dto';
+import { ChangePasswordDto } from '@/common/dto/change-password.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';

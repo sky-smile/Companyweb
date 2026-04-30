@@ -14,11 +14,11 @@ import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { AdminUserService } from './admin-user.service';
-import { ChangeOwnPasswordDto } from './dto/change-own-password.dto';
-import { AdminUserListQueryDto } from './dto/admin-user-list-query.dto';
+import { ChangePasswordDto } from '@/common/dto/change-password.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
+import { UpdateStatusDto } from '@/common/dto/update-status.dto';
 import { CreateAdminUserDto } from './dto/create-admin-user.dto';
 import { ResetAdminUserPasswordDto } from './dto/reset-admin-user-password.dto';
-import { UpdateAdminUserStatusDto } from './dto/update-admin-user-status.dto';
 import { UpdateAdminUserDto } from './dto/update-admin-user.dto';
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -28,7 +28,7 @@ export class AdminUserController {
 
   @Get()
   @Permissions('admin-users:view')
-  list(@Query() query: AdminUserListQueryDto) {
+  list(@Query() query: ListQueryDto) {
     return this.adminUserService.list(query);
   }
 
@@ -48,7 +48,7 @@ export class AdminUserController {
   @Permissions('admin-users:status')
   updateStatus(
     @Param('id') id: string,
-    @Body() dto: UpdateAdminUserStatusDto,
+    @Body() dto: UpdateStatusDto,
     @Req() request: AuthenticatedRequest,
   ) {
     return this.adminUserService.updateStatus(id, dto, request.user);
@@ -68,7 +68,7 @@ export class AdminUserController {
   @Permissions('admin-users:change-password')
   changeOwnPassword(
     @Req() request: AuthenticatedRequest,
-    @Body() dto: ChangeOwnPasswordDto,
+    @Body() dto: ChangePasswordDto,
   ) {
     return this.adminUserService.updateOwnPassword(request.user.userId, dto);
   }

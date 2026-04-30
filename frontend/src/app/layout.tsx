@@ -1,16 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import dynamic from 'next/dynamic';
 import './globals.css';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { OrganizationJsonLd } from '@/components/JsonLd';
 import { publicService } from '@/services/public-service';
-
-const BackToTop = dynamic(() => import('@/components/BackToTop').then((mod) => ({ default: mod.BackToTop })), {
-  ssr: false,
-});
+import { BackToTop } from '@/components/BackToTop';
 
 // 加载 Inter 字体
 const inter = Inter({
@@ -65,7 +61,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         {/* Organization JSON-LD */}
         <OrganizationJsonLd
           name={siteName || 'Sky Smile'}
-          url="http://127.0.0.1:3001"
+          url={siteUrl}
           description="企业官网、产品展示、新闻公告与联系方式统一对外展示平台。"
         />
       </body>

@@ -33,8 +33,8 @@ cp .env.example .env
 编辑 `.env` 文件：
 
 ```env
-NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:3000/api
-NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3001
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:4000/api
+NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4001
 ```
 
 ### 启动开发服务器
@@ -43,7 +43,7 @@ NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3001
 pnpm run dev
 ```
 
-访问：http://localhost:3001
+访问：http://localhost:4001
 
 ### 构建生产版本
 

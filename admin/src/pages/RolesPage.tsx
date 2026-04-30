@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Checkbox, Form, Input, Modal, Popconfirm, Select, Space, Table, Tag, Typography } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, TeamOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Form, Input, Modal, Popconfirm, Space, Tag, Typography } from 'antd';
+import { DeleteOutlined, EditOutlined, TeamOutlined } from '@ant-design/icons';
 import { StatusSwitch } from '../components/common';
+import { CrudPage } from '../components/CrudPage';
 import { roleService } from '../services/role-service';
 import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
 import { PERMISSION_GROUPS, getPermissionName } from '../config/permissions';
@@ -185,53 +186,26 @@ export function RolesPage() {
   }, []);
 
   return (
-    <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
-      <div>
-        <Typography.Title level={2} style={{ marginBottom: 8 }}>角色管理</Typography.Title>
-        <Typography.Text type="secondary">管理角色和权限分配，支持按组选择权限。</Typography.Text>
-      </div>
-
-      <Card>
-        <Space orientation="vertical" size={16} style={{ display: 'flex' }}>
-          <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-            <Space>
-              <Input
-                placeholder="搜索角色名称、编码或描述"
-                prefix={<SearchOutlined />}
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                style={{ width: 280 }}
-                allowClear
-              />
-              <Select
-                placeholder="筛选状态"
-                value={filterStatus}
-                onChange={(val) => setFilterStatus(val)}
-                style={{ width: 140 }}
-                allowClear
-                options={[
-                  { label: '已启用', value: 1 },
-                  { label: '已禁用', value: 0 },
-                ]}
-              />
-            </Space>
-            <Space>
-              <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleOpenCreate}>
-                新增角色
-              </Button>
-            </Space>
-          </Space>
-
-          <Table
-            rowKey="id"
-            loading={loading}
-            columns={columns}
-            dataSource={filteredRoles}
-            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 个角色` }}
-          />
-        </Space>
-      </Card>
+    <>
+      <CrudPage
+        title="角色管理"
+        description="管理角色和权限分配，支持按组选择权限。"
+        columns={columns}
+        dataSource={filteredRoles}
+        loading={loading}
+        search={{ placeholder: '搜索角色名称、编码或描述', value: searchText, onChange: setSearchText }}
+        filter={{
+          placeholder: '筛选状态',
+          value: filterStatus,
+          onChange: (val) => setFilterStatus(val as number | undefined),
+          options: [
+            { label: '已启用', value: 1 },
+            { label: '已禁用', value: 0 },
+          ],
+        }}
+        onRefresh={() => void loadData()}
+        onCreate={{ label: '新增角色', onClick: handleOpenCreate }}
+      />
 
       <Modal
         title={editingRole ? '编辑角色' : '新增角色'}
@@ -334,6 +308,6 @@ export function RolesPage() {
           </Button>
         </Form>
       </Modal>
-    </Space>
+    </>
   );
 }

@@ -34,6 +34,7 @@ import {
 } from '@ant-design/icons';
 import { uploadService } from '../../services/upload-service';
 import { getErrorMessage } from '../../lib/error-utils';
+import { sanitizeHtml } from '../../lib/html-utils';
 
 // ─── Props 接口（与旧 RichTextEditor 完全一致） ─────────────────────────
 
@@ -44,30 +45,6 @@ interface RichTextEditorProps {
   placeholder?: string;
   disabled?: boolean;
   folder?: string;
-}
-
-// ─── sanitizeHtml（从旧组件保留） ──────────────────────────────────────
-
-function sanitizeHtml(html: string): string {
-  if (!html) return '';
-
-  let result = html;
-
-  result = result.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  result = result.replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '');
-  result = result.replace(/href\s*=\s*["']javascript:[^"']*["']/gi, 'href="#"');
-  result = result.replace(
-    /\s+style\s*=\s*"([^"]*(?:color|font-family|font-size|background-color|letter-spacing)[^"]*)"/gi,
-    '',
-  );
-  result = result.replace(/<font[^>]*>/gi, '');
-  result = result.replace(/<\/font>/gi, '');
-  result = result.replace(/<span[^>]*>(\s*)<\/span>/gi, '$1');
-  result = result.replace(/<(p|div|h[1-6])[^>]*>\s*<\/\1>/gi, '');
-  result = result.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
-  result = result.replace(/(<img(?![^>]*?\s+alt=)[^>]*)>/gi, '$1 alt="">');
-
-  return result.trim();
 }
 
 // ─── 工具栏按钮样式 ────────────────────────────────────────────────────

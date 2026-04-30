@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
+import { buildMetadata, pickDescription } from '@/lib/seo';
 import { RichContent } from '@/components/RichContent';
 import styles from '@/app/list.module.css';
 
@@ -10,12 +11,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   try {
     const item = await publicService.getAnnouncementDetail(id);
-    return {
+    return buildMetadata({
       title: item.title,
-      description: item.summary || undefined,
-    };
+      description: pickDescription(item.summary, item.content),
+      path: `/announcements/${id}`,
+    });
   } catch {
-    return { title: '公告详情' };
+    return buildMetadata({ title: '公告详情', path: '/announcements' });
   }
 }
 

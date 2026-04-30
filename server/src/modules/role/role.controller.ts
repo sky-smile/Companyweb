@@ -3,7 +3,7 @@ import { Permissions } from '@/common/decorators/permissions.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleStatusDto } from './dto/update-role-status.dto';
+import { UpdateStatusDto } from '@/common/dto/update-status.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleService } from './role.service';
 
@@ -38,7 +38,7 @@ export class RoleController {
 
   @Patch(':id/status')
   @Permissions('roles:status')
-  updateStatus(@Param('id') id: string, @Body() dto: UpdateRoleStatusDto) {
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
     return this.roleService.updateStatus(id, dto);
   }
 }

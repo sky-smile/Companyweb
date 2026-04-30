@@ -58,6 +58,12 @@ export const uploadService = {
 
   async getStatistics() {
     const response = await http.get('/admin/upload/statistics');
-    return unwrapResponse(response);
+    return unwrapResponse<{
+      total: number;
+      images: number;
+      documents: number;
+      others: number;
+      byFolder: { folder: string; count: number }[];
+    }>(response);
   },
 };

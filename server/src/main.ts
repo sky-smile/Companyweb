@@ -21,18 +21,18 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix(globalPrefix);
   app.enableCors({
     origin: [
-      'http://localhost:3001',
-      'http://127.0.0.1:3001',
-      'http://localhost:3100',
-      'http://127.0.0.1:3100',
-      'http://localhost:3101',
-      'http://127.0.0.1:3101',
+      'http://localhost:4001',
+      'http://127.0.0.1:4001',
+      'http://localhost:4100',
+      'http://127.0.0.1:4100',
     ],
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, Accept',
   });
-  app.use(helmet.default());
+  app.use(helmet.default({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
   app.use(cookieParser());
   app.use('/uploads', express.static(uploadDir));
   app.useGlobalInterceptors(new ResponseInterceptor());

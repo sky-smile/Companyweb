@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { NewsListQueryDto } from './dto/news-list-query.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { NewsService } from './news.service';
 
 @Controller('public/news')
@@ -7,7 +7,7 @@ export class PublicNewsController {
   constructor(private readonly newsService: NewsService) {}
 
   @Get()
-  list(@Query() query: NewsListQueryDto) {
+  list(@Query() query: ListQueryDto) {
     return this.newsService.listPublicNews(query);
   }
 

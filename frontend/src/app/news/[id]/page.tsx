@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
+import { buildMetadata, pickDescription, siteUrl } from '@/lib/seo';
 import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
 import { NewsArticleJsonLd, BreadcrumbListJsonLd } from '@/components/JsonLd';
@@ -12,12 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   try {
     const item = await publicService.getNewsDetail(id);
-    return {
+    return buildMetadata({
       title: item.title,
-      description: item.summary || undefined,
-    };
+      description: pickDescription(item.summary, item.content),
+      path: `/news/${id}`,
+    });
   } catch {
-    return { title: '新闻详情' };
+    return buildMetadata({ title: '新闻详情', path: '/news' });
   }
 }
 
@@ -104,9 +106,9 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
         />
 
         <BreadcrumbListJsonLd items={[
-          { position: 1, name: '首页', item: 'http://localhost:3001/' },
-          { position: 2, name: '新闻中心', item: 'http://localhost:3001/news' },
-          { position: 3, name: item.title, item: `http://localhost:3001/news/${item.id}` },
+          { position: 1, name: '首页', item: `${siteUrl}/` },
+          { position: 2, name: '新闻中心', item: `${siteUrl}/news` },
+          { position: 3, name: item.title, item: `${siteUrl}/news/${item.id}` },
         ]} />
       </section>
     </>

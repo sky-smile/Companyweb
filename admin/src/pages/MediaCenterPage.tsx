@@ -33,7 +33,7 @@ import {
 } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import { uploadService } from '../services/upload-service';
-import { FolderSelector } from '../components/common/FolderSelector';
+import { FolderSelector } from '../components/common';
 import { useMessage } from '../hooks/useMessage';
 import { getErrorMessage } from '../lib/error-utils';
 

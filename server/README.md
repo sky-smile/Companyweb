@@ -34,7 +34,7 @@ cp .env.example .env
 编辑 `.env` 文件，填入数据库配置：
 
 ```env
-SERVER_PORT=3000
+SERVER_PORT=4000
 SERVER_GLOBAL_PREFIX=api
 
 DB_TYPE=mariadb
@@ -50,7 +50,7 @@ JWT_ACCESS_EXPIRES_IN=2h
 JWT_REFRESH_EXPIRES_IN=7d
 
 UPLOAD_DIR=uploads
-UPLOAD_BASE_URL=http://localhost:3000/uploads
+UPLOAD_BASE_URL=http://localhost:4000/uploads
 ```
 
 ### 数据库初始化
@@ -83,7 +83,7 @@ pnpm run build
 pnpm run start:prod
 ```
 
-服务启动后访问：http://localhost:3000/api
+服务启动后访问：http://localhost:4000/api
 
 ## 数据库管理
 

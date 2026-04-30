@@ -14,7 +14,7 @@ import { Permissions } from '@/common/decorators/permissions.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
-import { AnnouncementListQueryDto } from './dto/announcement-list-query.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
 import { AnnouncementService } from './announcement.service';
@@ -26,7 +26,7 @@ export class AnnouncementController {
 
   @Get()
   @Permissions('announcement:view')
-  list(@Query() query: AnnouncementListQueryDto) {
+  list(@Query() query: ListQueryDto) {
     return this.announcementService.list(query);
   }
 

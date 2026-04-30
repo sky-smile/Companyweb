@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { formatPublicDate, parseProductParameters, parseStringArray } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
+import { buildMetadata, pickDescription } from '@/lib/seo';
 import { LazyImage } from '@/components/LazyImage';
 import { RichContent } from '@/components/RichContent';
 import { ProductJsonLd } from '@/components/JsonLd';
@@ -12,12 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   try {
     const item = await publicService.getProductDetail(id);
-    return {
+    return buildMetadata({
       title: item.name,
-      description: item.summary || undefined,
-    };
+      description: pickDescription(item.summary, item.content),
+      path: `/products/${id}`,
+    });
   } catch {
-    return { title: '产品详情' };
+    return buildMetadata({ title: '产品详情', path: '/products' });
   }
 }
 

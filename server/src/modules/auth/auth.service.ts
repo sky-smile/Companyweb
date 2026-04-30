@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AdminUserRepository } from '@/modules/admin-user/admin-user.repository';
 import { verifyPassword } from '@/common/utils/password.util';
 import { AuthRepository } from './auth.repository';
-import { ChangePasswordDto } from './dto/change-password.dto';
+import { ChangePasswordDto } from '@/common/dto/change-password.dto';
 import { AuthenticatedAdmin } from './interfaces/authenticated-admin.interface';
 import { AuthProfile } from './interfaces/auth-profile.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';

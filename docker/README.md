@@ -62,11 +62,8 @@ docker compose ps
 # 进入 server 容器
 docker compose exec server sh
 
-# 运行迁移
-npx prisma migrate deploy
-
-# 运行种子（可选）
-npx prisma db seed
+# 运行迁移和种子
+pnpm run db:migrate-and-seed
 
 # 退出
 exit
@@ -79,8 +76,8 @@ exit
 | 官网 | http://localhost | 通过 Nginx 访问 |
 | 管理后台 | http://localhost/admin | 通过 Nginx 访问 |
 | API | http://localhost/api | 通过 Nginx 访问 |
-| 直接访问 admin | http://localhost:3100 | 仅开发模式 |
-| 直接访问 frontend | http://localhost:3001 | 仅开发模式 |
+| 直接访问 admin | http://localhost:4100 | 仅开发模式 |
+| 直接访问 frontend | http://localhost:4001 | 仅开发模式 |
 
 ## 常用命令
 

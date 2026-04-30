@@ -3,12 +3,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { AuthenticatedAdminUser } from '@/common/types/authenticated-request.type';
+import { formatPaginatedResult } from '@/common/utils/paginate';
 import { AdminUserRepository } from './admin-user.repository';
-import { ChangeOwnPasswordDto } from './dto/change-own-password.dto';
-import { AdminUserListQueryDto } from './dto/admin-user-list-query.dto';
+import { ChangePasswordDto } from '@/common/dto/change-password.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
+import { UpdateStatusDto } from '@/common/dto/update-status.dto';
 import { CreateAdminUserDto } from './dto/create-admin-user.dto';
 import { ResetAdminUserPasswordDto } from './dto/reset-admin-user-password.dto';
-import { UpdateAdminUserStatusDto } from './dto/update-admin-user-status.dto';
 import { UpdateAdminUserDto } from './dto/update-admin-user.dto';
 import { AdminUserView } from './interfaces/admin-user-view.interface';
 
@@ -16,20 +17,10 @@ import { AdminUserView } from './interfaces/admin-user-view.interface';
 export class AdminUserService {
   constructor(private readonly adminUserRepository: AdminUserRepository) {}
 
-  async list(query: AdminUserListQueryDto) {
-    const page = Number(query.page ?? 1) || 1;
-    const pageSize = Number(query.pageSize ?? 10) || 10;
-
-    const { items, total } = await this.adminUserRepository.listPaginated(
-      page,
-      pageSize,
-      query.keyword,
-    );
-
-    return {
-      list: items,
-      pagination: { page, pageSize, total },
-    };
+  async list(query: ListQueryDto) {
+    const { page, pageSize, keyword } = query;
+    const { items, total } = await this.adminUserRepository.listPaginated(page, pageSize, keyword);
+    return formatPaginatedResult(items, total, page, pageSize);
   }
 
   create(dto: CreateAdminUserDto) {
@@ -42,7 +33,7 @@ export class AdminUserService {
 
   async updateStatus(
     id: string,
-    dto: UpdateAdminUserStatusDto,
+    dto: UpdateStatusDto,
     currentUser: AuthenticatedAdminUser,
   ) {
     const adminUser = await this.adminUserRepository.findById(id);
@@ -66,7 +57,7 @@ export class AdminUserService {
     };
   }
 
-  async updateOwnPassword(userId: string, dto: ChangeOwnPasswordDto) {
+  async updateOwnPassword(userId: string, dto: ChangePasswordDto) {
     if (dto.oldPassword === dto.newPassword) {
       throw new BadRequestException('New password must be different from old password');
     }

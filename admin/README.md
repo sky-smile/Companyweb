@@ -9,7 +9,7 @@
 - **UI 库**: Ant Design 6
 - **路由**: React Router v6
 - **HTTP 客户端**: Axios
-- **富文本**: wangEditor 5.x
+- **富文本**: Tiptap
 - **语言**: TypeScript
 
 ## 快速开始
@@ -35,7 +35,7 @@ cp .env.example .env
 编辑 `.env` 文件：
 
 ```env
-VITE_API_BASE_URL=http://127.0.0.1:3000/api
+VITE_API_BASE_URL=http://127.0.0.1:4000/api
 VITE_APP_TITLE=Company Web Admin
 ```
 
@@ -45,7 +45,7 @@ VITE_APP_TITLE=Company Web Admin
 pnpm run dev
 ```
 
-访问：http://localhost:3100
+访问：http://localhost:4100
 
 ### 构建生产版本
 
@@ -135,7 +135,7 @@ src/
 | 组件 | 说明 |
 |------|------|
 | `EnhancedUploadField` | 图片预览、拖拽上传、文件大小验证、删除 |
-| `RichTextEditor` | wangEditor 5.x 富文本编辑器 |
+| `RichTextEditor` | Tiptap 富文本编辑器 |
 | `StatusSwitch` | 状态切换开关（启用/禁用） |
 | `PublishStatus` | 发布状态下拉选择（草稿/已发布） |
 | `SortInput` | 排序输入器 |

@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { CreateNewsDto } from './dto/create-news.dto';
-import { NewsListQueryDto } from './dto/news-list-query.dto';
+import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { NewsService } from './news.service';
 
@@ -26,7 +26,7 @@ export class NewsController {
 
   @Get()
   @Permissions('news:view')
-  list(@Query() query: NewsListQueryDto) {
+  list(@Query() query: ListQueryDto) {
     return this.newsService.listNews(query);
   }
 
