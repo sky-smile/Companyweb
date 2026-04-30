@@ -194,18 +194,12 @@ export class UploadService {
     folder: string,
   ): Promise<UploadedFileView & { mediaFile: MediaFileEntity }> {
     const uploadDir = this.configService.get<string>('upload.dir', 'uploads');
-    const baseUrl = this.configService.get<string>('upload.baseUrl', 'http://localhost:3000/uploads');
+    const baseUrl = this.configService.get<string>('upload.baseUrl', 'http://localhost:4000/uploads');
     const normalizedFolder = this.normalizeFolder(folder);
     const targetDir = path.join(uploadDir, normalizedFolder);
 
-    // 调试：打印接收到的文件名和编码信息
-    console.log('[Upload] Received filename (Multer):', file.originalname);
-    console.log('[Upload] Filename bytes:', Buffer.from(file.originalname).toString('hex'));
-
     // 修复中文文件名的编码问题
     const originalName = fixFilenameEncoding(file.originalname);
-    console.log('[Upload] Fixed filename:', originalName);
-    
     const extension = path.extname(originalName);
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${extension}`;
     const storagePath = path.join(targetDir, filename);
@@ -214,11 +208,6 @@ export class UploadService {
     fs.writeFileSync(storagePath, file.buffer);
 
     const publicUrl = `${baseUrl}/${normalizedFolder}/${filename}`;
-
-    // 如果是图片，尝试获取尺寸信息（不生成缩略图）
-    let width: number | null = null;
-    let height: number | null = null;
-    let thumbnailUrl: string | null = null;
 
     // 保存到数据库
     const insertResult = await this.mediaFileRepository.insert({
@@ -230,9 +219,6 @@ export class UploadService {
       size: file.size,
       extension: extension.replace('.', ''),
       folder: normalizedFolder,
-      ...(width !== null && { width }),
-      ...(height !== null && { height }),
-      ...(thumbnailUrl !== null && { thumbnailUrl }),
       uploadedBy,
     });
 

@@ -20,23 +20,6 @@ import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { UploadQueryDto } from './dto/upload-query.dto';
 import { UploadService } from './upload.service';
 
-/**
- * 从 Content-Type boundary 中提取原始文件名
- * 这是处理中文文件名的最可靠方法
- */
-function decodeFilenameFromRequest(req: Request): string | null {
-  // 方法 1: 从 Content-Disposition 头提取 UTF-8 文件名 (RFC 5987)
-  const contentType = req.headers['content-type'];
-  if (contentType && contentType.includes('multipart/form-data')) {
-    // 需要从原始 body 中解析，但 Express 已经解析过了
-    // 所以我们依赖 Multer 提供的信息
-  }
-
-  // 方法 2: 使用 Node.js Buffer 转换 Multer 的 originalname
-  // Multer 使用 busboy 解析文件名，可能会错误编码
-  return null;
-}
-
 const uploadOptions = {
   storage: memoryStorage(),
   limits: {
