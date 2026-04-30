@@ -77,6 +77,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     src={imageUrl}
                     alt={`${item.name} - 图片 ${index + 1}`}
                     height={320}
+                    priority={index === 0}
                     style={{
                       borderRadius: index === 0 ? '16px 0 0 0' : index === images.length - 1 ? '0 0 16px 0' : '0'
                     }}

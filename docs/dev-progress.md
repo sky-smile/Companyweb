@@ -48,7 +48,7 @@ cd frontend && pnpm run dev
 ```
 
 访问地址：
-- 官网前端: http://localhost:4001
+- 官网前端: http://localhost:3001
 - 后台管理: http://localhost:4100
 - 后端 API: http://localhost:4000/api
 

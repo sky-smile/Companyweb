@@ -77,7 +77,7 @@ exit
 | 管理后台 | http://localhost/admin | 通过 Nginx 访问 |
 | API | http://localhost/api | 通过 Nginx 访问 |
 | 直接访问 admin | http://localhost:4100 | 仅开发模式 |
-| 直接访问 frontend | http://localhost:4001 | 仅开发模式 |
+| 直接访问 frontend | http://localhost:3001 | 仅开发模式 |
 
 ## 常用命令
 

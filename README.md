@@ -15,7 +15,7 @@
 
 | 模块 | 技术栈 | 端口 | 说明 |
 |------|--------|------|------|
-| **官网前端** | Next.js 16 + React 19 + Tailwind CSS 4 | 4001 | 面向公众的品牌官网 |
+| **官网前端** | Next.js 16 + React 19 + Tailwind CSS 4 | 3001 | 面向公众的品牌官网 |
 | **后台管理** | React 19 + Vite + Ant Design 6 | 4100 | 内容管理系统后台 |
 | **后端 API** | NestJS 10 + TypeORM + MariaDB | 4000 | RESTful API 服务 |
 
@@ -104,7 +104,7 @@ cd frontend && pnpm run dev
 
 ### 访问地址
 
-- 🌐 **官网前端**: http://localhost:4001
+- 🌐 **官网前端**: http://localhost:3001
 - 📊 **后台管理**: http://localhost:4100
 - 🔌 **后端 API**: http://localhost:4000/api
 
@@ -194,7 +194,6 @@ scripts\stop-all.bat
 
 ### 📝 二期规划
 
-- [ ] 下载中心
 - [ ] 多语言支持 (中英文)
 - [ ] SEO 增强 (sitemap, robots.txt, 结构化数据)
 - [ ] 图片压缩与 CDN 集成

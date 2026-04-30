@@ -29,7 +29,7 @@ scripts\stop-all.bat         # 停止所有服务
 ```bash
 cd server && pnpm run start:dev    # 后端 API (端口 4000)
 cd admin && pnpm run dev           # 管理后台 (端口 4100)
-cd frontend && pnpm run dev        # 官网前端 (端口 4001)
+cd frontend && pnpm run dev        # 官网前端 (端口 3001)
 ```
 
 ### 数据库管理
@@ -78,7 +78,7 @@ cd frontend && pnpm run lint
 |--------|--------|------|----------|
 | **server** | NestJS 10 + TypeORM + MariaDB | 4000 | `/api` |
 | **admin** | React 19 + Vite + Ant Design 6 | 4100 | 调用 `/api/admin/*` |
-| **frontend** | Next.js 16 + Tailwind CSS 4 | 4001 | 调用 `/api/public/*` |
+| **frontend** | Next.js 16 + Tailwind CSS 4 | 3001 | 调用 `/api/public/*` |
 
 ### 数据流
 
@@ -329,7 +329,7 @@ VITE_APP_TITLE=Company Web Admin
 
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:4000/api
-NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4001
+NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3001
 ```
 
 ---

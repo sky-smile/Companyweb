@@ -204,7 +204,7 @@ server {
 
     # 官网前端 (Next.js)
     location / {
-        proxy_pass http://127.0.0.1:4001;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -253,7 +253,7 @@ server {
 
 | 路径 | 目标 | 说明 |
 |------|------|------|
-| `/` | 官网前端 (4001) | Next.js SSR 渲染 |
+| `/` | 官网前端 (3001) | Next.js SSR 渲染 |
 | `/admin` | 管理后台静态文件 | 构建后的静态资源 |
 | `/api` | 后端 API (4000) | NestJS 服务 |
 | `/uploads` | 上传文件目录 | 媒体资源 |
@@ -288,7 +288,7 @@ module.exports = {
       name: 'companyweb-frontend',
       cwd: '/path/to/your/app/frontend',
       script: 'node_modules/next/dist/bin/next',
-      args: 'start -p 4001',
+      args: 'start -p 3001',
       instances: 1,
       exec_mode: 'fork',
       env: {

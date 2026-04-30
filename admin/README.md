@@ -45,7 +45,7 @@ VITE_APP_TITLE=Company Web Admin
 pnpm run dev
 ```
 
-访问：http://localhost:4100
+访问：http://localhost:3000
 
 ### 构建生产版本
 

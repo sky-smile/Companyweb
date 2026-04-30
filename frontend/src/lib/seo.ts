@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const siteName = 'Sky Smile';
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://127.0.0.1:4001';
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://127.0.0.1:3001';
 const defaultDescription = '企业官网、产品展示、新闻公告与联系方式统一对外展示平台。';
 
 interface MetadataInput {

@@ -62,6 +62,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                 alt={item.title}
                 height={450}
                 borderRadius={0}
+                priority
               />
               <div className={styles.detailCoverOverlay} />
             </div>

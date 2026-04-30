@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { publicService } from '@/services/public-service';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://127.0.0.1:4001';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://127.0.0.1:3001';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [

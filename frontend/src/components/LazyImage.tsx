@@ -12,6 +12,7 @@ interface LazyImageProps {
   style?: React.CSSProperties;
   threshold?: number;
   borderRadius?: number;
+  priority?: boolean;
 }
 
 export function LazyImage({
@@ -23,6 +24,7 @@ export function LazyImage({
   style,
   threshold = 0.1,
   borderRadius = 20,
+  priority = false,
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
@@ -30,6 +32,11 @@ export function LazyImage({
   const imgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (priority) {
+      setIsInView(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -45,7 +52,7 @@ export function LazyImage({
     }
 
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, priority]);
 
   const handleLoad = () => setIsLoaded(true);
   const handleError = () => {
@@ -102,6 +109,8 @@ export function LazyImage({
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          loading={priority ? 'eager' : 'lazy'}
+          priority={priority}
           onLoad={handleLoad}
           onError={handleError}
           style={{
