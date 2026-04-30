@@ -27,9 +27,9 @@ scripts\stop-all.bat         # 停止所有服务
 ### 单独启动服务
 
 ```bash
-cd server && pnpm run start:dev    # 后端 API (端口 3000)
-cd admin && pnpm run dev           # 管理后台 (端口 3100)
-cd frontend && pnpm run dev        # 官网前端 (端口 3001)
+cd server && pnpm run start:dev    # 后端 API (端口 4000)
+cd admin && pnpm run dev           # 管理后台 (端口 4100)
+cd frontend && pnpm run dev        # 官网前端 (端口 4001)
 ```
 
 ### 数据库管理
@@ -76,9 +76,9 @@ cd frontend && pnpm run lint
 
 | 子项目 | 技术栈 | 端口 | API 前缀 |
 |--------|--------|------|----------|
-| **server** | NestJS 10 + TypeORM + MariaDB | 3000 | `/api` |
-| **admin** | React 19 + Vite + Ant Design 6 | 3100 | 调用 `/api/admin/*` |
-| **frontend** | Next.js 16 + Tailwind CSS 4 | 3001 | 调用 `/api/public/*` |
+| **server** | NestJS 10 + TypeORM + MariaDB | 4000 | `/api` |
+| **admin** | React 19 + Vite + Ant Design 6 | 4100 | 调用 `/api/admin/*` |
+| **frontend** | Next.js 16 + Tailwind CSS 4 | 4001 | 调用 `/api/public/*` |
 
 ### 数据流
 
@@ -299,7 +299,7 @@ app/
 ### Server (server/.env)
 
 ```env
-SERVER_PORT=3000
+SERVER_PORT=4000
 SERVER_GLOBAL_PREFIX=api
 
 DB_TYPE=mariadb
@@ -315,21 +315,21 @@ JWT_ACCESS_EXPIRES_IN=2h
 JWT_REFRESH_EXPIRES_IN=7d
 
 UPLOAD_DIR=uploads
-UPLOAD_BASE_URL=http://localhost:3000/uploads
+UPLOAD_BASE_URL=http://localhost:4000/uploads
 ```
 
 ### Admin (admin/.env)
 
 ```env
-VITE_API_BASE_URL=http://127.0.0.1:3000/api
+VITE_API_BASE_URL=http://127.0.0.1:4000/api
 VITE_APP_TITLE=Company Web Admin
 ```
 
 ### Frontend (frontend/.env)
 
 ```env
-NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:3000/api
-NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3001
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:4000/api
+NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4001
 ```
 
 ---

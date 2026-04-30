@@ -40,7 +40,7 @@ services:
       NODE_ENV: production
       SERVER_NODE_ENV: production
       TZ: Asia/Shanghai
-      SERVER_PORT: 3000
+      SERVER_PORT: 4000
       SERVER_GLOBAL_PREFIX: api
       DB_TYPE: mariadb
       DB_HOST: mariadb
@@ -53,7 +53,7 @@ services:
       JWT_ACCESS_EXPIRES_IN: 2h
       JWT_REFRESH_EXPIRES_IN: 7d
       UPLOAD_DIR: uploads
-      UPLOAD_BASE_URL: http://localhost:3000/uploads
+      UPLOAD_BASE_URL: http://localhost:4000/uploads
     volumes:
       - server_uploads:/app/uploads
     networks:
@@ -62,7 +62,7 @@ services:
       mariadb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -78,7 +78,7 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      VITE_API_BASE_URL: http://localhost:3000/api
+      VITE_API_BASE_URL: http://localhost:4000/api
       VITE_APP_TITLE: Company Web Admin
     networks:
       - companyweb
@@ -97,8 +97,8 @@ services:
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:3000/api
-      NEXT_PUBLIC_SITE_URL: http://localhost:3001
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:4000/api
+      NEXT_PUBLIC_SITE_URL: http://localhost:4001
     networks:
       - companyweb
     depends_on:

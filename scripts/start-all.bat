@@ -18,15 +18,15 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo.
-echo [2/4] Starting Backend Server (port 3000)...
+echo [2/4] Starting Backend Server (port 4000)...
 start "CompanyWeb Server" cmd /k "cd server && pnpm run start:dev"
 timeout /t 5 /nobreak >nul
 
-echo [3/4] Starting Admin Console (port 3100)...
+echo [3/4] Starting Admin Console (port 4100)...
 start "CompanyWeb Admin" cmd /k "cd admin && pnpm run dev"
 timeout /t 2 /nobreak >nul
 
-echo [4/4] Starting Frontend Website (port 3001)...
+echo [4/4] Starting Frontend Website (port 4001)...
 start "CompanyWeb Frontend" cmd /k "cd frontend && pnpm run dev"
 timeout /t 3 /nobreak >nul
 
@@ -36,9 +36,9 @@ echo [OK] All services started!
 echo ========================================
 echo.
 echo URLs:
-echo   Frontend:    http://localhost:3001
-echo   Admin:       http://localhost:3100
-echo   Backend API: http://localhost:3000/api
+echo   Frontend:    http://localhost:4001
+echo   Admin:       http://localhost:4100
+echo   Backend API: http://localhost:4000/api
 echo   Database:    127.0.0.1:3306
 echo.
 echo Default Admin Account:
