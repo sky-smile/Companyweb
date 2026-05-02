@@ -1,3 +1,5 @@
+'use client';
+
 interface RichContentProps {
   content: string;
   className?: string;
