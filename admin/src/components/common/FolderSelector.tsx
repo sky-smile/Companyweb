@@ -47,7 +47,7 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
       const response = await uploadService.getStatistics();
       const folderList = response.data?.byFolder?.map((item: { folder: string }) => item.folder) || [];
       // 添加默认文件夹
-      const defaultFolders = ['common', 'banners', 'news', 'products', 'announcements'];
+      const defaultFolders = ['common', 'banners', 'news', 'products', 'announcements', 'content-files', 'logos'];
       // 合并 API 数据和本地创建的文件夹
       const allFolders = Array.from(
         new Set([...defaultFolders, ...folderList, ...localFoldersRef.current])
@@ -251,7 +251,7 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
           {!searchKeyword && (
             <div style={{ padding: '8px 0', borderTop: '1px solid #f0f0f0' }}>
               <Text type="secondary" style={{ fontSize: 12 }}>
-                常用文件夹：common（通用）、banners（横幅）、news（新闻）、products（产品）、announcements（公告）
+                常用文件夹：common（通用）、banners（横幅）、news（新闻）、products（产品）、announcements（公告）、content-files（内容文件）、logos（标志）
               </Text>
             </div>
           )}
