@@ -265,7 +265,7 @@ export function RolesPage() {
                                 {allSelected ? '取消全选' : '全选'}
                               </Button>
                             </Space>
-                            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+                            <Space orientation="vertical" size={8} style={{ width: '100%' }}>
                               {groupPerms.map((perm) => (
                                 <Checkbox
                                   key={perm.id}

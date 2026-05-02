@@ -276,7 +276,7 @@ export function MediaCenterPage() {
   ];
 
   return (
-    <Space direction="vertical" size={20} style={{ display: 'flex', width: '100%' }}>
+    <Space orientation="vertical" size={20} style={{ display: 'flex', width: '100%' }}>
       {/* 页面标题 */}
       <div>
         <Typography.Title level={2} style={{ marginBottom: 8 }}>
@@ -334,7 +334,7 @@ export function MediaCenterPage() {
 
       {/* 上传区域 */}
       <Card title="上传文件">
-        <Space direction="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
+        <Space orientation="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
           <Space>
             <span>上传到目录：</span>
             <FolderSelector
@@ -364,7 +364,7 @@ export function MediaCenterPage() {
           </Button>
         }
       >
-        <Space direction="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
+        <Space orientation="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
           {/* 筛选和搜索 */}
           <Space wrap>
             <Segmented

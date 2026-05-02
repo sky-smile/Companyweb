@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Button,
   Input,
-  List,
   Modal,
   Space,
+  Spin,
   Tag,
   Tooltip,
   Typography,
@@ -152,7 +152,7 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
         cancelText="取消"
         width={600}
       >
-        <Space direction="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
+        <Space orientation="vertical" size={16} style={{ display: 'flex', width: '100%' }}>
           {/* 当前选择提示 */}
           <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: 4 }}>
             <Text type="secondary">当前选择：</Text>
@@ -199,53 +199,68 @@ export function FolderSelector({ value = 'common', onChange, disabled = false }:
           )}
 
           {/* 文件夹列表 */}
-          <List
-            loading={loading}
-            dataSource={filteredFolders}
-            locale={{ emptyText: searchKeyword ? '未找到匹配的文件夹' : '暂无文件夹' }}
-            style={{ maxHeight: 300, overflow: 'auto' }}
-            renderItem={(folder) => (
-              <List.Item
-                style={{
-                  cursor: 'pointer',
-                  padding: '12px 16px',
-                  background: currentFolder === folder ? '#e6f7ff' : 'transparent',
-                  borderRadius: 4,
-                  transition: 'all 0.2s',
-                }}
-                onClick={() => setCurrentFolder(folder)}
-              >
-                <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                  <Space>
-                    <FolderOutlined
-                      style={{
-                        color: currentFolder === folder ? '#1890ff' : '#8c8c8c',
-                        fontSize: 18,
-                      }}
-                    />
-                    <Tooltip title={folder}>
-                      <Text
-                        strong={currentFolder === folder}
-                        style={{
-                          color: currentFolder === folder ? '#1890ff' : 'inherit',
-                          maxWidth: 200,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          display: 'inline-block',
-                        }}
-                      >
-                        {folder}
-                      </Text>
-                    </Tooltip>
-                  </Space>
-                  {currentFolder === folder && (
-                    <Tag color="green" style={{ margin: 0 }}>已选择</Tag>
-                  )}
-                </Space>
-              </List.Item>
-            )}
-          />
+          <Spin spinning={loading}>
+            <div style={{ maxHeight: 300, overflow: 'auto' }}>
+              {filteredFolders.length === 0 ? (
+                <div style={{ padding: '24px 0', textAlign: 'center', color: '#999' }}>
+                  {searchKeyword ? '未找到匹配的文件夹' : '暂无文件夹'}
+                </div>
+              ) : (
+                filteredFolders.map((folder) => (
+                  <div
+                    key={folder}
+                    style={{
+                      cursor: 'pointer',
+                      padding: '12px 16px',
+                      background: currentFolder === folder ? '#e6f7ff' : 'transparent',
+                      borderRadius: 4,
+                      transition: 'all 0.2s',
+                    }}
+                    onClick={() => setCurrentFolder(folder)}
+                    onMouseEnter={(e) => {
+                      if (currentFolder !== folder) {
+                        e.currentTarget.style.background = '#f5f5f5';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (currentFolder !== folder) {
+                        e.currentTarget.style.background = 'transparent';
+                      }
+                    }}
+                  >
+                    <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                      <Space>
+                        <FolderOutlined
+                          style={{
+                            color: currentFolder === folder ? '#1890ff' : '#8c8c8c',
+                            fontSize: 18,
+                          }}
+                        />
+                        <Tooltip title={folder}>
+                          <Text
+                            strong={currentFolder === folder}
+                            style={{
+                              color: currentFolder === folder ? '#1890ff' : 'inherit',
+                              maxWidth: 200,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              display: 'inline-block',
+                            }}
+                          >
+                            {folder}
+                          </Text>
+                        </Tooltip>
+                      </Space>
+                      {currentFolder === folder && (
+                        <Tag color="green" style={{ margin: 0 }}>已选择</Tag>
+                      )}
+                    </Space>
+                  </div>
+                ))
+              )}
+            </div>
+          </Spin>
 
           {/* 常用文件夹快捷提示 */}
           {!searchKeyword && (

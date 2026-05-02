@@ -175,12 +175,12 @@ function ContactTab({ editingData, setEditingData, getSettingValue, setSettingVa
         </Button>
       }
     >
-      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+      <Space orientation="vertical" size={24} style={{ width: '100%' }}>
         {contactFields.map((field) => {
           const currentValue = getSettingValue(field.key);
 
           return (
-            <Space key={field.key} direction="vertical" size={8} style={{ width: '100%' }}>
+            <Space key={field.key} orientation="vertical" size={8} style={{ width: '100%' }}>
               <Space>
                 {field.icon}
                 <Typography.Text strong>{field.label}</Typography.Text>
@@ -219,9 +219,9 @@ function SiteInfoTab({ editingData, getSettingValue, setSettingValue, loading, s
         </Button>
       }
     >
-      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+      <Space orientation="vertical" size={24} style={{ width: '100%' }}>
         {/* Logo 设置 */}
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
           <Typography.Text strong>网站 Logo</Typography.Text>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
             显示在首页顶栏左侧，建议使用 SVG 或 PNG 格式，尺寸约 180x40px
@@ -241,7 +241,7 @@ function SiteInfoTab({ editingData, getSettingValue, setSettingValue, loading, s
         </Space>
 
         {/* 公司名称 */}
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
           <Typography.Text strong>网站名称</Typography.Text>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
             显示在 Logo 右侧，如不设置则仅显示 Logo
@@ -277,9 +277,9 @@ function CopyrightTab({ getSettingValue, setSettingValue, handleSave, saving }: 
         </Button>
       }
     >
-      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+      <Space orientation="vertical" size={24} style={{ width: '100%' }}>
         {/* 版权信息 */}
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
           <Typography.Text strong>网站版权信息</Typography.Text>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
             显示在页脚底部，支持自定义文本，如：© 2024 公司名称. All rights reserved.

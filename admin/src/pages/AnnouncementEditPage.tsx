@@ -67,7 +67,7 @@ export function AnnouncementEditPage() {
   }
 
   return (
-    <Space direction="vertical" size={24} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={24} style={{ width: '100%' }}>
       {/* 面包屑导航 */}
       <Breadcrumb
         items={[

@@ -72,7 +72,7 @@ export function NewsEditPage() {
   }
 
   return (
-    <Space direction="vertical" size={24} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={24} style={{ width: '100%' }}>
       {/* 面包屑导航 */}
       <Breadcrumb
         items={[
@@ -135,7 +135,7 @@ export function NewsEditPage() {
             {/* 右侧：设置区域 */}
             <Col xs={24} lg={8}>
               <Card title="发布设置" size="small" style={{ marginBottom: 16 }}>
-                <Space direction="vertical" size={16} style={{ width: '100%' }}>
+                <Space orientation="vertical" size={16} style={{ width: '100%' }}>
                   <Form.Item
                     label="状态"
                     name="status"
