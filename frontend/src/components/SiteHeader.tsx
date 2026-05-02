@@ -66,14 +66,16 @@ export function SiteHeader() {
       <div className="site-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 'var(--header-height, 76px)' }}>
         <Link href="/" className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {logo ? (
-            <Image
-              src={logo}
-              alt={name || 'Logo'}
-              width={160}
-              height={40}
-              priority
-            />
-          ) : null}
+              <div style={{ position: 'relative', width: 160, height: 40, flexShrink: 0 }}>
+                <Image
+                  src={logo}
+                  alt={name || 'Logo'}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  priority
+                />
+              </div>
+            ) : null}
           {name && (
             <span className="header-site-name">{name}</span>
           )}
