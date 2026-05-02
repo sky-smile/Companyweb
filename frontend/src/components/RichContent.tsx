@@ -35,6 +35,12 @@ function ensureImgAlt(html: string): string {
   return html.replace(/(<img(?![^>]*?\s+alt=)[^>]*)>/gi, '$1 alt="">');
 }
 
+function wrapTables(html: string): string {
+  return html.replace(/<table\b[\s\S]*?<\/table>/gi, (match) => {
+    return `<div style="overflow-x:auto;">${match}</div>`;
+  });
+}
+
 export function RichContent({ content, className, fallback = '内容待补充。', style }: RichContentProps) {
   const [sanitized, setSanitized] = useState<string | null>(null);
 
@@ -43,7 +49,7 @@ export function RichContent({ content, className, fallback = '内容待补充。
     import('dompurify').then((mod) => {
       const DOMPurify = mod.default;
       const clean = DOMPurify.sanitize(content, DOM_PURIFY_CONFIG) as string;
-      setSanitized(ensureImgAlt(clean));
+      setSanitized(wrapTables(ensureImgAlt(clean)));
     });
   }, [content]);
 
@@ -62,7 +68,7 @@ export function RichContent({ content, className, fallback = '内容待补充。
     return (
       <div
         className={`rich-content ${className || ''}`}
-        dangerouslySetInnerHTML={{ __html: sanitized ?? content }}
+        dangerouslySetInnerHTML={{ __html: sanitized ?? wrapTables(content) }}
         style={{ lineHeight: 1.9, ...style }}
       />
     );
