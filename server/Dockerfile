@@ -14,9 +14,6 @@ RUN corepack enable && pnpm install --frozen-lockfile
 # 复制源码
 COPY . .
 
-# 生成 Prisma 客户端（如有）
-RUN pnpm run prisma:generate || true
-
 # 构建
 RUN pnpm run build
 
@@ -35,7 +32,6 @@ RUN corepack enable && pnpm install --frozen-lockfile --prod
 
 # 复制构建产物
 COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
 
 # 创建上传目录
 RUN mkdir -p uploads && chown -R nestjs:nodejs uploads
