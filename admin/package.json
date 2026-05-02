@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.ts\" \"src/**/*.tsx\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\""
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
@@ -37,7 +39,15 @@
     "@types/node": "^22.15.29",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
     "@vitejs/plugin-react": "^5.0.2",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.0.2",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.5.3",
     "typescript": "^5.9.3",
     "vite": "^8.0.8"
   }
