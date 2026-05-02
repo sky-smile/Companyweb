@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0 --port 3001",
     "build": "next build",
-    "start": "next start --hostname 0.0.0.0 --port 3001"
+    "start": "next start --hostname 0.0.0.0 --port 3001",
+    "lint": "eslint \"src/**/*.ts\" \"src/**/*.tsx\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\""
   },
   "dependencies": {
     "dompurify": "^3.4.2",
@@ -19,6 +21,14 @@
     "@types/node": "^22.15.29",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.0.2",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.3"
   }
