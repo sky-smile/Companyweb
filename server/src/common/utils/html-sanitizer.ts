@@ -4,7 +4,7 @@
  * 使用 sanitize-html 库提供更安全的 XSS 防护
  */
 
-import sanitizeHtml from 'sanitize-html';
+import * as sanitizeHtml from 'sanitize-html';
 
 /** 允许保留的 HTML 标签（白名单） */
 const ALLOWED_TAGS = [
