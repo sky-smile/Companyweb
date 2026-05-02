@@ -68,11 +68,12 @@ export function SiteFooter({
               <Image
                 src={siteLogo}
                 alt={siteName || 'Company Logo'}
-                width={160}
+                width={48}
                 height={48}
                 className="footer-logo-img"
               />
             )}
+            {siteLogo && siteName && <span className="footer-logo-divider" />}
             {siteName && <span className="footer-logo-text">{siteName}</span>}
           </Link>
           <p className="footer-description">
@@ -163,44 +164,50 @@ export function SiteFooter({
         .footer-brand {
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 16px;
         }
 
         .footer-logo {
           text-decoration: none;
           display: inline-flex;
           align-items: center;
-          gap: 12px;
-          transition: transform 0.3s ease;
+          gap: 14px;
+          transition: opacity 0.25s ease;
         }
 
         .footer-logo:hover {
-          transform: translateY(-2px);
+          opacity: 0.8;
         }
 
         .footer-logo-img {
-          max-width: 160px;
-          max-height: 48px;
-          height: auto;
+          width: 48px;
+          height: 48px;
+          border-radius: 8px;
           object-fit: contain;
+          flex-shrink: 0;
+        }
+
+        .footer-logo-divider {
+          width: 1px;
+          height: 28px;
+          background: #cbd5e1;
+          flex-shrink: 0;
         }
 
         .footer-logo-text {
-          font-size: 26px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          font-size: 20px;
+          font-weight: 700;
+          color: #0f172a;
+          white-space: nowrap;
+          letter-spacing: 0.02em;
         }
 
         .footer-description {
           color: #64748b;
-          font-size: 15px;
-          line-height: 1.8;
+          font-size: 14px;
+          line-height: 1.7;
           margin: 0;
-          max-width: 320px;
+          max-width: 300px;
         }
 
         /* 链接区域 */
