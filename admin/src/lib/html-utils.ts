@@ -4,7 +4,8 @@
  * 使用 sanitize-html 库提供更安全的 XSS 防护
  */
 
-import sanitizeHtml from 'sanitize-html';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const sanitizeHtmlLib = require('sanitize-html') as typeof import('sanitize-html');
 
 /** 允许保留的 HTML 标签（白名单） */
 const ALLOWED_TAGS = [
@@ -36,7 +37,7 @@ const ALLOWED_STYLES: Record<string, Array<string | RegExp>> = {
 };
 
 /** sanitize-html 配置 */
-const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+const SANITIZE_OPTIONS: sanitizeHtmlLib.IOptions = {
   allowedTags: ALLOWED_TAGS,
   allowedAttributes: ALLOWED_ATTRS,
   allowedStyles: ALLOWED_STYLES,
@@ -64,7 +65,7 @@ export function sanitizeHtml(html: string): string {
   if (!html || typeof html !== 'string') return '';
 
   // 使用 sanitize-html 进行清理
-  let result = sanitizeHtml(html, SANITIZE_OPTIONS);
+  let result = sanitizeHtmlLib(html, SANITIZE_OPTIONS);
 
   // 清理多余空行
   result = result.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
