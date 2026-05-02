@@ -5,27 +5,49 @@ interface RichContentProps {
   style?: React.CSSProperties;
 }
 
+import DOMPurify from 'dompurify';
+
 /**
- * 安全过滤：移除 script 标签和危险事件属性，保留富媒体标签
+ * 安全过滤：使用 DOMPurify 清理 HTML，防止 XSS 攻击
+ * - 移除 script、iframe、事件处理器等危险内容
+ * - 保留富媒体标签和必要的属性
  */
 function sanitizeForDisplay(html: string): string {
   if (!html) return '';
-  
-  let result = html;
-  
-  // 移除 script 标签及其内容
-  result = result.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  
-  // 移除所有事件处理器 (onclick, onerror, onload...)
-  result = result.replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '');
-  
-  // 移除 javascript: 协议
-  result = result.replace(/href\s*=\s*["']javascript:[^"']*["']/gi, 'href="#"');
-  
+
+  // 配置 DOMPurify
+  const config = {
+    // 允许的标签
+    ALLOWED_TAGS: [
+      'p', 'br', 'hr',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'ul', 'ol', 'li',
+      'strong', 'b', 'em', 'i',
+      'a', 'img',
+      'blockquote', 'pre', 'code',
+      'table', 'thead', 'tbody', 'tr', 'th', 'td',
+      'div', 'span',
+    ],
+    // 允许的属性
+    ALLOWED_ATTR: [
+      'href', 'target', 'rel',
+      'src', 'alt', 'width', 'height',
+      'colspan', 'rowspan',
+      'class',
+    ],
+    // 允许的 URL 协议
+    ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    // 添加 rel="noopener noreferrer" 到所有链接
+    ADD_ATTR: ['target'],
+    // 强制链接在新窗口打开
+    FORCE_BODY: true,
+  };
+
+  // 清理 HTML
+  const result = DOMPurify.sanitize(html, config);
+
   // 确保 img 标签有 alt 属性（SEO 和可访问性）
-  result = result.replace(/(<img(?![^>]*?\s+alt=)[^>]*)>/gi, '$1 alt="">');
-  
-  return result;
+  return result.replace(/(<img(?![^>]*?\s+alt=)[^>]*)>/gi, '$1 alt="">');
 }
 
 export function RichContent({ content, className, fallback = '内容待补充。', style }: RichContentProps) {
