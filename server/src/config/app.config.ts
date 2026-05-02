@@ -27,4 +27,8 @@ export const appConfig = () => ({
     dir: process.env.UPLOAD_DIR ?? 'uploads',
     baseUrl: process.env.UPLOAD_BASE_URL ?? 'http://localhost:3000/uploads',
   },
+  frontend: {
+    url: process.env.FRONTEND_URL ?? '',
+    revalidationSecret: process.env.REVALIDATION_SECRET ?? '',
+  },
 });

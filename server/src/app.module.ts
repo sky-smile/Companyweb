@@ -11,6 +11,7 @@ import { NewsModule } from './modules/news/news.module';
 import { ProductModule } from './modules/product/product.module';
 import { RoleModule } from './modules/role/role.module';
 import { SiteContentModule } from './modules/site-content/site-content.module';
+import { CacheRevalidationModule } from './modules/cache-revalidation/cache-revalidation.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { appConfig } from './config/app.config';
 import { envValidationSchema } from './config/env.validation';
@@ -38,6 +39,7 @@ import { getTypeOrmConfig } from './database/typeorm.config';
     NewsModule,
     ProductModule,
     RoleModule,
+    CacheRevalidationModule,
     SiteContentModule,
     UploadModule,
   ],

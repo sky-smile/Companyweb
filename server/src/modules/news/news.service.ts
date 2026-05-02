@@ -8,10 +8,14 @@ import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { UpdateNewsCategoryDto } from './dto/update-news-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { NewsRepository } from './news.repository';
+import { CacheRevalidationService } from '../cache-revalidation/cache-revalidation.service';
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly newsRepository: NewsRepository) {}
+  constructor(
+    private readonly newsRepository: NewsRepository,
+    private readonly cacheRevalidation: CacheRevalidationService,
+  ) {}
 
   async listCategories() {
     return this.newsRepository.listCategories();
@@ -39,18 +43,24 @@ export class NewsService {
     return this.newsRepository.findNewsById(id);
   }
 
-  createNews(dto: CreateNewsDto, currentUser: AuthenticatedAdminUser) {
+  async createNews(dto: CreateNewsDto, currentUser: AuthenticatedAdminUser) {
     const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
-    return this.newsRepository.createNews(sanitizedDto, currentUser.userId);
+    const result = await this.newsRepository.createNews(sanitizedDto, currentUser.userId);
+    this.cacheRevalidation.revalidate(['news-list']).catch(() => {});
+    return result;
   }
 
-  updateNews(id: string, dto: UpdateNewsDto, currentUser: AuthenticatedAdminUser) {
+  async updateNews(id: string, dto: UpdateNewsDto, currentUser: AuthenticatedAdminUser) {
     const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
-    return this.newsRepository.updateNews(id, sanitizedDto, currentUser.userId);
+    const result = await this.newsRepository.updateNews(id, sanitizedDto, currentUser.userId);
+    this.cacheRevalidation.revalidate(['news-list', `news-${id}`]).catch(() => {});
+    return result;
   }
 
-  deleteNews(id: string) {
-    return this.newsRepository.deleteNews(id);
+  async deleteNews(id: string) {
+    const result = await this.newsRepository.deleteNews(id);
+    this.cacheRevalidation.revalidate(['news-list', `news-${id}`]).catch(() => {});
+    return result;
   }
 
   async listPublicNews(query: ListQueryDto) {

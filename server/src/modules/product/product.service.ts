@@ -8,10 +8,14 @@ import { ListQueryDto } from '@/common/dto/list-query.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from './product.repository';
+import { CacheRevalidationService } from '../cache-revalidation/cache-revalidation.service';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(
+    private readonly productRepository: ProductRepository,
+    private readonly cacheRevalidation: CacheRevalidationService,
+  ) {}
 
   listCategories() {
     return this.productRepository.listCategories();
@@ -39,17 +43,23 @@ export class ProductService {
     return this.productRepository.detail(id, publicOnly);
   }
 
-  create(dto: CreateProductDto, currentUser: AuthenticatedAdminUser) {
+  async create(dto: CreateProductDto, currentUser: AuthenticatedAdminUser) {
     const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
-    return this.productRepository.create(sanitizedDto, currentUser.userId);
+    const result = await this.productRepository.create(sanitizedDto, currentUser.userId);
+    this.cacheRevalidation.revalidate(['products-list']).catch(() => {});
+    return result;
   }
 
-  update(id: string, dto: UpdateProductDto, currentUser: AuthenticatedAdminUser) {
+  async update(id: string, dto: UpdateProductDto, currentUser: AuthenticatedAdminUser) {
     const sanitizedDto = { ...dto, content: dto.content ? sanitizeHtmlContent(dto.content) : dto.content };
-    return this.productRepository.update(id, sanitizedDto, currentUser.userId);
+    const result = await this.productRepository.update(id, sanitizedDto, currentUser.userId);
+    this.cacheRevalidation.revalidate(['products-list', `product-${id}`]).catch(() => {});
+    return result;
   }
 
-  delete(id: string) {
-    return this.productRepository.delete(id);
+  async delete(id: string) {
+    const result = await this.productRepository.delete(id);
+    this.cacheRevalidation.revalidate(['products-list', `product-${id}`]).catch(() => {});
+    return result;
   }
 }
