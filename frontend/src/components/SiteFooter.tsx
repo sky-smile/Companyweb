@@ -64,7 +64,7 @@ export function SiteFooter({
         {/* 品牌介绍区 */}
         <div className="footer-brand">
           <Link href="/" className="footer-logo">
-            {siteLogo ? (
+            {siteLogo && (
               <Image
                 src={siteLogo}
                 alt={siteName || 'Company Logo'}
@@ -72,9 +72,8 @@ export function SiteFooter({
                 height={48}
                 className="footer-logo-img"
               />
-            ) : (
-              <span className="footer-logo-text">{siteName || 'Sky Smile'}</span>
             )}
+            {siteName && <span className="footer-logo-text">{siteName}</span>}
           </Link>
           <p className="footer-description">
             专注于为企业提供高品质的产品与解决方案，致力于成为行业领先的合作伙伴。
@@ -171,6 +170,7 @@ export function SiteFooter({
           text-decoration: none;
           display: inline-flex;
           align-items: center;
+          gap: 12px;
           transition: transform 0.3s ease;
         }
 
