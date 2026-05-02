@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   }
 
   return (
-    <html lang="zh-CN" className={inter.variable}>
+    <html lang="zh-CN" className={inter.variable} data-scroll-behavior="smooth">
       <body style={{ margin: 0, padding: 0 }}>
         <SiteHeader />
         <main style={{ margin: 0, padding: 0 }}>{children}</main>
