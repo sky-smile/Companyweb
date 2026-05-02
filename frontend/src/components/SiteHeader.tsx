@@ -71,7 +71,6 @@ export function SiteHeader() {
               alt={name || 'Logo'}
               width={160}
               height={40}
-              style={{ maxHeight: 40, width: 'auto', height: 'auto', objectFit: 'contain' }}
               priority
             />
           ) : null}
