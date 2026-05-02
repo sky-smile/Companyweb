@@ -68,8 +68,8 @@ export function SiteFooter({
               <Image
                 src={siteLogo}
                 alt={siteName || 'Company Logo'}
-                width={48}
-                height={48}
+                width={72}
+                height={72}
                 className="footer-logo-img"
               />
             )}
@@ -180,9 +180,9 @@ export function SiteFooter({
         }
 
         .footer-logo-img {
-          width: 48px;
-          height: 48px;
-          border-radius: 8px;
+          width: 72px;
+          height: 72px;
+          border-radius: 12px;
           object-fit: contain;
           flex-shrink: 0;
         }
