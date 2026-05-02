@@ -488,7 +488,7 @@ img {
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: 20px auto;
   font-size: 0.95em;
   overflow-x: auto;
   display: block;
