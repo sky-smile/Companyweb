@@ -17,19 +17,11 @@ async function bootstrap(): Promise<void> {
   const globalPrefix = configService.get<string>('server.globalPrefix', 'api');
   const port = configService.get<number>('server.port', 3000);
   const uploadDir = configService.get<string>('upload.dir', 'uploads');
+  const corsOrigins = configService.get<string>('cors.origins', 'http://localhost:3000,http://localhost:3001,http://localhost:4001,http://localhost:4100');
 
   app.setGlobalPrefix(globalPrefix);
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:3001',
-      'http://127.0.0.1:3001',
-      'http://localhost:4001',
-      'http://127.0.0.1:4001',
-      'http://localhost:4100',
-      'http://127.0.0.1:4100',
-    ],
+    origin: corsOrigins.split(',').map((origin) => origin.trim()),
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, Accept',

@@ -4,6 +4,7 @@ export const envValidationSchema = Joi.object({
   SERVER_NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
   SERVER_PORT: Joi.number().port().default(3000),
   SERVER_GLOBAL_PREFIX: Joi.string().default('api'),
+  CORS_ORIGINS: Joi.string().default('http://localhost:3000,http://localhost:3001,http://localhost:4001,http://localhost:4100'),
   DB_TYPE: Joi.string().valid('mariadb', 'mysql').default('mariadb'),
   DB_HOST: Joi.string().hostname().required(),
   DB_PORT: Joi.number().port().default(3306),

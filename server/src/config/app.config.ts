@@ -4,6 +4,9 @@ export const appConfig = () => ({
     port: Number(process.env.SERVER_PORT ?? 3000),
     globalPrefix: process.env.SERVER_GLOBAL_PREFIX ?? 'api',
   },
+  cors: {
+    origins: process.env.CORS_ORIGINS ?? 'http://localhost:3000,http://localhost:3001,http://localhost:4001,http://localhost:4100',
+  },
   database: {
     type: process.env.DB_TYPE ?? 'mariadb',
     host: process.env.DB_HOST ?? '127.0.0.1',

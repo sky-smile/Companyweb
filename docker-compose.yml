@@ -48,6 +48,7 @@ services:
       TZ: Asia/Shanghai
       SERVER_PORT: 4000
       SERVER_GLOBAL_PREFIX: api
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001,http://localhost:4001,http://localhost:4100}
       DB_TYPE: mariadb
       DB_HOST: mariadb
       DB_PORT: 3306
