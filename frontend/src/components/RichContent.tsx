@@ -43,15 +43,28 @@ function wrapTables(html: string): string {
 
 export function RichContent({ content, className, fallback = '内容待补充。', style }: RichContentProps) {
   const [sanitized, setSanitized] = useState<string | null>(null);
+  const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
   useEffect(() => {
-    if (!content || !/<[a-z][\s\S]*>/i.test(content)) return;
+    if (!content || !isHtml) {
+      setSanitized(null);
+      return;
+    }
+
+    let active = true;
+    setSanitized(null);
+
     import('dompurify').then((mod) => {
+      if (!active) return;
       const DOMPurify = mod.default;
       const clean = DOMPurify.sanitize(content, DOM_PURIFY_CONFIG) as string;
       setSanitized(wrapTables(ensureImgAlt(clean)));
     });
-  }, [content]);
+
+    return () => {
+      active = false;
+    };
+  }, [content, isHtml]);
 
   if (!content || content.trim().length === 0) {
     return (
@@ -61,14 +74,11 @@ export function RichContent({ content, className, fallback = '内容待补充。
     );
   }
 
-  const isHtml = /<[a-z][\s\S]*>/i.test(content);
-
   if (isHtml) {
-    // SSR 阶段先渲染原始内容，客户端 hydration 后替换为清理后的内容
     return (
       <div
         className={`rich-content ${className || ''}`}
-        dangerouslySetInnerHTML={{ __html: sanitized ?? wrapTables(content) }}
+        dangerouslySetInnerHTML={sanitized === null ? undefined : { __html: sanitized }}
         style={{ lineHeight: 1.9, ...style }}
       />
     );
