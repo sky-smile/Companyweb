@@ -31,9 +31,6 @@ async function main(): Promise<void> {
   console.log('\n========================================');
   console.log('  ✅ 数据库重置完成！');
   console.log('========================================\n');
-  console.log('默认管理员账号:');
-  console.log('  用户名: admin');
-  console.log('  密码: Admin123\n');
 }
 
 main();

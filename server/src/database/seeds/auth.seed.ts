@@ -90,12 +90,31 @@ async function seed(): Promise<void> {
       );
     }
 
-    const passwordHash = await hashPassword('Admin123');
-
-    await queryRunner.manager.query(
-      'INSERT INTO admin_users (username, password_hash, nickname, status, is_super_admin) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), nickname = VALUES(nickname), status = VALUES(status), is_super_admin = VALUES(is_super_admin)',
-      ['admin', passwordHash, 'Super Admin', 1, 1],
+    const existingAdmin = await queryRunner.manager.query(
+      'SELECT id FROM admin_users WHERE username = ? LIMIT 1',
+      ['admin'],
     );
+
+    if ((existingAdmin as Array<{ id: string }>).length === 0) {
+      const adminPassword = process.env.ADMIN_SEED_PASSWORD;
+
+      if (adminPassword === undefined || adminPassword.length === 0) {
+        throw new Error(
+          'ADMIN_SEED_PASSWORD 环境变量未设置。创建初始管理员账号需要设置此变量。',
+        );
+      }
+
+      const passwordHash = await hashPassword(adminPassword);
+
+      await queryRunner.manager.query(
+        'INSERT INTO admin_users (username, password_hash, nickname, status, is_super_admin) VALUES (?, ?, ?, ?, ?)',
+        ['admin', passwordHash, 'Super Admin', 1, 1],
+      );
+
+      console.log('✅ 管理员账号已创建（用户名: admin）');
+    } else {
+      console.log('ℹ️  管理员账号已存在，跳过创建');
+    }
 
     const userRows = (await queryRunner.manager.query(
       'SELECT id FROM admin_users WHERE username = ? LIMIT 1',
