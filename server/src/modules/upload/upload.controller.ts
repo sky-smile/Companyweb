@@ -13,12 +13,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import type { Request } from 'express';
 import { Permissions } from '@/common/decorators/permissions.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { UploadQueryDto } from './dto/upload-query.dto';
+import { UploadListQueryDto } from './dto/upload-list-query.dto';
 import { UploadService } from './upload.service';
 
 const uploadOptions = {
@@ -93,17 +93,11 @@ export class UploadController {
 
   @Get('files')
   @Permissions('upload:image')
-  async getFiles(
-    @Query('page', new ParseIntPipe()) page: number = 1,
-    @Query('limit', new ParseIntPipe()) limit: number = 20,
-    @Query('folder') folder?: string,
-    @Query('type') type?: string,
-    @Query('keyword') keyword?: string,
-  ) {
-    const result = await this.uploadService.findAll(page, limit, {
-      folder,
-      mimeType: type,
-      keyword,
+  async getFiles(@Query() query: UploadListQueryDto) {
+    const result = await this.uploadService.findAll(query.page, query.limit, {
+      folder: query.folder,
+      mimeType: query.type,
+      keyword: query.keyword,
     });
 
     return {

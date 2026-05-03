@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { MediaFileEntity } from '@/database/entities/media-file.entity';
+import { validateImageFile, validateFileUpload } from '@/common/utils/file-validator';
 import { UploadedFileView } from './interfaces/uploaded-file-view.interface';
 
 /**
@@ -60,6 +61,7 @@ export class UploadService {
     folder?: string,
   ): Promise<UploadedFileView & { mediaFile: MediaFileEntity }> {
     this.ensureFilePresent(file);
+    this.ensureValidFile(file);
 
     const result = await this.persistFile(file, uploadedBy, folder ?? 'files');
     return result;
@@ -244,8 +246,17 @@ export class UploadService {
   }
 
   private ensureImageFile(file: Express.Multer.File): void {
-    if (!file.mimetype.startsWith('image/')) {
-      throw new BadRequestException('Only image files are allowed');
+    const error = validateImageFile(file.mimetype, file.buffer);
+    if (error !== null) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  private ensureValidFile(file: Express.Multer.File): void {
+    const extension = path.extname(file.originalname);
+    const error = validateFileUpload(file.mimetype, extension);
+    if (error !== null) {
+      throw new BadRequestException(error);
     }
   }
 

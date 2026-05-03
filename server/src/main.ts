@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import type { Request, Response, NextFunction } from 'express';
 import * as express from 'express';
 import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from '@/common/interceptors/response.interceptor';
@@ -30,7 +31,14 @@ async function bootstrap(): Promise<void> {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }));
   app.use(cookieParser());
-  app.use('/uploads', express.static(uploadDir));
+  app.use(
+    '/uploads',
+    (_req: Request, res: Response, next: NextFunction) => {
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      next();
+    },
+    express.static(uploadDir),
+  );
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalPipes(
