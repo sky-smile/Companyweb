@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   for (const tag of body.tags) {
     try {
-      revalidateTag(tag);
+      revalidateTag(tag, 'max');
       results.push({ tag });
     } catch (err) {
       results.push({ tag, error: err instanceof Error ? err.message : '未知错误' });
