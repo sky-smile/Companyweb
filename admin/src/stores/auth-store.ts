@@ -1,18 +1,10 @@
-import { AuthProfile, LoginResponse } from '../types/auth';
+import { AuthProfile } from '../types/auth';
 
-const TOKEN_KEY = 'company-web-admin-token';
-const REFRESH_TOKEN_KEY = 'company-web-admin-refresh-token';
 const PROFILE_KEY = 'company-web-admin-profile';
+const LEGACY_TOKEN_KEY = 'company-web-admin-token';
+const LEGACY_REFRESH_TOKEN_KEY = 'company-web-admin-refresh-token';
 
 export const authStore = {
-  getAccessToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
-  },
-
-  getRefreshToken(): string | null {
-    return localStorage.getItem(REFRESH_TOKEN_KEY);
-  },
-
   getProfile(): AuthProfile | null {
     const value = localStorage.getItem(PROFILE_KEY);
 
@@ -27,16 +19,10 @@ export const authStore = {
     }
   },
 
-  setSession(payload: LoginResponse) {
-    localStorage.setItem(TOKEN_KEY, payload.accessToken);
-    localStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken);
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(payload.profile));
-  },
-
   clearSession() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(PROFILE_KEY);
+    localStorage.removeItem(LEGACY_TOKEN_KEY);
+    localStorage.removeItem(LEGACY_REFRESH_TOKEN_KEY);
   },
 
   setProfile(profile: AuthProfile) {
@@ -44,7 +30,7 @@ export const authStore = {
   },
 
   isAuthenticated(): boolean {
-    return this.getAccessToken() !== null;
+    return this.getProfile() !== null;
   },
 
   hasPermission(permission?: string): boolean {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Result, Spin } from 'antd';
+import { useLocation } from 'react-router-dom';
 import { authService } from '../../services/auth-service';
 import { authStore } from '../../stores/auth-store';
 import { useMessage } from '../../hooks/useMessage';
@@ -11,12 +12,13 @@ interface AppBootstrapProps {
 export function AppBootstrap({ children }: AppBootstrapProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
   // 初始化全局 message API
   useMessage();
 
   useEffect(() => {
     async function bootstrap() {
-      if (!authStore.isAuthenticated()) {
+      if (location.pathname === '/login') {
         setLoading(false);
         return;
       }
@@ -34,7 +36,7 @@ export function AppBootstrap({ children }: AppBootstrapProps) {
     }
 
     void bootstrap();
-  }, []);
+  }, [location.pathname]);
 
   if (loading) {
     return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><Spin size="large" /></div>;

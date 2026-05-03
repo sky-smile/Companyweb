@@ -44,7 +44,7 @@ export function LoginPage() {
       }
 
       const result = await authService.login(loginData);
-      authStore.setSession(result);
+      authStore.setProfile(result.profile);
       message.success(`欢迎回来，${result.profile.nickname || result.profile.username}`);
       navigate('/');
     } catch (error) {
