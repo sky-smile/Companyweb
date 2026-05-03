@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
+import type { NewsItem } from '@/types/public';
 import { Pagination } from '@/components/Pagination';
 import { ListSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
@@ -12,7 +13,7 @@ import styles from '../list.module.css';
 const PAGE_SIZE = 10;
 
 export function NewsListClient() {
-  const [news, setNews] = useState<any[]>([]);
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -21,7 +22,7 @@ export function NewsListClient() {
     const fetchNews = async () => {
       setLoading(true);
       try {
-        const data = await publicService.getNewsList();
+        const data = await publicService.getNewsList({ page: currentPage, pageSize: PAGE_SIZE });
         setNews(data.list || []);
         setTotal(data.pagination?.total || 0);
       } catch (error) {
@@ -32,17 +33,12 @@ export function NewsListClient() {
     };
 
     fetchNews();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const paginatedNews = news.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
 
   return (
     <>
@@ -77,7 +73,7 @@ export function NewsListClient() {
         ) : (
           <>
             <div className={styles.listItems}>
-              {paginatedNews.map((item) => (
+              {news.map((item) => (
                 <Link key={item.id} href={`/news/${item.id}`} className={styles.item}>
                   <div className={styles.itemMeta}>
                     <span className={styles.categoryBadge}>{item.categoryName || '新闻'}</span>
@@ -100,7 +96,7 @@ export function NewsListClient() {
             <Pagination
               currentPage={currentPage}
               pageSize={PAGE_SIZE}
-              total={total || news.length}
+              total={total}
               onPageChange={handlePageChange}
             />
           </>

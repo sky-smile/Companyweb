@@ -9,6 +9,22 @@ import {
   SitePageContent,
 } from '@/types/public';
 
+interface ListQuery {
+  page?: number;
+  pageSize?: number;
+}
+
+function withListQuery(path: string, query: ListQuery = {}) {
+  const page = query.page ?? 1;
+  const pageSize = query.pageSize ?? 10;
+  const params = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+  });
+
+  return `${path}?${params.toString()}`;
+}
+
 export const publicService = {
   getHome() {
     return fetchApi<HomeResponse>('/public/home', {
@@ -31,10 +47,13 @@ export const publicService = {
     });
   },
 
-  getNewsList() {
-    return fetchApi<ListResult<NewsItem>>('/public/news', {
+  getNewsList(query?: ListQuery) {
+    const page = query?.page ?? 1;
+    const pageSize = query?.pageSize ?? 10;
+
+    return fetchApi<ListResult<NewsItem>>(withListQuery('/public/news', { page, pageSize }), {
       revalidate: CACHE_DURATION.SHORT,
-      tags: ['news-list'],
+      tags: ['news-list', `news-list-${page}-${pageSize}`],
     });
   },
 
@@ -45,10 +64,13 @@ export const publicService = {
     });
   },
 
-  getAnnouncements() {
-    return fetchApi<ListResult<AnnouncementItem>>('/public/announcements', {
+  getAnnouncements(query?: ListQuery) {
+    const page = query?.page ?? 1;
+    const pageSize = query?.pageSize ?? 10;
+
+    return fetchApi<ListResult<AnnouncementItem>>(withListQuery('/public/announcements', { page, pageSize }), {
       revalidate: CACHE_DURATION.SHORT,
-      tags: ['announcements-list'],
+      tags: ['announcements-list', `announcements-list-${page}-${pageSize}`],
     });
   },
 
@@ -59,10 +81,13 @@ export const publicService = {
     });
   },
 
-  getProducts() {
-    return fetchApi<ListResult<ProductItem>>('/public/products', {
+  getProducts(query?: ListQuery) {
+    const page = query?.page ?? 1;
+    const pageSize = query?.pageSize ?? 10;
+
+    return fetchApi<ListResult<ProductItem>>(withListQuery('/public/products', { page, pageSize }), {
       revalidate: CACHE_DURATION.MEDIUM,
-      tags: ['products-list'],
+      tags: ['products-list', `products-list-${page}-${pageSize}`],
     });
   },
 

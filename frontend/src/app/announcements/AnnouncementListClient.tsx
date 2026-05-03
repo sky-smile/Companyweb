@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { formatPublicDate } from '@/lib/public-content';
 import { publicService } from '@/services/public-service';
+import type { AnnouncementItem } from '@/types/public';
 import { Pagination } from '@/components/Pagination';
 import { ListSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
@@ -12,7 +13,7 @@ import styles from '../list.module.css';
 const PAGE_SIZE = 10;
 
 export function AnnouncementListClient() {
-  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -21,7 +22,7 @@ export function AnnouncementListClient() {
     const fetchAnnouncements = async () => {
       setLoading(true);
       try {
-        const data = await publicService.getAnnouncements();
+        const data = await publicService.getAnnouncements({ page: currentPage, pageSize: PAGE_SIZE });
         setAnnouncements(data.list || []);
         setTotal(data.pagination?.total || 0);
       } catch (error) {
@@ -32,17 +33,12 @@ export function AnnouncementListClient() {
     };
 
     fetchAnnouncements();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const paginatedAnnouncements = announcements.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
 
   return (
     <>
@@ -77,7 +73,7 @@ export function AnnouncementListClient() {
         ) : (
           <>
             <div className={styles.listItems}>
-              {paginatedAnnouncements.map((item) => (
+              {announcements.map((item) => (
                 <Link key={item.id} href={`/announcements/${item.id}`} className={styles.item}>
                   <div className={styles.itemMeta}>
                     {!!item.isTop && (
@@ -107,7 +103,7 @@ export function AnnouncementListClient() {
             <Pagination
               currentPage={currentPage}
               pageSize={PAGE_SIZE}
-              total={total || announcements.length}
+              total={total}
               onPageChange={handlePageChange}
             />
           </>

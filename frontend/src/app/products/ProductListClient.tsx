@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { publicService } from '@/services/public-service';
+import type { ProductItem } from '@/types/public';
 import { Pagination } from '@/components/Pagination';
 import { GridSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
@@ -11,7 +12,7 @@ import styles from '../list.module.css';
 const PAGE_SIZE = 9;
 
 export function ProductListClient() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -20,7 +21,7 @@ export function ProductListClient() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const data = await publicService.getProducts();
+        const data = await publicService.getProducts({ page: currentPage, pageSize: PAGE_SIZE });
         setProducts(data.list || []);
         setTotal(data.pagination?.total || 0);
       } catch (error) {
@@ -31,17 +32,12 @@ export function ProductListClient() {
     };
 
     fetchProducts();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const paginatedProducts = products.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
 
   return (
     <>
@@ -76,7 +72,7 @@ export function ProductListClient() {
         ) : (
           <>
             <div className={styles.listGrid}>
-              {paginatedProducts.map((item) => (
+              {products.map((item) => (
                 <Link key={item.id} href={`/products/${item.id}`} className={styles.card}>
                   <div className={styles.cardAccent} />
                   <div className={styles.cardContent}>
@@ -101,7 +97,7 @@ export function ProductListClient() {
             <Pagination
               currentPage={currentPage}
               pageSize={PAGE_SIZE}
-              total={total || products.length}
+              total={total}
               onPageChange={handlePageChange}
             />
           </>
