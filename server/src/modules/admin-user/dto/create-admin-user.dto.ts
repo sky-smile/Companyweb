@@ -1,4 +1,5 @@
 import { IsArray, IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsStrongPassword } from '@/common/validators/password.validator';
 
 export class CreateAdminUserDto {
   @IsString()
@@ -7,7 +8,7 @@ export class CreateAdminUserDto {
   username!: string;
 
   @IsString()
-  @MinLength(6)
+  @IsStrongPassword()
   @MaxLength(50)
   password!: string;
 

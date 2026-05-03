@@ -254,10 +254,10 @@ export function AdminUsersPage() {
             name="password"
             rules={[
               { required: true, message: '请输入密码' },
-              { min: 8, message: '密码至少 8 个字符' },
+              { min: 10, message: '密码至少 10 个字符，需大小写字母和数字' },
             ]}
           >
-            <Input.Password placeholder="至少 8 个字符" />
+            <Input.Password placeholder="至少 10 个字符，需大小写字母和数字" />
           </Form.Item>
           <Form.Item label="昵称" name="nickname" rules={[{ required: true, message: '请输入昵称' }]}>
             <Input placeholder="显示名称" />
@@ -328,10 +328,10 @@ export function AdminUsersPage() {
             name="newPassword"
             rules={[
               { required: true, message: '请输入新密码' },
-              { min: 8, message: '密码至少 8 个字符' },
+              { min: 10, message: '密码至少 10 个字符，需大小写字母和数字' },
             ]}
           >
-            <Input.Password prefix={<KeyOutlined />} placeholder="请输入新密码（至少 8 个字符）" />
+            <Input.Password prefix={<KeyOutlined />} placeholder="请输入新密码（至少 10 个字符，需大小写字母和数字）" />
           </Form.Item>
           <Form.Item
             label="确认新密码"

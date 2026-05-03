@@ -36,7 +36,7 @@ export class SiteContentService {
 
   async updateSiteSettings(dto: UpdateSiteSettingsDto, currentUser: AuthenticatedAdminUser) {
     const result = await this.siteContentRepository.updateSiteSettings(dto, currentUser.userId);
-    this.cacheRevalidation.revalidate(['home']).catch(() => {});
+    this.cacheRevalidation.revalidate(['home', 'contact']).catch(() => {});
     return result;
   }
 

@@ -47,12 +47,12 @@ export class MediaFileEntity {
   @Column({ name: 'thumbnail_url', length: 500, nullable: true, comment: '缩略图 URL', default: null })
   thumbnailUrl!: string;
 
-  @Column({ name: 'uploaded_by', type: 'int', comment: '上传管理员 ID' })
-  uploadedBy!: number;
+  @Column({ name: 'uploaded_by', type: 'int', nullable: true, comment: '上传管理员 ID', default: null })
+  uploadedBy!: number | null;
 
   @ManyToOne(() => AdminUserEntity, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'uploaded_by' })
-  uploader!: AdminUserEntity;
+  uploader!: AdminUserEntity | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt!: Date;

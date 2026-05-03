@@ -9,6 +9,7 @@ import { AddSiteContentTables1712610800000 } from './migrations/1712610800000-ad
 import { InitAuthRbac1712600000000 } from './migrations/1712600000000-init-auth-rbac';
 import { AddMediaFilesTable1712620000000 } from './migrations/1712620000000-add-media-files-table';
 import { AddTokenVersionToAdminUsers1775909200000 } from './migrations/1775909200000-add-token-version-to-admin-users';
+import { FixMediaFilesUploadedByFk1775909200001 } from './migrations/1775909200001-fix-media-files-uploaded-by-fk';
 
 const config = appConfig();
 
@@ -28,6 +29,7 @@ export const AppDataSource = new DataSource({
     AddProductTables1712614400000,
     AddMediaFilesTable1712620000000,
     AddTokenVersionToAdminUsers1775909200000,
+    FixMediaFilesUploadedByFk1775909200001,
   ],
   synchronize: false,
   logging: config.database.logging,
