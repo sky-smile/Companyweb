@@ -1,3 +1,19 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+function JsonLdScript({ data }: { data: Record<string, unknown> }) {
+  const ref = useRef<HTMLScriptElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.textContent = JSON.stringify(data);
+    }
+  }, [data]);
+
+  return <script ref={ref} type="application/ld+json" />;
+}
+
 interface OrganizationJsonLdProps {
   name: string;
   url: string;
@@ -32,12 +48,7 @@ export function OrganizationJsonLd({
     ...(sameAs.length > 0 && { sameAs }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 interface NewsArticleJsonLdProps {
@@ -71,12 +82,7 @@ export function NewsArticleJsonLd({
     ...(image && { image: { '@type': 'ImageObject', url: image } }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 interface ProductJsonLdProps {
@@ -101,12 +107,7 @@ export function ProductJsonLd({
     ...(image && { image: { '@type': 'ImageObject', url: image } }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 interface BreadcrumbListJsonLdProps {
@@ -129,10 +130,5 @@ export function BreadcrumbListJsonLd({ items }: BreadcrumbListJsonLdProps) {
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
