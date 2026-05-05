@@ -2,7 +2,7 @@
 
 执行原则：按风险和阻塞程度分批修复；每批只覆盖一个清晰主题；完成后运行相关测试或构建，再提交 Git。
 
-> **状态：全部 7 个批次已完成（2026-05-03）。**
+> **状态：全部 10 个批次已完成（2026-05-05）。**
 
 ## 批次 1：前台构建阻塞 ✅
 
@@ -79,39 +79,34 @@
 
 ---
 
-## 低优先级批次（待执行）
+## 低优先级批次（已完成）
 
-### 批次 8：管理端个人资料更新接后端
+### 批次 8：管理端个人资料更新接后端 ✅
 
 - 位置：`admin/src/pages/ProfilePage.tsx:32`
 - 现象：`handleSave` 只更新了本地 `authStore`，未调用后端 API，
   代码中有 `// TODO: 调用后端 API 更新个人资料` 注释。
-- 建议：实现 `adminUserService.updateProfile(values)` 调用；
-  更新成功后同步 `authStore.setProfile`；处理后端无此接口时需新增。
-- 改动范围：~5 行代码，仅 `handleSave` 函数内。
-- 验证：管理端构建 + 测试。
-- 提交建议：`feat(admin): wire profile update to backend API`
+- 修复：新增后端 `PATCH /auth/profile` 端点、`UpdateProfileDto`；
+  前端 `adminUserService.updateProfile()` 调用 API 并同步 `authStore`。
+- 验证：后端 45 测试通过，构建通过；管理端类型检查/构建通过。
+- 提交：`a7cefb4` — `feat(admin): wire profile update to backend API`
 
-### 批次 9：上传服务改用异步文件 API
+### 批次 9：上传服务改用异步文件 API ✅
 
 - 位置：`server/src/modules/upload/upload.service.ts:122-137`
 - 现象：`remove` 方法使用 `fs.existsSync` + `fs.unlinkSync` 同步删除文件，
   高并发上传时可能阻塞 Node 事件循环。
-- 建议：改用 `fs.promises.access` + `fs.promises.unlink` 异步删除；
-  错误时只打日志不抛异常（物理文件缺失不应阻止数据库记录删除）。
-- 改动范围：~15 行代码，`remove` 方法内。
-- 验证：后端构建。
-- 提交建议：`refactor(server): use async fs API in upload remove`
+- 修复：改用 `fs.promises.access` + `fs.promises.unlink` 异步删除；
+  抽取 `tryRemoveFile` 辅助方法，错误时只记日志不抛异常。
+- 验证：后端 45 测试通过，构建通过。
+- 提交：`fa7ddc7` — `refactor(server): use async fs API in upload remove`
 
-### 批次 10：JsonLd 组件避免 dangerouslySetInnerHTML
+### 批次 10：JsonLd 组件避免 dangerouslySetInnerHTML ✅
 
 - 位置：`frontend/src/components/JsonLd.tsx:38,77,107,135`（4 处）
 - 现象：JSON-LD 结构化数据通过 `dangerouslySetInnerHTML` 注入 `<script>`，
   数据为 `JSON.stringify` 输出，目前安全但理论上 `</script>` 可导致 XSS。
-  其余 CSS 注入的 5 处（HeroBanner、SiteHeader、MobileMenu、page.tsx、contact/page.tsx）
-  均为硬编码字符串，风险极低，可暂不处理。
-- 建议：JsonLd 的 4 处改用 `textContent` 或 `innerText` 方式设置脚本文本，
-  消除 `dangerouslySetInnerHTML` 在脚本注入中的使用。
-- 改动范围：`JsonLd.tsx` 一个文件，约 10 行。
-- 验证：前台构建。
-- 提交建议：`refactor(frontend): use textContent for JSON-LD injection`
+- 修复：新增 `JsonLdScript` 辅助组件，通过 `useRef` + `useEffect` + `textContent`
+  替代 `dangerouslySetInnerHTML`，消除脚本注入风险。
+- 验证：前台类型检查/构建通过。
+- 提交：`f35094d` — `refactor(frontend): use textContent for JSON-LD injection`
