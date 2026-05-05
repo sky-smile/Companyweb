@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import * as fs from 'node:fs';
+import { promises as fsPromises } from 'node:fs';
 import * as path from 'node:path';
+import { Logger } from '@nestjs/common';
 import { MediaFileEntity } from '@/database/entities/media-file.entity';
 import { validateImageFile, validateFileUpload } from '@/common/utils/file-validator';
 import { UploadedFileView } from './interfaces/uploaded-file-view.interface';
@@ -118,28 +120,35 @@ export class UploadService {
     return mediaFile;
   }
 
+  private readonly logger = new Logger(UploadService.name);
+
   async remove(id: number) {
     const mediaFile = await this.findOne(id);
 
-    // 删除物理文件
-    const fullPath = mediaFile.storagePath;
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
-    }
+    // 异步删除物理文件，失败只记日志不阻止数据库记录删除
+    await this.tryRemoveFile(mediaFile.storagePath);
 
     // 删除缩略图
     if (mediaFile.thumbnailUrl) {
       const uploadDir = this.configService.get<string>('upload.dir', 'uploads');
       const thumbnailPath = path.join(uploadDir, mediaFile.thumbnailUrl.split('/uploads/')[1]);
-      if (fs.existsSync(thumbnailPath)) {
-        fs.unlinkSync(thumbnailPath);
-      }
+      await this.tryRemoveFile(thumbnailPath);
     }
 
     // 删除数据库记录
     await this.mediaFileRepository.delete(id);
 
     return { message: '删除成功' };
+  }
+
+  private async tryRemoveFile(filePath: string) {
+    try {
+      await fsPromises.access(filePath);
+      await fsPromises.unlink(filePath);
+    } catch (error) {
+      // 文件不存在或无法删除时只记日志，不抛异常
+      this.logger.warn(`文件删除失败: ${filePath}`, error instanceof Error ? error.message : error);
+    }
   }
 
   async getStatistics() {
