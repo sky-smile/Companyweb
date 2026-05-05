@@ -1,5 +1,6 @@
 import { http, unwrapResponse } from './http';
 import { AdminUserListResult, CreateAdminUserPayload, UpdateAdminUserPayload } from '../types/admin-user';
+import { AuthProfile } from '../types/auth';
 
 export const adminUserService = {
   list(params?: { page?: number; pageSize?: number; keyword?: string }) {
@@ -24,5 +25,9 @@ export const adminUserService = {
 
   changePassword(oldPassword: string, newPassword: string) {
     return unwrapResponse(http.post('/admin-users/change-password', { oldPassword, newPassword }));
+  },
+
+  updateProfile(payload: { nickname: string }) {
+    return unwrapResponse<AuthProfile>(http.patch('/auth/profile', payload));
   },
 };

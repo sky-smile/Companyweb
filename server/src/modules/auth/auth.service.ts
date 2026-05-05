@@ -62,6 +62,11 @@ export class AuthService {
     return this.generateTokens(admin);
   }
 
+  async updateProfile(userId: string, nickname: string): Promise<AuthProfile> {
+    const admin = await this.authRepository.updateProfile(userId, nickname);
+    return this.toProfile(admin);
+  }
+
   async getProfile(user: JwtPayload): Promise<AuthProfile> {
     const admin = await this.authRepository.findById(user.sub);
 

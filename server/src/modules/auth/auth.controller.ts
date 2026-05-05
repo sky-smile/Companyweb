@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { type Response } from 'express';
@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from '@/common/dto/change-password.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from '@/common/types/authenticated-request.type';
 import { AUTH_COOKIE_CONFIG } from './auth-cookie.config';
@@ -65,6 +66,15 @@ export class AuthController {
       permissions: request.user.permissions,
       tokenVersion: request.user.tokenVersion,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile')
+  updateProfile(
+    @Req() request: AuthenticatedRequest,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return this.authService.updateProfile(request.user.userId, dto.nickname ?? '');
   }
 
   @UseGuards(JwtAuthGuard)

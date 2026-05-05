@@ -3,6 +3,7 @@ import { Button, Card, Descriptions, Form, Input, Space, Typography } from 'antd
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import { authStore } from '../stores/auth-store';
 import { AuthProfile } from '../types/auth';
+import { adminUserService } from '../services/admin-user-service';
 import { useMessage } from '../hooks/useMessage';
 
 export function ProfilePage() {
@@ -29,19 +30,12 @@ export function ProfilePage() {
     const values = form.getFieldsValue();
     setSaving(true);
     try {
-      // TODO: 调用后端 API 更新个人资料
-      // await adminUserService.updateProfile(values);
-      
-      // 暂时只更新本地存储
-      if (profile) {
-        const updatedProfile = {
-          ...profile,
-          nickname: values.nickname,
-        };
-        authStore.setProfile(updatedProfile);
-        setProfile(updatedProfile);
-        message.success('个人资料已更新');
-      }
+      const updatedProfile = await adminUserService.updateProfile({
+        nickname: values.nickname,
+      });
+      authStore.setProfile(updatedProfile);
+      setProfile(updatedProfile);
+      message.success('个人资料已更新');
       setEditing(false);
     } catch (error) {
       message.error('保存失败，请重试');

@@ -53,6 +53,13 @@ export class AuthRepository {
     return this.toAuthenticatedAdmin(adminUser);
   }
 
+  async updateProfile(id: string, nickname: string): Promise<AuthenticatedAdmin> {
+    await this.adminUserRepository.update(id, { nickname });
+    const admin = await this.findById(id);
+    // 更新后用户一定存在（update 成功即可找到）
+    return admin as AuthenticatedAdmin;
+  }
+
   private toAuthenticatedAdmin(adminUser: AdminUserEntity): AuthenticatedAdmin {
     const adminUserRoles = adminUser.adminUserRoles ?? [];
     const roles = adminUserRoles.map((item) => item.role.code);
