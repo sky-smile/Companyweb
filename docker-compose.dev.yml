@@ -1,0 +1,32 @@
+# =============================================
+# CompanyWeb Docker Compose - 开发环境覆盖配置
+# =============================================
+# 用法: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d mariadb
+#
+# 此文件仅覆盖开发所需的配置:
+#   - 仅启动 mariadb 服务
+#   - 暴露 3306 端口到宿主机供本地工具直连
+#   - 禁用生产级资源限制
+# =============================================
+
+services:
+  mariadb:
+    ports:
+      - "3306:3306"
+    deploy: null
+
+  server:
+    profiles:
+      - disabled
+
+  admin:
+    profiles:
+      - disabled
+
+  frontend:
+    profiles:
+      - disabled
+
+  nginx:
+    profiles:
+      - disabled
