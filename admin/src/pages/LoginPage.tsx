@@ -44,6 +44,9 @@ export function LoginPage() {
       }
 
       const result = await authService.login(loginData);
+      // 保存 token 到 localStorage
+      localStorage.setItem('accessToken', result.accessToken);
+      localStorage.setItem('refreshToken', result.refreshToken);
       authStore.setProfile(result.profile);
       message.success(`欢迎回来，${result.profile.nickname || result.profile.username}`);
       navigate('/');

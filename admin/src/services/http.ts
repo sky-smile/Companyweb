@@ -11,6 +11,18 @@ export const http = axios.create({
   withCredentials: true, // send httpOnly cookies for same-origin requests
 });
 
+// 请求拦截器：自动添加 token
+http.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 http.interceptors.response.use(
   (response) => response,
   (error) => {
