@@ -29,7 +29,7 @@ export function SettingsPage() {
       message.success('密码已修改，请重新登录');
       authStore.clearSession();
       setTimeout(() => {
-        window.location.href = '/login';
+        window.location.href = '/admin/login';
       }, 1500);
     } catch (error) {
       message.error(getErrorMessage(error, '修改密码失败，请重试'));

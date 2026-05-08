@@ -5,6 +5,9 @@ import { RichContent } from '@/components/RichContent';
 import { publicService } from '@/services/public-service';
 import styles from './about.module.css';
 
+// ISR：24小时重新验证
+export const revalidate = 86400;
+
 export async function generateMetadata(): Promise<Metadata> {
   const about = await publicService.getAbout();
 
@@ -106,11 +109,11 @@ export default async function AboutPage() {
             <div className={styles.timelineLine} />
 
             {[
-              { year: '2009', title: '公司成立', desc: '从一间小办公室起步，怀揣对品质与技术的执着信念，踏上了创业之路。' },
-              { year: '2013', title: '技术突破', desc: '核心产品获得行业认证，建立自主研发中心，确立技术领先优势。' },
-              { year: '2017', title: '规模扩张', desc: '业务拓展至多个地区，团队规模突破百人，服务体系全面升级。' },
-              { year: '2021', title: '数字化转型', desc: '启动数字化战略，引入智能制造与数据驱动决策，运营效率大幅提升。' },
-              { year: '2024', title: '品牌焕新', desc: '全新品牌形象上线，持续深耕核心领域，向更广阔的市场迈进。' },
+              { year: '2019', title: '公司成立', desc: '从一间小办公室起步，怀揣对品质与技术的执着信念，踏上了创业之路。' },
+              { year: '2020', title: '技术突破', desc: '核心产品获得行业认证，建立自主研发中心，确立技术领先优势。' },
+              { year: '2022', title: '规模扩张', desc: '业务拓展至多个地区，团队规模突破百人，服务体系全面升级。' },
+              { year: '2023', title: '数字化转型', desc: '启动数字化战略，引入智能制造与数据驱动决策，运营效率大幅提升。' },
+              { year: '2026', title: '品牌焕新', desc: '全新产品升级上线，持续深耕核心领域，向更广阔的市场迈进。' },
             ].map((item) => (
               <div key={item.year} className={styles.timelineItem}>
                 {/* 节点圆点 */}
@@ -141,7 +144,7 @@ export default async function AboutPage() {
             {[
               { value: '5+', label: '年行业深耕', sub: '持续稳定发展' },
               { value: '200+', label: '服务客户', sub: '遍布全球各地' },
-              { value: '100+', label: '技术团队', sub: '专业研发力量' },
+              { value: '50+', label: '技术团队', sub: '专业研发力量' },
               { value: '99%', label: '客户满意度', sub: '口碑铸就品牌' },
             ].map((stat) => (
               <div key={stat.label} className={styles.statCard}>

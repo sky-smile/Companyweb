@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { buildMetadata, pickDescription } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
 
+// ISR：24小时重新验证
+export const revalidate = 86400;
+
 export async function generateMetadata(): Promise<Metadata> {
   const contact = await publicService.getContact();
 

@@ -18,7 +18,7 @@ export function StatusCard({
   secondaryLabel,
 }: StatusCardProps) {
   return (
-    <section className="site-shell" style={{ padding: '48px 0 64px' }}>
+    <section className="site-shell" style={{ padding: '48px 0 64px', paddingTop: 'calc(var(--header-height, 76px) + 48px)' }}>
       <div className="site-card status-card">
         <div className="status-kicker">Public Website</div>
         <h1 className="section-title">{title}</h1>

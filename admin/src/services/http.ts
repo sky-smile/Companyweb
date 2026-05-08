@@ -22,7 +22,7 @@ http.interceptors.response.use(
 
     if (error.response?.status === 401) {
       authStore.clearSession();
-      window.location.href = '/login';
+      window.location.href = '/admin/login';
     }
 
     return Promise.reject(error);

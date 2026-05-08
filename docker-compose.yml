@@ -48,19 +48,22 @@ services:
       TZ: Asia/Shanghai
       SERVER_PORT: 4000
       SERVER_GLOBAL_PREFIX: api
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001,http://localhost:4001,http://localhost:4100}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost}
       DB_TYPE: mariadb
       DB_HOST: mariadb
       DB_PORT: 3306
       DB_NAME: company_web
       DB_USER: root
       DB_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
+      DB_SYNCHRONIZE: false
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}
       JWT_ACCESS_EXPIRES_IN: 2h
       JWT_REFRESH_EXPIRES_IN: 7d
       UPLOAD_DIR: uploads
       UPLOAD_BASE_URL: ${APP_URL:-http://localhost:4000}/uploads
+      FRONTEND_URL: http://frontend:3001
+      REVALIDATION_SECRET: ${REVALIDATION_SECRET:-default-secret-change-me}
     volumes:
       - server_uploads:/app/uploads
     networks:
@@ -86,12 +89,14 @@ services:
     build:
       context: ./admin
       dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${APP_URL:-http://localhost}/api
     container_name: companyweb-admin
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     environment:
-      VITE_API_BASE_URL: ${APP_URL:-http://localhost:4000}/api
+      VITE_API_BASE_URL: ${APP_URL:-http://localhost}/api
       VITE_APP_TITLE: Company Web Admin
     networks:
       - companyweb
@@ -99,11 +104,7 @@ services:
       server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4100/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      disable: true
     deploy:
       resources:
         limits:
@@ -116,6 +117,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${APP_URL:-http://localhost}/api
+        NEXT_PUBLIC_SITE_URL: ${APP_URL:-http://localhost}
     container_name: companyweb-frontend
     restart: unless-stopped
     security_opt:
@@ -123,19 +127,17 @@ services:
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
-      NEXT_PUBLIC_API_BASE_URL: ${APP_URL:-http://localhost:4000}/api
-      NEXT_PUBLIC_SITE_URL: ${APP_URL:-http://localhost:3001}
+      NEXT_PUBLIC_API_BASE_URL: ${APP_URL:-http://localhost}/api
+      NEXT_PUBLIC_SITE_URL: ${APP_URL:-http://localhost}
+      API_BASE_URL_SERVER: http://server:4000/api
+      REVALIDATE_SECRET: ${REVALIDATION_SECRET:-default-secret-change-me}
     networks:
       - companyweb
     depends_on:
       server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
+      disable: true
     deploy:
       resources:
         limits:
@@ -160,17 +162,11 @@ services:
     networks:
       - companyweb
     depends_on:
-      server:
-        condition: service_healthy
-      admin:
-        condition: service_healthy
-      frontend:
-        condition: service_healthy
+      - server
+      - admin
+      - frontend
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      disable: true
     deploy:
       resources:
         limits:

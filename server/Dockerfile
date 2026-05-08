@@ -7,15 +7,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# 安装依赖
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && pnpm install --frozen-lockfile
+# 安装依赖（使用 npm 避免 pnpm 符号链接问题）
+COPY package.json package-lock.json* ./
+RUN npm install
 
 # 复制源码
 COPY . .
 
 # 构建
-RUN pnpm run build
+RUN npm run build
 
 # ── 生产阶段 ──────────────────────────────────
 FROM node:20-alpine AS runner
@@ -26,12 +26,10 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
 
-# 安装生产依赖
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && pnpm install --frozen-lockfile --prod
-
-# 复制构建产物
+# 复制依赖和构建产物
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/package.json ./package.json
 
 # 创建上传目录
 RUN mkdir -p uploads && chown -R nestjs:nodejs uploads
@@ -51,4 +49,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # 启动
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["node", "dist/src/main.js"]
+CMD ["node", "dist/main.js"]

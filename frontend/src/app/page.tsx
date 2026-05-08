@@ -5,6 +5,9 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { buildMetadata, pickDescription } from '@/lib/seo';
 import { publicService } from '@/services/public-service';
 
+// ISR：24小时重新验证，减少 loading 出现频率
+export const revalidate = 86400;
+
 export async function generateMetadata(): Promise<Metadata> {
   const home = await publicService.getHome();
 

@@ -9,10 +9,12 @@ export class CacheRevalidationService {
 
   /** 通知前端刷新指定的缓存标签（不阻塞主流程） */
   revalidate(tags: string[]): Promise<void> {
-    const frontendUrl = this.configService.get<string>('frontend.url');
-    const secret = this.configService.get<string>('frontend.revalidationSecret');
+    // 直接读取环境变量，而不是通过 ConfigService
+    const frontendUrl = process.env.FRONTEND_URL || this.configService.get<string>('frontend.url');
+    const secret = process.env.REVALIDATION_SECRET || this.configService.get<string>('frontend.revalidationSecret');
 
     if (!frontendUrl || !secret) {
+      this.logger.warn(`缓存刷新跳过：缺少配置 FRONTEND_URL 或 REVALIDATION_SECRET`);
       return Promise.resolve();
     }
 

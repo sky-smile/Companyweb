@@ -9,7 +9,13 @@ export class ApiError extends Error {
   }
 }
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://127.0.0.1:3000/api';
+// 区分服务器端和客户端
+const isServer = typeof window === 'undefined';
+
+const serverApiBaseUrl = process.env.API_BASE_URL_SERVER || 'http://server:4000/api';
+const clientApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+
+const apiBaseUrl = isServer ? serverApiBaseUrl : clientApiBaseUrl;
 
 // 缓存时间配置（按内容类型区分）
 const CACHE_DURATION = {
@@ -29,9 +35,6 @@ export async function fetchApi<T>(
   options?: FetchOptions
 ): Promise<T> {
   const { revalidate = CACHE_DURATION.SHORT, tags } = options || {};
-
-//  const fullUrl = `${apiBaseUrl}${path}`;
-//  console.log(`[API] 请求地址:`, fullUrl);
 
   let response: Response;
   try {
