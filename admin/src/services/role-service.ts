@@ -43,6 +43,10 @@ export const roleService = {
     return unwrapResponse<RoleItem>(http.patch(`/roles/${id}`, payload));
   },
 
+  delete(id: string) {
+    return unwrapResponse(http.delete(`/roles/${id}`));
+  },
+
   updateStatus(id: string, status: number) {
     return unwrapResponse<RoleItem>(http.patch(`/roles/${id}/status`, { status }));
   },

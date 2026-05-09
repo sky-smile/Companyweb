@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Form, Input, Modal, Popconfirm, Select, Space, Switch, Table, Tag, Typography } from 'antd';
-import { KeyOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, KeyOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { adminUserService } from '../services/admin-user-service';
 import { roleService } from '../services/role-service';
+import { http, unwrapResponse } from '../services/http';
 import { AdminUserItem, CreateAdminUserPayload, UpdateAdminUserPayload } from '../types/admin-user';
 import { RoleItem } from '../types/role';
 import { useMessage } from '../hooks/useMessage';
+import { authStore } from '../stores/auth-store';
 
 export function AdminUsersPage() {
   const [createForm] = Form.useForm<CreateAdminUserPayload>();
@@ -64,7 +66,7 @@ export function AdminUsersPage() {
             checked={record.status === 1}
             checkedChildren="启用"
             unCheckedChildren="禁用"
-            disabled={record.isSuperAdmin}
+            disabled={record.isSuperAdmin || !authStore.hasPermission('admin-users:status')}
             onChange={async (checked) => {
               await adminUserService.updateStatus(record.id, checked ? 1 : 0);
               message.success('状态已更新');
@@ -76,13 +78,13 @@ export function AdminUsersPage() {
       {
         title: '操作',
         key: 'actions',
-        width: 200,
+        width: 320,
         render: (_: unknown, record: AdminUserItem) => (
           <Space>
             <Button
               icon={<UserOutlined />}
               size="small"
-              disabled={record.isSuperAdmin}
+              disabled={record.isSuperAdmin || !authStore.hasPermission('admin-users:update')}
               onClick={() => {
                 setEditingUser(record);
                 editForm.setFieldsValue({
@@ -101,6 +103,7 @@ export function AdminUsersPage() {
             <Button
               icon={<KeyOutlined />}
               size="small"
+              disabled={!authStore.hasPermission('admin-users:reset-password')}
               onClick={() => {
                 setResetPasswordUser(record);
                 passwordForm.resetFields();
@@ -109,6 +112,24 @@ export function AdminUsersPage() {
             >
               重置密码
             </Button>
+            <Popconfirm
+              title="确认删除该管理员？"
+              description="删除后无法恢复"
+              onConfirm={async () => {
+                await adminUserService.delete(record.id);
+                message.success('管理员已删除');
+                void loadData();
+              }}
+            >
+              <Button
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+                disabled={record.isSuperAdmin || !authStore.hasPermission('admin-users:delete')}
+              >
+                删除
+              </Button>
+            </Popconfirm>
           </Space>
         ),
       },
@@ -133,12 +154,12 @@ export function AdminUsersPage() {
   async function loadData() {
     setLoading(true);
     try {
-      const [userResult, roleResult] = await Promise.all([
-        adminUserService.list(),
-        roleService.list(),
+      const [userResult, roleResult] = await Promise.allSettled([
+        adminUserService.list({ pageSize: 1000 }),
+        http.get('/roles', { silent: true } as Record<string, unknown>).then((res) => unwrapResponse<RoleItem[]>(res)),
       ]);
-      setData(userResult.list);
-      setRoles(roleResult);
+      setData(userResult.status === 'fulfilled' ? userResult.value.list : []);
+      setRoles(roleResult.status === 'fulfilled' ? roleResult.value : []);
     } finally {
       setLoading(false);
     }
@@ -221,7 +242,12 @@ export function AdminUsersPage() {
             </Space>
             <Space>
               <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>刷新</Button>
-              <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalOpen(true)}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                disabled={!authStore.hasPermission('admin-users:create')}
+                onClick={() => setCreateModalOpen(true)}
+              >
                 新增管理员
               </Button>
             </Space>

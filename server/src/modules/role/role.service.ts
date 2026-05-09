@@ -27,4 +27,9 @@ export class RoleService {
   updateStatus(id: string, dto: UpdateStatusDto) {
     return this.roleRepository.updateStatus(id, dto.status);
   }
+
+  async delete(id: string) {
+    await this.roleRepository.delete(id);
+    return { success: true, message: '角色已删除' };
+  }
 }

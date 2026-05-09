@@ -24,6 +24,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       { code: 'admin-users:status', name: '切换管理员状态', description: '启用/禁用管理员账号' },
       { code: 'admin-users:reset-password', name: '重置密码', description: '重置其他管理员密码' },
       { code: 'admin-users:change-password', name: '修改自己的密码', description: '修改当前登录账号的密码' },
+      { code: 'admin-users:delete', name: '删除管理员', description: '删除管理员账号' },
     ],
   },
   {
@@ -34,6 +35,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       { code: 'roles:create', name: '创建角色', description: '创建新的角色' },
       { code: 'roles:update', name: '编辑角色', description: '编辑角色信息和权限' },
       { code: 'roles:status', name: '切换角色状态', description: '启用/禁用角色' },
+      { code: 'roles:delete', name: '删除角色', description: '删除角色' },
     ],
   },
   {

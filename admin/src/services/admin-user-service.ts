@@ -19,6 +19,10 @@ export const adminUserService = {
     return unwrapResponse(http.patch(`/admin-users/${id}/status`, { status }));
   },
 
+  delete(id: string) {
+    return unwrapResponse(http.delete(`/admin-users/${id}`));
+  },
+
   resetPassword(id: string, newPassword: string) {
     return unwrapResponse(http.patch(`/admin-users/${id}/reset-password`, { newPassword }));
   },

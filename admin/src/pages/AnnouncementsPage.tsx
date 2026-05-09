@@ -88,7 +88,7 @@ export function AnnouncementsPage() {
   async function loadData() {
     setLoading(true);
     try {
-      const result = await announcementService.list();
+      const result = await announcementService.list({ pageSize: 1000 });
       setItems(result.list);
     } finally {
       setLoading(false);

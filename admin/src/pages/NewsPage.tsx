@@ -96,7 +96,7 @@ export function NewsPage() {
   async function loadData() {
     setLoading(true);
     try {
-      const [newsResult, categoryResult] = await Promise.all([newsService.list(), newsService.listCategories()]);
+      const [newsResult, categoryResult] = await Promise.all([newsService.list({ pageSize: 1000 }), newsService.listCategories()]);
       setNewsList(newsResult.list);
       setCategories(categoryResult);
     } finally {

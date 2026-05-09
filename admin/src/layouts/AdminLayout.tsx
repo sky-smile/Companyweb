@@ -96,18 +96,24 @@ export function AdminLayout() {
     });
   };
 
-  // 构建 Ant Design Menu items
+  // 构建 Ant Design Menu items，过滤空分组
   const buildMenuItems = (): NonNullable<MenuProps['items']> => {
-    return menuGroups.map((group, index) => ({
-      key: `group-${index}`,
-      type: 'group' as const,
-      label: group.title,
-      children: filterMenuByPermission(group.items).map((item) => ({
-        key: item.key,
-        icon: item.icon,
-        label: item.label,
-      })),
-    }));
+    return menuGroups
+      .map((group, index) => {
+        const visibleItems = filterMenuByPermission(group.items);
+        if (visibleItems.length === 0) return null;
+        return {
+          key: `group-${index}`,
+          type: 'group' as const,
+          label: group.title,
+          children: visibleItems.map((item) => ({
+            key: item.key,
+            icon: item.icon,
+            label: item.label,
+          })),
+        };
+      })
+      .filter((group): group is NonNullable<typeof group> => group !== null);
   };
 
   // 生成面包屑

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -62,6 +63,12 @@ export class AdminUserController {
     @Req() request: AuthenticatedRequest,
   ) {
     return this.adminUserService.resetPassword(id, dto, request.user);
+  }
+
+  @Delete(':id')
+  @Permissions('admin-users:delete')
+  delete(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
+    return this.adminUserService.delete(id, request.user);
   }
 
   @Post('change-password')

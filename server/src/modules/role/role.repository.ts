@@ -10,6 +10,7 @@ import {
   Repository,
 } from 'typeorm';
 import { PermissionEntity } from '@/database/entities/permission.entity';
+import { AdminUserRoleEntity } from '@/database/entities/admin-user-role.entity';
 import { RolePermissionEntity } from '@/database/entities/role-permission.entity';
 import { RoleEntity } from '@/database/entities/role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -162,6 +163,39 @@ export class RoleRepository {
         }),
       );
     }
+  }
+
+  async delete(id: string): Promise<void> {
+    const role = await this.roleRepository.findOne({
+      where: { id },
+      relations: { rolePermissions: true },
+    });
+
+    if (role === null) {
+      throw new NotFoundException('角色不存在');
+    }
+
+    if (role.code === 'super-admin') {
+      throw new BadRequestException('不能删除超级管理员角色');
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      const rpRepo = manager.getRepository(RolePermissionEntity);
+      await rpRepo.delete({ roleId: id });
+
+      const aurRepo = manager.getRepository(AdminUserRoleEntity);
+      await aurRepo.delete({ roleId: id });
+
+      await manager.getRepository(RoleEntity).delete(id);
+    });
+
+    // 清理孤立的 role_permissions 记录（防御性清理）
+    await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from('admin_user_roles')
+      .where('roleId NOT IN (SELECT id FROM roles)')
+      .execute();
   }
 
   private toView(role: RoleEntity): RoleView {

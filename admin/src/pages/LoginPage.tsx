@@ -13,6 +13,7 @@ const { Title, Text, Link } = Typography;
 // 记住密码的本地存储键
 const REMEMBER_ME_KEY = 'admin_remember_me';
 const REMEMBERED_USERNAME = 'admin_remembered_username';
+const REMEMBERED_PASSWORD = 'admin_remembered_password';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -23,12 +24,13 @@ export function LoginPage() {
 
   const sessionExpired = (location.state as { sessionExpired?: boolean } | null)?.sessionExpired;
 
-  // 页面加载时恢复记住的用户名
+  // 页面加载时恢复记住的用户名和密码
   useEffect(() => {
-    const remembered = localStorage.getItem(REMEMBERED_USERNAME);
     const shouldRemember = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
-    if (remembered && shouldRemember) {
-      form.setFieldsValue({ username: remembered, remember: true });
+    if (shouldRemember) {
+      const username = localStorage.getItem(REMEMBERED_USERNAME) || '';
+      const password = localStorage.getItem(REMEMBERED_PASSWORD) || '';
+      form.setFieldsValue({ username, password, remember: true });
     }
   }, [form]);
 
@@ -41,9 +43,11 @@ export function LoginPage() {
       if (remember) {
         localStorage.setItem(REMEMBER_ME_KEY, 'true');
         localStorage.setItem(REMEMBERED_USERNAME, values.username);
+        localStorage.setItem(REMEMBERED_PASSWORD, values.password);
       } else {
         localStorage.removeItem(REMEMBER_ME_KEY);
         localStorage.removeItem(REMEMBERED_USERNAME);
+        localStorage.removeItem(REMEMBERED_PASSWORD);
       }
 
       const result = await authService.login(loginData);

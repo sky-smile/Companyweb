@@ -70,6 +70,18 @@ export class AdminUserService {
     };
   }
 
+  async delete(id: string, currentUser: AuthenticatedAdminUser) {
+    const adminUser = await this.adminUserRepository.findById(id);
+    this.ensureSuperAdminProtected(adminUser, currentUser);
+
+    if (adminUser.id === currentUser.userId) {
+      throw new BadRequestException('不能删除自己的账号');
+    }
+
+    await this.adminUserRepository.delete(id);
+    return { success: true, message: '管理员已删除' };
+  }
+
   private ensureSuperAdminProtected(
     targetUser: AdminUserView,
     currentUser: AuthenticatedAdminUser,

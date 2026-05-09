@@ -26,10 +26,15 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (response) => response,
   (error) => {
-    const messageText = error.response?.data?.message ?? error.message ?? 'Request failed';
-    const msgApi = getMessageApi();
-    if (msgApi) {
-      msgApi.error(messageText);
+    // 支持请求级抑制错误提示
+    const silent = (error.config as Record<string, unknown> | undefined)?.['silent'] === true;
+
+    if (!silent) {
+      const messageText = error.response?.data?.message ?? error.message ?? 'Request failed';
+      const msgApi = getMessageApi();
+      if (msgApi) {
+        msgApi.error(messageText);
+      }
     }
 
     if (error.response?.status === 401) {

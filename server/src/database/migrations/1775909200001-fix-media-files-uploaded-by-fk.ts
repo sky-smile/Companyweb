@@ -2,9 +2,9 @@ import { MigrationInterface, QueryRunner, TableForeignKey } from 'typeorm';
 
 export class FixMediaFilesUploadedByFk1775909200001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // 将 uploaded_by 列改为 nullable，与 ON DELETE SET NULL 保持一致
+    // 将 uploaded_by 列改为 bigint unsigned nullable，与 admin_users.id 类型一致
     await queryRunner.query(
-      'ALTER TABLE media_files MODIFY uploaded_by INT NULL',
+      'ALTER TABLE media_files MODIFY uploaded_by BIGINT UNSIGNED NULL',
     );
 
     // 添加外键约束：删除管理员时上传记录保留，uploaded_by 置为 NULL
@@ -28,7 +28,7 @@ export class FixMediaFilesUploadedByFk1775909200001 implements MigrationInterfac
       await queryRunner.dropForeignKey('media_files', foreignKey);
     }
     await queryRunner.query(
-      'ALTER TABLE media_files MODIFY uploaded_by INT NOT NULL',
+      'ALTER TABLE media_files MODIFY uploaded_by BIGINT UNSIGNED NOT NULL',
     );
   }
 }

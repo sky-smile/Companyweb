@@ -241,6 +241,27 @@ export class AdminUserRepository {
     }
   }
 
+  async delete(id: string): Promise<void> {
+    const adminUser = await this.adminUserRepository.findOne({
+      where: { id },
+      relations: { adminUserRoles: true },
+    });
+
+    if (adminUser === null) {
+      throw new NotFoundException('管理员不存在');
+    }
+
+    if (adminUser.isSuperAdmin === 1) {
+      throw new BadRequestException('不能删除超级管理员');
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      const aurRepo = manager.getRepository(AdminUserRoleEntity);
+      await aurRepo.delete({ adminUserId: id });
+      await manager.getRepository(AdminUserEntity).delete(id);
+    });
+  }
+
   private toView(adminUser: AdminUserEntity): AdminUserView {
     return {
       id: adminUser.id,

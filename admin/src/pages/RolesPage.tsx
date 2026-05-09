@@ -7,6 +7,7 @@ import { roleService } from '../services/role-service';
 import { CreateRolePayload, PermissionItem, RoleItem, UpdateRolePayload } from '../types/role';
 import { PERMISSION_GROUPS, getPermissionName } from '../config/permissions';
 import { useMessage } from '../hooks/useMessage';
+import { authStore } from '../stores/auth-store';
 
 export function RolesPage() {
   const [form] = Form.useForm<CreateRolePayload & UpdateRolePayload>();
@@ -84,17 +85,6 @@ export function RolesPage() {
               disabled={record.code === 'super-admin'}
               onClick={() => {
                 setEditingRole(record);
-                // 将权限代码转换为权限 ID
-                const permissionIds = record.permissions
-                  .map((code: string) => permissions.find((p) => p.code === code)?.id)
-                  .filter((id): id is string => id !== undefined);
-                form.setFieldsValue({
-                  name: record.name,
-                  code: record.code,
-                  description: record.description,
-                  permissionIds,
-                  status: record.status,
-                });
                 setModalOpen(true);
               }}
             >
@@ -104,11 +94,12 @@ export function RolesPage() {
               title="确认删除这个角色吗？"
               description="删除后无法恢复"
               onConfirm={async () => {
-                message.info('删除功能待后端支持');
+                await roleService.delete(record.id);
+                message.success('角色已删除');
                 void loadData();
               }}
             >
-              <Button danger icon={<DeleteOutlined />} size="small" disabled={record.code === 'super-admin'}>
+              <Button danger icon={<DeleteOutlined />} size="small" disabled={record.code === 'super-admin' || !authStore.hasPermission('roles:delete')}>
                 删除
               </Button>
             </Popconfirm>
@@ -144,10 +135,29 @@ export function RolesPage() {
 
   function handleOpenCreate() {
     setEditingRole(null);
-    form.resetFields();
-    form.setFieldsValue({ status: 1, permissionIds: [] });
     setModalOpen(true);
   }
+
+  // 在 Modal 挂载后同步表单值
+  useEffect(() => {
+    if (!modalOpen) return;
+
+    if (editingRole) {
+      const permissionIds = editingRole.permissions
+        .map((code: string) => permissions.find((p) => p.code === code)?.id)
+        .filter((id): id is string => id !== undefined);
+      form.setFieldsValue({
+        name: editingRole.name,
+        code: editingRole.code,
+        description: editingRole.description,
+        permissionIds,
+        status: editingRole.status,
+      });
+    } else {
+      form.resetFields();
+      form.setFieldsValue({ status: 1, permissionIds: [] });
+    }
+  }, [modalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSave() {
     // 只提取后端 DTO 接受的字段
@@ -232,7 +242,7 @@ export function RolesPage() {
             <StatusSwitch checkedLabel="启用" uncheckedLabel="禁用" />
           </Form.Item>
 
-          <Form.Item label="权限分配" name="permissionIds" tooltip="按功能模块选择权限" initialValue={[]}>
+          <Form.Item label="权限分配" tooltip="按功能模块选择权限">
             <div style={{ maxHeight: 400, overflowY: 'auto', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16, background: '#fafafa' }}>
               <Form.Item noStyle shouldUpdate>
                 {() => {
@@ -301,6 +311,9 @@ export function RolesPage() {
                 }}
               </Form.Item>
             </div>
+          </Form.Item>
+          <Form.Item name="permissionIds" hidden>
+            <Input />
           </Form.Item>
 
           <Button type="primary" htmlType="submit" block>

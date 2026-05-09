@@ -12,7 +12,7 @@ export class ListQueryDto {
   @Transform(({ value }) => Number(value ?? 10))
   @IsInt()
   @Min(1)
-  @Max(100)
+  @Max(1000)
   pageSize = 10;
 
   @IsOptional()

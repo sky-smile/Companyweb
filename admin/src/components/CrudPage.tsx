@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import type { TableProps } from 'antd';
 import { Button, Card, Input, Select, Space, Table, Typography } from 'antd';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
@@ -41,10 +41,19 @@ export function CrudPage<T extends object>({
   filter,
   onCreate,
   onRefresh,
-  pagination = { pageSize: 10, showSizeChanger: true, showTotal: (total: number) => `共 ${total} 条` },
+  pagination: externalPagination,
   extra,
   children,
 }: CrudPageProps<T>) {
+  const defaultPagination = useMemo<TableProps<T>['pagination']>(
+    () => ({
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '20', '50', '100'],
+      showTotal: (total: number) => `共 ${total} 条`,
+    }),
+    [],
+  );
+
   return (
     <Space orientation="vertical" size={20} style={{ display: 'flex' }}>
       <div>
@@ -96,7 +105,7 @@ export function CrudPage<T extends object>({
             loading={loading}
             columns={columns}
             dataSource={dataSource}
-            pagination={pagination}
+            pagination={externalPagination ?? defaultPagination}
           />
         </Space>
       </Card>

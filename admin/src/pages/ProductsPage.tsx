@@ -79,7 +79,7 @@ export function ProductsPage() {
   async function loadData() {
     setLoading(true);
     try {
-      const [productResult, categoryResult] = await Promise.all([productService.list(), productService.listCategories()]);
+      const [productResult, categoryResult] = await Promise.all([productService.list({ pageSize: 1000 }), productService.listCategories()]);
       setProducts(productResult.list);
       setCategories(categoryResult);
     } finally {
