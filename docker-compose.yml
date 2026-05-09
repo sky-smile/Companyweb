@@ -10,8 +10,11 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    env_file:
-      - ./server/.env
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE:-company_web}
+      MARIADB_USER: ${DB_USER:-companyweb}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./docker/mariadb/my.cnf:/etc/mysql/conf.d/my.cnf:ro
@@ -122,6 +125,7 @@ services:
     container_name: companyweb-nginx
     restart: unless-stopped
     ports:
+      - "8089:8089"
       - "8088:80"
       - "8443:443"
     volumes:

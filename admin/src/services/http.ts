@@ -34,7 +34,7 @@ http.interceptors.response.use(
 
     if (error.response?.status === 401) {
       authStore.clearSession();
-      window.location.href = '/admin/login';
+      window.dispatchEvent(new CustomEvent('auth:session-expired'));
     }
 
     return Promise.reject(error);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button, Card, Checkbox, Form, Input, Space, Typography } from 'antd';
+import { Alert, Button, Card, Checkbox, Form, Input, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined, SafetyOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth-service';
 import { authStore } from '../stores/auth-store';
 import { LoginPayload } from '../types/auth';
@@ -16,9 +16,12 @@ const REMEMBERED_USERNAME = 'admin_remembered_username';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const message = useMessage();
+
+  const sessionExpired = (location.state as { sessionExpired?: boolean } | null)?.sessionExpired;
 
   // 页面加载时恢复记住的用户名
   useEffect(() => {
@@ -127,6 +130,18 @@ export function LoginPage() {
               使用管理员账号登录系统，管理网站内容
             </Text>
           </div>
+
+          {/* 会话过期提示 */}
+          {sessionExpired && (
+            <Alert
+              type="warning"
+              showIcon
+              message="登录已过期"
+              description="您的登录态已失效，请重新登录"
+              closable
+              style={{ borderRadius: 8 }}
+            />
+          )}
 
           {/* 登录表单 */}
           <Form

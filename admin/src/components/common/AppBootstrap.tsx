@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Result, Spin } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { Spin } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/auth-service';
 import { authStore } from '../../stores/auth-store';
@@ -11,21 +11,26 @@ interface AppBootstrapProps {
 
 export function AppBootstrap({ children }: AppBootstrapProps) {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  // 初始化全局 message API
   useMessage();
+
+  const toLogin = useCallback(() => {
+    navigate('/login', { replace: true, state: { sessionExpired: true } });
+  }, [navigate]);
+
+  useEffect(() => {
+    window.addEventListener('auth:session-expired', toLogin);
+    return () => window.removeEventListener('auth:session-expired', toLogin);
+  }, [toLogin]);
 
   useEffect(() => {
     async function bootstrap() {
-      // 如果在登录页，不请求 profile
-      if (location.pathname === '/admin/login') {
+      if (location.pathname === '/login') {
         setLoading(false);
         return;
       }
 
-      // 如果已经加载过 profile，不再重复请求
       if (authStore.getProfile() !== null) {
         setLoading(false);
         return;
@@ -34,24 +39,23 @@ export function AppBootstrap({ children }: AppBootstrapProps) {
       try {
         const profile = await authService.getProfile();
         authStore.setProfile(profile);
-        setError(null);
-      } catch (bootstrapError) {
+      } catch {
         authStore.clearSession();
-        setError(bootstrapError instanceof Error ? bootstrapError.message : 'Profile bootstrap failed');
+        // 当前不在登录页则跳转登录，避免组件树未更新时被 ProtectedRoute 抢先渲染错误态
+        if (location.pathname !== '/login') {
+          toLogin();
+          return;
+        }
       } finally {
         setLoading(false);
       }
     }
 
     void bootstrap();
-  }, []); // 只在组件挂载时执行一次
+  }, []);
 
   if (loading) {
     return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><Spin size="large" /></div>;
-  }
-
-  if (error !== null) {
-    return <Result status="warning" title="登录态已失效" subTitle={error} />;
   }
 
   return <>{children}</>;

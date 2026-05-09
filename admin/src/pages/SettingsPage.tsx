@@ -1,6 +1,7 @@
 import { Form, Input, Button, Card, Space, Typography } from 'antd';
 import { LockOutlined, SaveOutlined } from '@ant-design/icons';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authStore } from '../stores/auth-store';
 import { adminUserService } from '../services/admin-user-service';
 import { useMessage } from '../hooks/useMessage';
@@ -13,6 +14,7 @@ interface ChangePasswordPayload {
 }
 
 export function SettingsPage() {
+  const navigate = useNavigate();
   const [form] = Form.useForm<ChangePasswordPayload>();
   const [loading, setLoading] = useState(false);
   const message = useMessage();
@@ -29,7 +31,7 @@ export function SettingsPage() {
       message.success('密码已修改，请重新登录');
       authStore.clearSession();
       setTimeout(() => {
-        window.location.href = '/admin/login';
+        navigate('/login', { replace: true, state: { sessionExpired: true } });
       }, 1500);
     } catch (error) {
       message.error(getErrorMessage(error, '修改密码失败，请重试'));

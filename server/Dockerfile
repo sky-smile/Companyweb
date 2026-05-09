@@ -36,7 +36,7 @@ RUN mkdir -p uploads && chown -R nestjs:nodejs uploads
 
 # 复制启动脚本
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+RUN chmod 755 /docker-entrypoint.sh
 
 USER nestjs
 
