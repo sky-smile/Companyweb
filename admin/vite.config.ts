@@ -7,6 +7,12 @@ export default defineConfig({
   base: '/admin/',
   server: {
     port: 3000,
+    proxy: {
+      '/uploads': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+    },
   },
   test: {
     environment: 'jsdom',

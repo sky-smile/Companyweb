@@ -15,7 +15,7 @@ process.env.DB_USER = process.env.DB_USER ?? 'root';
 process.env.DB_PASSWORD = process.env.DB_PASSWORD ?? '';
 process.env.DB_TYPE = process.env.DB_TYPE ?? 'mariadb';
 process.env.UPLOAD_DIR = process.env.UPLOAD_DIR ?? 'uploads-test';
-process.env.UPLOAD_BASE_URL = process.env.UPLOAD_BASE_URL ?? 'http://localhost:3000/uploads';
+process.env.UPLOAD_BASE_URL = process.env.UPLOAD_BASE_URL ?? '/uploads';
 
 describe('HealthController (e2e)', () => {
   let app: INestApplication;

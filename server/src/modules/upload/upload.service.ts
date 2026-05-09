@@ -205,7 +205,7 @@ export class UploadService {
     folder: string,
   ): Promise<UploadedFileView & { mediaFile: MediaFileEntity }> {
     const uploadDir = this.configService.get<string>('upload.dir', 'uploads');
-    const baseUrl = this.configService.get<string>('upload.baseUrl', 'http://localhost:4000/uploads');
+    const baseUrl = this.configService.get<string>('upload.baseUrl', '/uploads');
     const normalizedFolder = this.normalizeFolder(folder);
     const targetDir = path.join(uploadDir, normalizedFolder);
 

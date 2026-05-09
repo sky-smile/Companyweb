@@ -10,6 +10,7 @@ import { InitAuthRbac1712600000000 } from './migrations/1712600000000-init-auth-
 import { AddMediaFilesTable1712620000000 } from './migrations/1712620000000-add-media-files-table';
 import { AddTokenVersionToAdminUsers1775909200000 } from './migrations/1775909200000-add-token-version-to-admin-users';
 import { FixMediaFilesUploadedByFk1775909200001 } from './migrations/1775909200001-fix-media-files-uploaded-by-fk';
+import { FixMediaFilesPublicUrls1776800000000 } from './migrations/1776800000000-fix-media-files-public-urls';
 
 const config = appConfig();
 
@@ -30,6 +31,7 @@ export const AppDataSource = new DataSource({
     AddMediaFilesTable1712620000000,
     AddTokenVersionToAdminUsers1775909200000,
     FixMediaFilesUploadedByFk1775909200001,
+    FixMediaFilesPublicUrls1776800000000,
   ],
   synchronize: false,
   logging: config.database.logging,

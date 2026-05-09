@@ -50,7 +50,7 @@ JWT_ACCESS_EXPIRES_IN=2h
 JWT_REFRESH_EXPIRES_IN=7d
 
 UPLOAD_DIR=uploads
-UPLOAD_BASE_URL=http://localhost:4000/uploads
+UPLOAD_BASE_URL=/uploads
 ```
 
 ### 数据库初始化

@@ -18,5 +18,5 @@ export const envValidationSchema = Joi.object({
   JWT_ACCESS_EXPIRES_IN: Joi.string().default('2h'),
   JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
   UPLOAD_DIR: Joi.string().default('uploads'),
-  UPLOAD_BASE_URL: Joi.string().uri().required(),
+  UPLOAD_BASE_URL: Joi.string().pattern(/^(\/|https?:\/\/)/).required(),
 });
