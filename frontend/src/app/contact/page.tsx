@@ -24,11 +24,45 @@ export default async function ContactPage() {
   const siteName = getSettingValue('siteName');
   const address = getSettingValue('contactAddress');
   const email = getSettingValue('contactEmail');
-  const phone = getSettingValue('contactPhone');
+  const landline = getSettingValue('contactPhone');
   const workTime = getSettingValue('contactWorkTime');
   const website = getSettingValue('contactWebsite');
 
-  const hasContact = siteName || address || email || phone;
+  // 解析多联系人 JSON（容错处理：支持单数组或换行拼接的多数组）
+  let contactPersons: { name: string; title: string; phone: string }[] = [];
+  try {
+    const raw = getSettingValue('contactPersons');
+    if (raw) {
+      // 先尝试整体解析
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        // 整体解析失败，尝试按行拆分后分别解析并合并
+        const lines = raw.split(/\n/).filter((l) => l.trim());
+        const merged: unknown[] = [];
+        for (const line of lines) {
+          try {
+            const arr = JSON.parse(line);
+            if (Array.isArray(arr)) merged.push(...arr);
+          } catch { /* skip */ }
+        }
+        parsed = merged;
+      }
+      if (Array.isArray(parsed)) {
+        contactPersons = parsed.filter(
+          (p: unknown): p is { name: string; title: string; phone: string } =>
+            typeof (p as Record<string, unknown>)?.name === 'string' &&
+            typeof (p as Record<string, unknown>)?.title === 'string' &&
+            typeof (p as Record<string, unknown>)?.phone === 'string',
+        );
+      }
+    }
+  } catch {
+    // 解析失败则忽略
+  }
+
+  const hasContact = siteName || address || email || landline || contactPersons.length > 0;
 
   return (
     <>
@@ -52,12 +86,12 @@ export default async function ContactPage() {
           </p>
 
           <div className="hero-cta">
-            {phone && (
-              <a href={`tel:${phone}`} className="cta-button cta-primary">
+            {landline && (
+              <a href={`tel:${landline}`} className="cta-button cta-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
-                <span>{phone}</span>
+                <span>{landline}</span>
               </a>
             )}
             {email && (
@@ -105,7 +139,7 @@ export default async function ContactPage() {
                   </div>
                 )}
 
-                {phone && (
+                {landline && (
                   <div className="contact-item">
                     <div className="contact-item-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -113,10 +147,40 @@ export default async function ContactPage() {
                       </svg>
                     </div>
                     <div className="contact-item-content">
-                      <span className="contact-item-label">联系电话</span>
-                      <a href={`tel:${phone}`} className="contact-item-value contact-item-link">
-                        {phone}
+                      <span className="contact-item-label">公司座机</span>
+                      <a href={`tel:${landline}`} className="contact-item-value contact-item-link">
+                        {landline}
                       </a>
+                    </div>
+                  </div>
+                )}
+
+                {contactPersons.length > 0 && (
+                  <div className="contact-item">
+                    <div className="contact-item-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                      </svg>
+                    </div>
+                    <div className="contact-item-content">
+                      <span className="contact-item-label">联系人</span>
+                      <div className="contact-persons-grid">
+                        {contactPersons.map((person, index) => (
+                          <div className="contact-person-row" key={index}>
+                            <span className="contact-person-title-tag">{person.title}</span>
+                            <span className="contact-person-name">{person.name}</span>
+                            <a href={`tel:${person.phone}`} className="contact-person-phone">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                              </svg>
+                              {person.phone}
+                            </a>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -522,6 +586,52 @@ export default async function ContactPage() {
         .contact-item-link:hover {
           color: var(--brand-dark, #1d4ed8);
           text-decoration: underline;
+        }
+
+        /* 联系人列表 */
+        .contact-persons-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          margin-top: 4px;
+        }
+
+        .contact-person-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .contact-person-title-tag {
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--brand);
+          background: rgba(37, 99, 235, 0.08);
+          padding: 3px 10px;
+          border-radius: 10px;
+          white-space: nowrap;
+        }
+
+        .contact-person-name {
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--foreground);
+          white-space: nowrap;
+        }
+
+        .contact-person-phone {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 14px;
+          color: var(--text-muted);
+          text-decoration: none;
+          transition: color 0.2s ease;
+          white-space: nowrap;
+        }
+
+        .contact-person-phone:hover {
+          color: var(--brand);
         }
 
         /* 侧边栏卡片 */

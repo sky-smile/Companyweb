@@ -55,7 +55,7 @@ export function SiteFooter({
   copyrightText,
 }: SiteFooterProps) {
   const currentYear = new Date().getFullYear();
-  const copyright = copyrightText || `© ${currentYear} ${siteName || 'Sky Smile'}. All rights reserved.`;
+  const copyright = copyrightText || (siteName ? `© ${currentYear} ${siteName}. All rights reserved.` : `© ${currentYear}. All rights reserved.`);
 
   return (
     <footer className="site-footer">

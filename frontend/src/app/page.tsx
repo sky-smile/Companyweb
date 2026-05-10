@@ -73,7 +73,7 @@ export default async function HomePage() {
                 </svg>
               </div>
               <h3 style={{ margin: '0 0 12px', fontSize: 20, fontWeight: 700, color: 'var(--foreground)' }}>使命</h3>
-              <p className="section-copy" style={{ margin: 0, fontSize: 15, lineHeight: 1.75, color: 'rgba(15, 23, 42, 0.72)' }}>
+              <p className="section-copy" style={{ margin: 0, fontSize: 16, lineHeight: 1.85, color: 'rgba(15, 23, 42, 0.78)' }}>
                 以技术创新和品质坚守，为客户创造超越期望的价值，推动行业可持续发展。
               </p>
             </div>
@@ -101,7 +101,7 @@ export default async function HomePage() {
                 </svg>
               </div>
               <h3 style={{ margin: '0 0 12px', fontSize: 20, fontWeight: 700, color: 'var(--foreground)' }}>愿景</h3>
-              <p className="section-copy" style={{ margin: 0, fontSize: 15, lineHeight: 1.75, color: 'rgba(15, 23, 42, 0.72)' }}>
+              <p className="section-copy" style={{ margin: 0, fontSize: 16, lineHeight: 1.85, color: 'rgba(15, 23, 42, 0.78)' }}>
                 成为全球客户首选的合作伙伴，以专业与诚信构筑值得信赖的品牌形象。
               </p>
             </div>
@@ -128,7 +128,7 @@ export default async function HomePage() {
                 </svg>
               </div>
               <h3 style={{ margin: '0 0 12px', fontSize: 20, fontWeight: 700, color: 'var(--foreground)' }}>价值观</h3>
-              <p className="section-copy" style={{ margin: 0, fontSize: 15, lineHeight: 1.75, color: 'rgba(15, 23, 42, 0.72)' }}>
+              <p className="section-copy" style={{ margin: 0, fontSize: 16, lineHeight: 1.85, color: 'rgba(15, 23, 42, 0.78)' }}>
                 品质为先、客户至上、持续创新、合作共赢——每一项决策都以此为准则。
               </p>
             </div>
@@ -146,7 +146,7 @@ export default async function HomePage() {
             {[
               { value: '5+', label: '年行业经验' },
               { value: '200+', label: '服务客户' },
-              { value: '10+', label: '专业技术团队' },
+              { value: '50+', label: '专业技术团队' },
               { value: '99%', label: '客户满意度' },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: 'center' }}>

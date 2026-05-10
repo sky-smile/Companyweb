@@ -60,7 +60,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
         {/* Organization JSON-LD */}
         <OrganizationJsonLd
-          name={siteName || 'Sky Smile'}
+          name={siteName || 'CompanyWeb'}
           url={siteUrl}
           description="企业官网、产品展示、新闻公告与联系方式统一对外展示平台。"
         />

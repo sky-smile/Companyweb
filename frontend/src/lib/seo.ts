@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-export const siteName = 'Sky Smile';
+export const siteName = '';
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://127.0.0.1:3001';
 const defaultDescription = '企业官网、产品展示、新闻公告与联系方式统一对外展示平台。';
 
@@ -12,7 +12,7 @@ interface MetadataInput {
 
 export function buildMetadata({ title, description, path = '/' }: MetadataInput): Metadata {
   const resolvedDescription = description?.trim() || defaultDescription;
-  const resolvedTitle = `${title} | ${siteName}`;
+  const resolvedTitle = siteName ? `${title} | ${siteName}` : title;
   const canonicalUrl = new URL(path, siteUrl).toString();
 
   return {

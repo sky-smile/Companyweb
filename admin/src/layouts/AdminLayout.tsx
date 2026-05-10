@@ -217,73 +217,105 @@ export function AdminLayout() {
           bottom: 0,
         }}
       >
-        {/* Logo 区域 */}
-        <div
-          style={{
-            height: 64,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            padding: collapsed ? 0 : '0 20px',
-            borderBottom: '1px solid var(--color-border)',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* 背景装饰 */}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Logo 区域 */}
           <div
             style={{
-              position: 'absolute',
-              top: '-20px',
-              right: '-20px',
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.1)',
+              height: 64,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              padding: collapsed ? 0 : '0 20px',
+              borderBottom: '1px solid var(--color-border)',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              position: 'relative',
+              overflow: 'hidden',
+              flexShrink: 0,
             }}
-          />
-          <div
+          >
+            {/* 背景装饰 */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '-20px',
+                right: '-20px',
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.1)',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '-30px',
+                left: '20px',
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.05)',
+              }}
+            />
+
+            {collapsed ? (
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <DashboardOutlined style={{ fontSize: 24, color: '#fff' }} />
+              </div>
+            ) : (
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <Typography.Title level={4} style={{ margin: 0, fontSize: 18, color: '#fff', fontWeight: 700 }}>
+                  Company Admin
+                </Typography.Title>
+                <Typography.Text style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.8)' }}>
+                  内容管理控制台
+                </Typography.Text>
+              </div>
+            )}
+          </div>
+
+          {/* 菜单 */}
+          <Menu
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={buildMenuItems()}
+            onClick={({ key }) => navigate(key)}
             style={{
-              position: 'absolute',
-              bottom: '-30px',
-              left: '20px',
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.05)',
+              borderInlineEnd: 'none',
+              marginTop: 8,
+              background: 'transparent',
+              padding: '8px 0',
+              flex: 1,
             }}
           />
-          
-          {collapsed ? (
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <DashboardOutlined style={{ fontSize: 24, color: '#fff' }} />
-            </div>
-          ) : (
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <Typography.Title level={4} style={{ margin: 0, fontSize: 18, color: '#fff', fontWeight: 700 }}>
-                Company Admin
-              </Typography.Title>
-              <Typography.Text style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.8)' }}>
-                内容管理控制台
+
+          {/* 底部版权信息 */}
+          {!collapsed && (
+            <div
+              style={{
+                padding: '12px 16px',
+                borderTop: '1px solid var(--color-border)',
+                textAlign: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Typography.Text
+                type="secondary"
+                style={{ fontSize: 12, lineHeight: 1.6 }}
+              >
+                Designed & Developed
+                <br />
+                by{' '}
+                <Typography.Link
+                  href="https://github.com/sky-smile/Companyweb"
+                  target="_blank"
+                  style={{ fontSize: 12 }}
+                >
+                  sky-smile
+                </Typography.Link>
               </Typography.Text>
             </div>
           )}
         </div>
-
-        {/* 菜单 */}
-        <Menu
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={buildMenuItems()}
-          onClick={({ key }) => navigate(key)}
-          style={{
-            borderInlineEnd: 'none',
-            marginTop: 8,
-            background: 'transparent',
-            padding: '8px 0',
-          }}
-        />
       </Sider>
 
       {/* 主内容区 */}

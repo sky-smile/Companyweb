@@ -80,7 +80,16 @@ export function SiteHeader() {
             <span className="header-site-name">{name}</span>
           )}
           {!logo && !name && (
-            <span className="header-default-name">Sky Smile</span>
+            <div className="header-logo-placeholder" aria-label="Logo">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="8" width="40" height="32" rx="4" stroke="currentColor" strokeWidth="2.5" fill="none" />
+                <path d="M4 20h40" stroke="currentColor" strokeWidth="2.5" />
+                <path d="M16 20V8" stroke="currentColor" strokeWidth="2.5" />
+                <circle cx="12" cy="14" r="2" fill="currentColor" />
+                <circle cx="20" cy="14" r="2" fill="currentColor" />
+                <circle cx="28" cy="14" r="2" fill="currentColor" />
+              </svg>
+            </div>
           )}
         </Link>
 
@@ -140,12 +149,19 @@ export function SiteHeader() {
           transition: color 0.3s ease;
         }
 
-        .header-default-name {
-          font-size: 22px;
-          font-weight: 700;
-          letter-spacing: -0.01em;
-          color: var(--foreground);
+        .header-logo-placeholder {
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--brand);
           transition: all 0.3s ease;
+        }
+
+        .header-logo-placeholder svg {
+          width: 100%;
+          height: 100%;
         }
 
         .nav-link {
@@ -186,9 +202,13 @@ export function SiteHeader() {
             background: var(--line);
           }
 
-          .header-site-name,
-          .header-default-name {
+          .header-site-name {
             font-size: 18px;
+          }
+
+          .header-logo-placeholder {
+            width: 32px;
+            height: 32px;
           }
 
           .site-shell {

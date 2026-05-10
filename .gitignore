@@ -44,9 +44,6 @@ public/uploads/
 # test artifacts
 playwright-report/
 test-results/
-审查修复计划.md
-AGENTS.md
-CODEBUDDY.md
 
 # Claude Code
 .claude/

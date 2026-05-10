@@ -22,7 +22,7 @@ export function SectionHeading({ eyebrow, title, description }: SectionHeadingPr
       <RichContent
         content={description}
         className="section-copy"
-        style={{ margin: '0 auto', maxWidth: 700, textAlign: 'center' }}
+        style={{ margin: '0 auto', textAlign: 'left' }}
       />
     </div>
   );

@@ -36,8 +36,13 @@ export function SiteSettingsPage() {
   async function handleSave() {
     setSaving(true);
     try {
+      // 去重：相同 settingKey 只保留最后一项
+      const seen = new Map<string, typeof editingData[0]>();
+      for (const item of editingData) {
+        seen.set(item.settingKey, item);
+      }
       const payload: UpdateSiteSettingsPayload = {
-        items: editingData.map(item => ({
+        items: Array.from(seen.values()).map(item => ({
           settingKey: item.settingKey,
           settingValue: item.settingValue,
           settingGroup: item.settingGroup,
@@ -162,7 +167,7 @@ function ContactTab({ editingData, setEditingData, getSettingValue, setSettingVa
   const contactFields = [
     { key: 'contactAddress', label: '公司地址', icon: <EnvironmentOutlined />, placeholder: '请输入公司详细地址' },
     { key: 'contactEmail', label: '电子邮箱', icon: <MailOutlined />, placeholder: 'example@company.com' },
-    { key: 'contactPhone', label: '联系电话', icon: <PhoneOutlined />, placeholder: '400-888-8888' },
+    { key: 'contactPhone', label: '公司座机', icon: <PhoneOutlined />, placeholder: '0931-8888888' },
     { key: 'contactWebsite', label: '公司网站', icon: <GlobalOutlined />, placeholder: 'https://www.company.com' },
     { key: 'contactWorkTime', label: '工作时间', icon: <ClockCircleOutlined />, placeholder: '周一至周五 9:00-18:00' },
   ];
@@ -194,6 +199,29 @@ function ContactTab({ editingData, setEditingData, getSettingValue, setSettingVa
             </Space>
           );
         })}
+
+        {/* 联系人列表 */}
+        <div style={{ padding: '12px 16px', background: '#f0f5ff', borderRadius: 6, border: '1px solid #d4e3fc', marginTop: 8 }}>
+          <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+            💡 联系人列表：请输入 JSON 数组格式，每项包含 name（姓名）、title（职务）和 phone（手机号码）<br />
+            示例：{`[{"name":"张三","title":"销售经理","phone":"13800138000"},{"name":"李四","title":"技术支持","phone":"13900139000"}]`}
+          </Typography.Text>
+        </div>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+          <Space>
+            <PhoneOutlined />
+            <Typography.Text strong>联系人</Typography.Text>
+          </Space>
+          <TextArea
+            value={getSettingValue('contactPersons')}
+            onChange={(e) => setSettingValue('contactPersons', e.target.value)}
+            placeholder='[{"name":"姓名","title":"职务","phone":"手机号"}]'
+            rows={5}
+            maxLength={2000}
+            showCount
+            style={{ maxWidth: 600 }}
+          />
+        </Space>
       </Space>
     </Card>
   );

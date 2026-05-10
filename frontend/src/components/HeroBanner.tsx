@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import type { BannerItem } from '@/types/public';
 import { ScrollIndicator } from './ScrollIndicator';
@@ -6,8 +9,58 @@ interface HeroBannerProps {
   banners: BannerItem[];
 }
 
+const AUTO_PLAY_INTERVAL = 5000;
+
 export function HeroBanner({ banners }: HeroBannerProps) {
-  const banner = banners[0];
+  const [current, setCurrent] = useState(0);
+  const [fading, setFading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const total = banners.length;
+  const hasMultiple = total > 1;
+  const banner = banners[current];
+
+  const goTo = useCallback(
+    (index: number) => {
+      if (index === current) return;
+      setFading(true);
+      setTimeout(() => {
+        setCurrent(index);
+        setFading(false);
+      }, 400);
+    },
+    [current],
+  );
+
+  const next = useCallback(() => {
+    goTo((current + 1) % total);
+  }, [current, total, goTo]);
+
+  // 自动轮播
+  useEffect(() => {
+    if (!hasMultiple) return;
+    timerRef.current = setInterval(next, AUTO_PLAY_INTERVAL);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [hasMultiple, next]);
+
+  const pause = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const resume = () => {
+    if (!hasMultiple) return;
+    pause();
+    timerRef.current = setInterval(next, AUTO_PLAY_INTERVAL);
+  };
+
+  // 兜底：banners 为空
+  if (!banner) {
+    return (
+      <section className="hero-banner" style={{ height: '100vh', minHeight: 600 }} />
+    );
+  }
 
   return (
     <section
@@ -21,25 +74,26 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         justifyContent: 'center',
         overflow: 'hidden',
       }}
+      onMouseEnter={pause}
+      onMouseLeave={resume}
     >
-      {/* 背景图片 */}
-      {banner?.imageUrl && (
-        <div
-          className="hero-bg"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${banner.imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-      )}
+      {/* 背景图片（淡入淡出切换） */}
+      <div
+        className="hero-bg"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${banner.imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity: fading ? 0 : 1,
+          transition: 'opacity 0.4s ease-in-out',
+        }}
+      />
 
       {/* 装饰性渐变球 */}
       <div
-        className="hero-decoration-1"
         style={{
           position: 'absolute',
           top: '10%',
@@ -53,7 +107,6 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }}
       />
       <div
-        className="hero-decoration-2"
         style={{
           position: 'absolute',
           bottom: '5%',
@@ -67,20 +120,20 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }}
       />
 
-      {/* 渐变遮罩 - 透明通透效果 */}
+      {/* 渐变遮罩 */}
       <div
-        className="hero-overlay"
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.30) 50%, rgba(255, 255, 255, 0.20) 100%)',
+          background:
+            'linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.30) 50%, rgba(255, 255, 255, 0.20) 100%)',
           backdropFilter: 'blur(1px)',
         }}
       />
 
-      {/* 内容 - 居中 */}
+      {/* 内容 */}
       <div className="hero-content site-shell" style={{ position: 'relative', zIndex: 1, padding: '0' }}>
-        <div style={{ maxWidth: 800 }}>
+        <div style={{ maxWidth: 900 }}>
           <h1
             className="hero-title animate-fade-in-up delay-100"
             style={{
@@ -91,9 +144,12 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               letterSpacing: '-0.02em',
               color: '#0f172a',
               textShadow: '0 2px 8px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.1)',
+              whiteSpace: 'nowrap',
+              opacity: fading ? 0 : 1,
+              transition: 'opacity 0.4s ease-in-out',
             }}
           >
-            {banner?.title || 'Reliable manufacturing, presented with clarity.'}
+            {banner.title || 'Reliable manufacturing, presented with clarity.'}
           </h1>
 
           <p
@@ -106,14 +162,23 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               lineHeight: 1.8,
               letterSpacing: '0.01em',
               textShadow: '0 1px 4px rgba(255, 255, 255, 0.7)',
+              opacity: fading ? 0 : 1,
+              transition: 'opacity 0.4s ease-in-out',
             }}
           >
-            {banner?.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
+            {banner.subtitle || 'A modern company website that highlights product capability, company story, and the latest updates for global visitors.'}
           </p>
 
           <div
             className="animate-fade-in-up delay-300"
-            style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 44 }}
+            style={{
+              display: 'flex',
+              gap: 18,
+              flexWrap: 'wrap',
+              marginTop: 44,
+              opacity: fading ? 0 : 1,
+              transition: 'opacity 0.4s ease-in-out',
+            }}
           >
             <Link href="/products" className="hero-btn-primary">
               查看产品
@@ -125,6 +190,40 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           </div>
         </div>
       </div>
+
+      {/* 轮播指示器 */}
+      {hasMultiple && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 100,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            gap: 10,
+            zIndex: 2,
+          }}
+        >
+          {banners.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`切换到第 ${i + 1} 张`}
+              onClick={() => goTo(i)}
+              style={{
+                width: i === current ? 28 : 10,
+                height: 10,
+                borderRadius: 5,
+                border: 'none',
+                background: i === current ? 'var(--brand)' : 'rgba(15, 23, 42, 0.25)',
+                cursor: 'pointer',
+                transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                padding: 0,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* 下滑指示器 */}
       <ScrollIndicator />
@@ -149,10 +248,6 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         .hero-subtitle {
           text-rendering: optimizeLegibility;
           -webkit-font-smoothing: antialiased;
-        }
-
-        .hero-bg {
-          transition: opacity 0.5s ease;
         }
 
         .hero-bg::after {
@@ -200,7 +295,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           animation: none;
           transform: translateX(-50%) translateY(4px);
         }
-        
+
         .hero-btn-primary {
           display: inline-flex;
           align-items: center;
@@ -216,7 +311,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           position: relative;
           overflow: hidden;
         }
-        
+
         .hero-btn-primary::before {
           content: '';
           position: absolute;
@@ -229,7 +324,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           transform: translate(-50%, -50%);
           transition: width 0.6s, height 0.6s;
         }
-        
+
         .hero-btn-primary:hover::before {
           width: 300px;
           height: 300px;
@@ -239,7 +334,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           transform: translateY(-3px);
           box-shadow: 0 8px 30px var(--brand-glow);
         }
-        
+
         .hero-btn-primary:hover span {
           transform: translateX(4px);
         }
@@ -264,7 +359,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           color: var(--brand);
           transform: translateY(-2px);
         }
-        
+
         @media (max-width: 768px) {
           .hero-banner {
             min-height: 100vh;
@@ -288,15 +383,6 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           .hero-subtitle {
             line-height: 1.7;
             margin-top: 20px;
-          }
-
-          .hero-decoration-1,
-          .hero-decoration-2 {
-            display: none;
-          }
-
-          .scroll-indicator {
-            bottom: 24px;
           }
         }
 

@@ -26,6 +26,19 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // 开发环境：将 /uploads 请求代理到后端 API 服务器
+  // 生产环境由 Nginx 直接处理，此 rewrite 不会触发
+  async rewrites() {
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api';
+    const backendOrigin = apiBase.replace(/\/api$/, '');
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${backendOrigin}/uploads/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
