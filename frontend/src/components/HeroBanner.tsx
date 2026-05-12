@@ -120,14 +120,13 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         }}
       />
 
-      {/* 渐变遮罩 */}
+      {/* 渐变遮罩 —— 仅左侧为深色文字提供可读对比，右侧保持图片清晰 */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           background:
-            'linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.30) 50%, rgba(255, 255, 255, 0.20) 100%)',
-          backdropFilter: 'blur(1px)',
+            'linear-gradient(105deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.40) 35%, transparent 70%)',
         }}
       />
 
@@ -143,7 +142,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               fontWeight: 800,
               letterSpacing: '-0.02em',
               color: '#0f172a',
-              textShadow: '0 2px 8px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.1)',
+              textShadow: '0 2px 12px rgba(255, 255, 255, 0.85), 0 1px 4px rgba(0, 0, 0, 0.12)',
               whiteSpace: 'nowrap',
               opacity: fading ? 0 : 1,
               transition: 'opacity 0.4s ease-in-out',
@@ -161,7 +160,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               color: 'rgba(15, 23, 42, 0.82)',
               lineHeight: 1.8,
               letterSpacing: '0.01em',
-              textShadow: '0 1px 4px rgba(255, 255, 255, 0.7)',
+              textShadow: '0 1px 6px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0, 0, 0, 0.08)',
               opacity: fading ? 0 : 1,
               transition: 'opacity 0.4s ease-in-out',
             }}
@@ -248,19 +247,6 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         .hero-subtitle {
           text-rendering: optimizeLegibility;
           -webkit-font-smoothing: antialiased;
-        }
-
-        .hero-bg::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 100%);
-        }
-
-        .hero-overlay {
-          backdrop-filter: blur(1px);
-          -webkit-backdrop-filter: blur(1px);
-          transition: background 0.3s ease;
         }
 
         @keyframes bounce {
