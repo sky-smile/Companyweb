@@ -2,6 +2,9 @@
 node_modules/
 .pnpm-store/
 .qwen
+
+# python (not needed for this project)
+.venv
 # build outputs
 .next/
 dist/
@@ -48,3 +51,4 @@ test-results/
 # Claude Code
 .claude/
 .claude
+.reasonix
